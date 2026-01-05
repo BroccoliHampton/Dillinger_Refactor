@@ -161,6 +161,9 @@ class Game {
             case 'encounter-avoid':
                 await this.handleEncounterDecision(false);
                 break;
+            case 'encounter-result-close':
+                this.uiRenderer.hideEncounterResult();
+                break;
 
             // Win/Game Over
             case 'claim-warrant-button':
@@ -448,9 +451,13 @@ class Game {
         await this.audioManager.initialize();
         this.audioManager.playClick();
 
-        this.encounterManager.handleEncounterDecision(riskIt);
+        const result = this.encounterManager.handleEncounterDecision(riskIt);
         this.uiRenderer.render();
-        this.showTab('action');
+        
+        // Show result popup if the player risked it
+        if (result && !result.avoided && !result.error) {
+            this.uiRenderer.showEncounterResult(result);
+        }
     }
 
     async forceTriggerEncounter() {
