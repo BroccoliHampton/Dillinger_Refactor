@@ -138,7 +138,7 @@ export class UIRenderer {
         // System name
         $('system-name-display').textContent = SYSTEM_NAMES[currentMapIndex];
 
-        // Map displays
+        // Map displays - these are <g> groups inside one SVG
         ['map-display-1', 'map-display-2', 'map-display-3', 'map-display-4', 'map-display-5', 'map-display-6'].forEach((id, index) => {
             const mapEl = $(id);
             if (mapEl) {
@@ -146,10 +146,9 @@ export class UIRenderer {
             }
         });
 
-        // Ship position
-        const suffix = currentMapIndex === 0 ? '' : `-${currentMapIndex + 1}`;
-        const shipGroup = $(`dillinger-ship-group${suffix}`);
-        const trailGroup = $(`ship-trail-group${suffix}`);
+        // Ship position - single ship group for all maps
+        const shipGroup = $('dillinger-ship-group');
+        const trailGroup = $('ship-trail-group');
         const progressRatio = gs.getProgressRatio();
         const currentPos = getShipMapPosition(progressRatio, MAP_NODES.START, MAP_NODES.END);
 
