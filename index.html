@@ -161,14 +161,6 @@
                         <p class="text-gray-500 text-xs">OUTSTANDING WARRANTS</p>
                     </div>
                 </div>
-
-                <!-- Log Display -->
-                <div class="retro-border secondary-panel-bg rounded-lg p-3">
-                    <h2 class="font-title text-xs text-green-400 mb-2">// COMM LOG</h2>
-                    <div id="log-display" class="log-container text-xs font-mono p-2 rounded bg-black/50">
-                        <p class="text-gray-400">[BOOT] Systems online...</p>
-                    </div>
-                </div>
             </section>
 
             <!-- ===== MAP TAB ===== -->
@@ -376,7 +368,7 @@
                 </div>
 
                 <!-- Test Buttons (Dev) -->
-                <div class="retro-border secondary-panel-bg rounded-lg p-3">
+                <div class="retro-border secondary-panel-bg rounded-lg p-3 mb-3">
                     <h2 class="font-title text-xs text-gray-500 mb-2">// DEV TOOLS</h2>
                     <div class="grid grid-cols-3 gap-2">
                         <button id="test-photons-button" class="retro-button p-2 rounded text-xs text-yellow-400 border-yellow-500/50">
@@ -388,6 +380,14 @@
                         <button id="test-encounter-button" class="retro-button p-2 rounded text-xs text-red-400 border-red-500/50">
                             ENCOUNTER
                         </button>
+                    </div>
+                </div>
+
+                <!-- Log Display -->
+                <div class="retro-border secondary-panel-bg rounded-lg p-3">
+                    <h2 class="font-title text-xs text-green-400 mb-2">// COMM LOG</h2>
+                    <div id="log-display" class="log-container text-xs font-mono p-2 rounded bg-black/50">
+                        <p class="text-gray-400">[BOOT] Systems online...</p>
                     </div>
                 </div>
             </section>
@@ -515,6 +515,20 @@
                     RISK IT
                 </button>
             </div>
+        </div>
+    </div>
+
+    <!-- Encounter Result Modal -->
+    <div id="encounter-result-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4 hidden">
+        <div id="encounter-result-container" class="retro-border secondary-panel-bg rounded-lg p-4 max-w-sm w-full">
+            <h2 id="encounter-result-title" class="font-title text-sm mb-3 text-center">
+                <i id="encounter-result-icon" class="fas mr-2"></i><span id="encounter-result-label">RESULT</span>
+            </h2>
+            <p id="encounter-result-text" class="text-sm text-gray-300 mb-3 text-center"></p>
+            <p id="encounter-result-net" class="text-xs text-center mb-4"></p>
+            <button id="encounter-result-close" class="retro-button w-full p-2 rounded text-green-400 border-green-500">
+                CONTINUE
+            </button>
         </div>
     </div>
 
