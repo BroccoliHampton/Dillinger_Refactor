@@ -77,12 +77,12 @@
 
                 <div class="p-3 bg-black/50 rounded border-l-2 border-cyan-500">
                     <h3 class="text-cyan-400 font-bold text-xs mb-1">SOLAR SAILS</h3>
-                    <p class="text-xs text-gray-300">Craft sails (cost: photons) to generate lightyears. Power scales with sun intensity. Sails degrade and must be jettisoned when broken.</p>
+                    <p class="text-xs text-gray-300">Craft sails (cost: photons) to generate lightyears. Power scales with sun intensity at time of crafting. Sails degrade and must be jettisoned when broken.</p>
                 </div>
 
                 <div class="p-3 bg-black/50 rounded border-l-2 border-yellow-500">
                     <h3 class="text-yellow-400 font-bold text-xs mb-1">PHOTON BATTERIES</h3>
-                    <p class="text-xs text-gray-300">Craft batteries (cost: lightyears) to generate passive photon income. Essential for continuous sail production.</p>
+                    <p class="text-xs text-gray-300">Craft batteries (cost: lightyears) to generate passive photon income. Power scales with substrate conductivity at time of crafting.</p>
                 </div>
 
                 <div class="p-3 bg-black/50 rounded border-l-2 border-red-500">
@@ -152,9 +152,9 @@
                         </div>
                         <!-- Substrate -->
                         <div class="stat-grid-item substrate-glow rounded p-2">
-                            <p class="text-pink-400 font-bold">ETH SUBSTRATE</p>
+                            <p class="text-pink-400 font-bold text-xs">SUBSTRATE CONDUCTIVITY</p>
                             <p id="eth-price-display" class="text-xl text-white font-bold">4,000</p>
-                            <p class="text-pink-300 text-xs">gwei</p>
+                            <p class="text-pink-300 text-xs">S/m</p>
                             <div id="substrate-activity-gauge" class="activity-gauge electric-gauge"></div>
                         </div>
                         <!-- Lightyears -->
@@ -429,12 +429,12 @@
 
                         <div class="p-3 bg-black/30 rounded border-l-2 border-cyan-500">
                             <h3 class="text-cyan-400 font-bold mb-1">SOLAR SAILS</h3>
-                            <p>Craft sails to generate lightyears. Power scales with sun intensity. Sails degrade over time and must be jettisoned when broken.</p>
+                            <p>Craft sails (cost: photons) to generate lightyears. Power scales with sun intensity at time of crafting. Sails degrade and must be jettisoned when broken.</p>
                         </div>
 
                         <div class="p-3 bg-black/30 rounded border-l-2 border-yellow-500">
                             <h3 class="text-yellow-400 font-bold mb-1">PHOTON BATTERIES</h3>
-                            <p>Generate passive photon income. Rate scales with ETH substrate price. Essential for continuous sail production.</p>
+                            <p>Craft batteries (cost: lightyears) to generate passive photon income. Power scales with substrate conductivity at time of crafting.</p>
                         </div>
 
                         <div class="p-3 bg-black/30 rounded border-l-2 border-red-500">
