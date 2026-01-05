@@ -32,14 +32,14 @@ export const MAP_NODES = {
 };
 
 export const SUN_INTENSITY = {
-    MIN: 500000,
-    MAX: 690000,
+    MIN: 300000,
+    MAX: 900000,
     INITIAL: 500000
 };
 
-export const ETH_PRICE = {
-    MIN: 3000,
-    MAX: 5000,
+export const SUBSTRATE_CONDUCTIVITY = {
+    MIN: 1500,
+    MAX: 7500,
     INITIAL: 4000
 };
 
