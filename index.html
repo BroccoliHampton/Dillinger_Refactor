@@ -38,14 +38,14 @@
     <!-- ========================================= -->
     <!-- MINT OVERLAY (Start Screen) -->
     <!-- ========================================= -->
-    <div id="mint-overlay" class="fixed inset-0 z-50 flex flex-col items-center justify-center bg-black/90 p-4">
-        <div class="text-center max-w-md">
+    <div id="mint-overlay" class="fixed inset-0 z-50 flex flex-col items-center justify-start bg-black/95 p-4 overflow-y-auto">
+        <div class="text-center max-w-md w-full py-6">
             <h1 class="font-title text-2xl md:text-3xl text-yellow-400 mb-2 tracking-wider" style="text-shadow: 0 0 10px #facc15;">
                 DILLINGER
             </h1>
-            <p class="font-title text-xs text-green-400 mb-6">OUTLAW SPACE COMMANDO 1995</p>
+            <p class="font-title text-xs text-green-400 mb-4">OUTLAW SPACE COMMANDO 1995</p>
             
-            <div class="wireframe-container">
+            <div class="wireframe-container" style="max-width: 150px; margin: 0 auto 1rem;">
                 <svg id="wireframe-ship-0" class="wireframe-ship-part" viewBox="0 0 100 100">
                     <polygon points="50,10 20,90 50,70 80,90"/>
                     <line x1="50" y1="10" x2="50" y2="70"/>
@@ -67,10 +67,34 @@
                     <line x1="20" y1="90" x2="80" y2="90"/>
                 </svg>
             </div>
-            
-            <p class="text-sm text-gray-400 mb-6 px-4">
-                Pilot The Outrider across 1,000,000 lightyears. Craft solar sails, manage your photon reactor, and evade the law.
-            </p>
+
+            <!-- Mission Briefing -->
+            <div class="text-left space-y-3 mb-6 px-2">
+                <div class="p-3 bg-black/50 rounded border-l-2 border-yellow-500">
+                    <h3 class="text-yellow-400 font-bold text-xs mb-1">OBJECTIVE</h3>
+                    <p class="text-xs text-gray-300">Travel 1,000,000 lightyears to escape the law before time runs out. Collect outstanding warrants to prove your infamy.</p>
+                </div>
+
+                <div class="p-3 bg-black/50 rounded border-l-2 border-cyan-500">
+                    <h3 class="text-cyan-400 font-bold text-xs mb-1">SOLAR SAILS</h3>
+                    <p class="text-xs text-gray-300">Craft sails (cost: photons) to generate lightyears. Power scales with sun intensity. Sails degrade and must be jettisoned when broken.</p>
+                </div>
+
+                <div class="p-3 bg-black/50 rounded border-l-2 border-yellow-500">
+                    <h3 class="text-yellow-400 font-bold text-xs mb-1">PHOTON BATTERIES</h3>
+                    <p class="text-xs text-gray-300">Craft batteries (cost: lightyears) to generate passive photon income. Essential for continuous sail production.</p>
+                </div>
+
+                <div class="p-3 bg-black/50 rounded border-l-2 border-red-500">
+                    <h3 class="text-red-400 font-bold text-xs mb-1">ENCOUNTERS</h3>
+                    <p class="text-xs text-gray-300">Random events trigger during crafting. Risk it for rewards or play it safe.</p>
+                </div>
+
+                <div class="p-3 bg-black/50 rounded border-l-2 border-purple-500">
+                    <h3 class="text-purple-400 font-bold text-xs mb-1">BLACK HOLE</h3>
+                    <p class="text-xs text-gray-300">High-risk minigame. Costs 250K LY and all sails. Navigate the warp tunnel for massive distance.</p>
+                </div>
+            </div>
             
             <button id="mint-button" class="retro-button font-title text-sm py-3 px-8 rounded text-green-400 hover:text-white">
                 [ LAUNCH MISSION ]
@@ -400,17 +424,17 @@
                     <div class="space-y-4 text-xs text-gray-300">
                         <div class="p-3 bg-black/30 rounded border-l-2 border-yellow-500">
                             <h3 class="text-yellow-400 font-bold mb-1">OBJECTIVE</h3>
-                            <p>Travel 1,000,000 lightyears across each map to escape the law before time runs out.</p>
+                            <p>Travel 1,000,000 lightyears to escape the law. Collect outstanding warrants to prove your infamy.</p>
                         </div>
 
                         <div class="p-3 bg-black/30 rounded border-l-2 border-cyan-500">
                             <h3 class="text-cyan-400 font-bold mb-1">SOLAR SAILS</h3>
-                            <p>Craft sails to generate lightyears. Sail power correlates to sun intensity at the time of crafting. Sails degrade over time and must be jettisoned when broken.</p>
+                            <p>Craft sails to generate lightyears. Power scales with sun intensity. Sails degrade over time and must be jettisoned when broken.</p>
                         </div>
 
                         <div class="p-3 bg-black/30 rounded border-l-2 border-yellow-500">
                             <h3 class="text-yellow-400 font-bold mb-1">PHOTON BATTERIES</h3>
-                            <p>Craft photon batteries to generate photons. Battery power correlates to substrate conductivity at time of crafting. Spend photons to craft sails.</p>
+                            <p>Generate passive photon income. Rate scales with ETH substrate price. Essential for continuous sail production.</p>
                         </div>
 
                         <div class="p-3 bg-black/30 rounded border-l-2 border-red-500">
