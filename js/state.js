@@ -2,7 +2,7 @@
 // GAME STATE MANAGEMENT
 // ===========================================
 
-import { GAME_CONFIG, MAP_DURATIONS, SUN_INTENSITY, ETH_PRICE } from './config.js';
+import { GAME_CONFIG, MAP_DURATIONS, SUN_INTENSITY, SUBSTRATE_CONDUCTIVITY } from './config.js';
 import { randRange, clamp, generateId } from './utils.js';
 
 /**
@@ -229,16 +229,16 @@ export class GameState {
 }
 
 /**
- * MarketState manages sun intensity and ETH price
+ * MarketState manages sun intensity and substrate conductivity
  */
 export class MarketState {
     constructor() {
         this.sunIntensity = SUN_INTENSITY.INITIAL;
-        this.ethPrice = ETH_PRICE.INITIAL;
+        this.substrateConductivity = SUBSTRATE_CONDUCTIVITY.INITIAL;
     }
 
     updateSunIntensity() {
-        const change = randRange(-2500, 2500);
+        const change = randRange(-15000, 15000);
         this.sunIntensity = clamp(
             this.sunIntensity + change,
             SUN_INTENSITY.MIN,
@@ -247,14 +247,14 @@ export class MarketState {
         return this.sunIntensity;
     }
 
-    updateEthPrice() {
-        const change = randRange(-100, 100);
-        this.ethPrice = clamp(
-            this.ethPrice + change,
-            ETH_PRICE.MIN,
-            ETH_PRICE.MAX
+    updateSubstrateConductivity() {
+        const change = randRange(-250, 250);
+        this.substrateConductivity = clamp(
+            this.substrateConductivity + change,
+            SUBSTRATE_CONDUCTIVITY.MIN,
+            SUBSTRATE_CONDUCTIVITY.MAX
         );
-        return this.ethPrice;
+        return this.substrateConductivity;
     }
 
     calculateSailPower() {
@@ -262,7 +262,7 @@ export class MarketState {
     }
 
     calculateBatteryRate() {
-        return parseFloat((this.ethPrice * 0.001).toFixed(2));
+        return parseFloat((this.substrateConductivity * 0.001).toFixed(2));
     }
 }
 
