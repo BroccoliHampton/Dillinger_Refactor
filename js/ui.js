@@ -226,6 +226,46 @@ export class UIRenderer {
     }
 
     /**
+     * Show encounter result popup
+     */
+    showEncounterResult(result) {
+        const modal = $('encounter-result-modal');
+        const container = $('encounter-result-container');
+        const title = $('encounter-result-title');
+        const icon = $('encounter-result-icon');
+        const label = $('encounter-result-label');
+        const text = $('encounter-result-text');
+        const netEl = $('encounter-result-net');
+
+        if (result.success) {
+            container.style.borderColor = 'var(--neon-green)';
+            title.className = 'font-title text-sm mb-3 text-center text-green-400';
+            icon.className = 'fas fa-check-circle mr-2';
+            label.textContent = 'SUCCESS';
+            text.textContent = this.uiState.lastEncounterResult || 'Mission accomplished!';
+            netEl.className = 'text-xs text-center mb-4 text-green-400';
+            netEl.textContent = `Net gain: ${result.netChange >= 0 ? '+' : ''}${result.netChange.toLocaleString()} LY`;
+        } else {
+            container.style.borderColor = 'var(--neon-red)';
+            title.className = 'font-title text-sm mb-3 text-center text-red-400';
+            icon.className = 'fas fa-times-circle mr-2';
+            label.textContent = 'FAILURE';
+            text.textContent = this.uiState.lastEncounterResult || 'Things did not go as planned...';
+            netEl.className = 'text-xs text-center mb-4 text-red-400';
+            netEl.textContent = `Net loss: ${result.netChange.toLocaleString()} LY`;
+        }
+
+        modal.classList.remove('hidden');
+    }
+
+    /**
+     * Hide encounter result popup
+     */
+    hideEncounterResult() {
+        $('encounter-result-modal').classList.add('hidden');
+    }
+
+    /**
      * Set system mode/theme
      */
     setSystemMode(themeIndex) {
