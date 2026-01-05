@@ -147,8 +147,9 @@ export class UIRenderer {
         });
 
         // Ship position
-        const shipGroup = $('dillinger-ship-group');
-        const trailGroup = $('ship-trail-group');
+        const suffix = currentMapIndex === 0 ? '' : `-${currentMapIndex + 1}`;
+        const shipGroup = $(`dillinger-ship-group${suffix}`);
+        const trailGroup = $(`ship-trail-group${suffix}`);
         const progressRatio = gs.getProgressRatio();
         const currentPos = getShipMapPosition(progressRatio, MAP_NODES.START, MAP_NODES.END);
 
