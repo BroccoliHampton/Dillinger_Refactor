@@ -2,1148 +2,460 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Dillinger Outlaw Space Commando 1995</title>
     
-    <meta property="og:title" content="Dillinger Outlaw Space Commando 1995" />
-    <meta property="og:image" content="https://dillinger-final.vercel.app/public/png95.png" />
+    <!-- Farcaster Frame Meta -->
+    <meta name="fc:frame" content="vNext">
+    <meta name="fc:frame:image" content="https://dillinger-game.vercel.app/preview.png">
+    <meta name="fc:frame:button:1" content="Play Game">
+    <meta name="fc:frame:post_url" content="https://dillinger-game.vercel.app">
     
-    <!-- CORRECTED FARCASTER FRAME META TAGS -->
-    <meta property="fc:frame" content="vNext" />
-    <meta property="fc:frame:image" content="https://dillinger-final.vercel.app/public/png95.png" />
-    <meta property="fc:frame:image:aspect_ratio" content="1:1" />
-    <meta property="fc:frame:button:1" content="🚀 Launch Game" />
-    <meta property="fc:frame:button:1:action" content="post_redirect" />
-    
-    <!-- 
-      IMPORTANT: You must replace YOUR_APP_URL_HERE with the final, public URL 
-      where this game is hosted. This redirect service makes it work on static hosting.
-    -->
-    <meta property="fc:frame:post_url" content="https://frame-redirect.fly.dev/?url=https://dillinger-final.vercel.app/" />
-
-    <script type="module">
-        import { sdk } from 'https://esm.sh/@farcaster/miniapp-sdk';
-        
-        // Immediately and unconditionally signal ready to Farcaster to prevent splash screen timeout.
-        (async () => {
-            try {
-                // The Farcaster client will simply ignore this if not in a Mini App context.
-                // This is the most robust way to avoid the splash screen timeout.
-                await sdk.actions.ready();
-            } catch (e) {
-                console.error("Farcaster initial ready signal failed:", e);
-            }
-        })();
-    </script>
-    
-    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.7.77/Tone.js"></script>
-    <style>
-        /* Custom retro theme styling */
-        :root {
-            --neon-green: #00ff41;
-            --neon-red: #ff4100;
-            --neon-yellow: #ffff00;
-            --neon-cyan: #00ffff;
-            --neon-pink: #f43f5e;
-            --neon-orange: #f97316;
-            --dark-space: #0f172a;
-            --secondary-blue: #273041;
-            --background-dark: #10141f;
-        }
-
-        html, body {
-            overscroll-behavior-y: contain; /* Prevents pull-to-refresh on mobile */
-        }
-
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: var(--background-dark);
-            color: var(--neon-green);
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        .font-title {
-            font-family: 'Press Start 2P', cursive;
-        }
-
-        .retro-border {
-            border: 2px solid var(--neon-green);
-            box-shadow: 0 0 10px var(--neon-green), inset 0 0 5px var(--neon-green);
-        }
-        
-        .secondary-panel-bg {
-            background-color: rgba(39, 48, 65, 0.75);
-        }
-
-        .retro-button {
-            transition: all 0.1s ease-in-out;
-            border: 1px solid var(--neon-green);
-            background-color: rgba(0, 255, 65, 0.1);
-        }
-
-        .retro-button:hover {
-            box-shadow: 0 0 15px var(--neon-green);
-            background-color: rgba(0, 255, 65, 0.2);
-        }
-
-        .retro-button:active {
-            transform: scale(0.98);
-        }
-
-        .audio-control-button {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 1.2rem;
-            border-width: 2px;
-            background-color: rgba(0, 255, 65, 0.1);
-            border-color: var(--neon-green);
-            color: var(--neon-green);
-        }
-
-        .audio-control-button:hover {
-             box-shadow: 0 0 15px var(--neon-green);
-        }
-        
-        #starfield {
-            position: fixed; /* Changed to fixed to stay put */
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: -1; /* Placed behind everything */
-            pointer-events: none;
-            overflow: hidden;
-            opacity: 0.9;
-        }
-
-        .star {
-            position: absolute;
-            background: white;
-            border-radius: 50%;
-            animation: moveStar linear infinite;
-        }
-
-        @keyframes moveStar {
-            from {
-                transform: translateY(0);
-            }
-            to {
-                transform: translateY(100vh);
-            }
-        }
-        
-        .wireframe-container {
-            width: 100%;
-            max-width: 280px;
-            aspect-ratio: 1 / 1;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin: 0 auto 1rem auto;
-            position: relative;
-        }
-        
-        .wireframe-ship-part {
-            position: absolute;
-            top:0; left:0; width:100%; height:100%;
-            fill: none;
-            stroke: var(--neon-cyan);
-            stroke-width: 0.7;
-            animation: rotate-ship 10s linear infinite;
-            filter: drop-shadow(0 0 5px var(--neon-cyan));
-            transform-origin: center center;
-            transform: rotateX(0deg); 
-            opacity: 0.4;
-        }
-
-        #wireframe-ship-45 {
-            animation-delay: -1.25s; /* 10s * (45/360) */
-        }
-        #wireframe-ship-90 {
-            animation-delay: -2.5s;  /* 10s * (90/360) */
-        }
-        #wireframe-ship-135 {
-            animation-delay: -3.75s; /* 10s * (135/360) */
-        }
-        
-        #satellite-schematic {
-            fill: none;
-            stroke: var(--neon-yellow);
-            stroke-width: 0.7; 
-            animation: rotate-satellite 15s linear infinite, pulse-glow-yellow 2.2s infinite alternate;
-            opacity: 0.8;
-            transform-origin: center center;
-        }
-
-        @keyframes rotate-ship {
-            from { transform: rotateX(0deg); }
-            to { transform: rotateX(360deg); }
-        }
-        
-        @keyframes rotate-satellite {
-            from { transform: rotateY(0deg); }
-            to { transform: rotateY(360deg); }
-        }
-
-        @keyframes pulse-glow-yellow {
-            from { filter: drop-shadow(0 0 5px var(--neon-yellow)); }
-            to { filter: drop-shadow(0 0 15px var(--neon-yellow)); }
-        }
-        
-        .photons-gauge {
-            border: 1px solid var(--neon-yellow);
-            box-shadow: 0 0 5px var(--neon-yellow);
-            animation: pulse-yellow 1.5s infinite alternate;
-        }
-        
-        @keyframes pulse-yellow {
-            from { box-shadow: 0 0 5px var(--neon-yellow), inset 0 0 3px var(--neon-yellow); }
-            to { box-shadow: 0 0 10px var(--neon-yellow), inset 0 0 6px var(--neon-yellow); }
-        }
-
-        .btc-glow {
-            border: 1px solid var(--neon-orange);
-            box-shadow: 0 0 8px var(--neon-orange);
-            animation: pulse-orange 1.8s infinite alternate;
-        }
-
-        @keyframes pulse-orange {
-            from { box-shadow: 0 0 5px var(--neon-orange); }
-            to { box-shadow: 0 0 15px var(--neon-orange); }
-        }
-
-        .substrate-glow {
-            border: 1px solid var(--neon-pink);
-            box-shadow: 0 0 8px var(--neon-pink);
-            animation: pulse-pink 1.9s infinite alternate;
-        }
-
-        @keyframes pulse-pink {
-            from { box-shadow: 0 0 5px var(--neon-pink); }
-            to { box-shadow: 0 0 15px var(--neon-pink); }
-        }
-
-        .electric-gauge {
-            position: relative;
-            overflow: hidden;
-            display: block;
-        }
-        #substrate-canvas {
-            width: 100%;
-            height: 100%;
-        }
-
-        .lightyears-glow {
-            border: 1px solid var(--neon-cyan);
-            box-shadow: 0 0 8px var(--neon-cyan);
-            animation: pulse-cyan 2s infinite alternate;
-        }
-
-        @keyframes pulse-cyan {
-            from { box-shadow: 0 0 5px var(--neon-cyan); }
-            to { box-shadow: 0 0 15px var(--neon-cyan); }
-        }
-
-        .decay-warning {
-            color: var(--neon-red) !important;
-            animation: blink-red 0.5s step-end infinite alternate;
-        }
-
-        @keyframes blink-red {
-            from { opacity: 1; }
-            to { opacity: 0.3; }
-        }
-
-        .log-container {
-            height: 150px; /* Reduced height */
-            overflow-y: scroll;
-            scrollbar-width: thin; 
-            background-image: linear-gradient(90deg, rgba(0,0,0,0.3) 1px, transparent 1px);
-            background-size: 15px 100%;
-            animation: log-flow 30s linear infinite;
-        }
-
-        #soundwave-svg {
-            animation: rotate-soundwave 8s linear infinite;
-            transform-origin: center;
-        }
-
-        @keyframes rotate-soundwave {
-            from { transform: rotateX(0deg) scale(1, 1); }
-            50% { transform: rotateX(180deg) scale(1, 0.1); }
-            to { transform: rotateX(360deg) scale(1, 1); }
-        }
-
-        #globe-svg {
-            animation: rotate-globe 12s linear infinite;
-            transform-origin: center;
-        }
-
-        @keyframes rotate-globe {
-            from { transform: rotateY(0deg); }
-            to { transform: rotateY(360deg); }
-        }
-
-        .sail-power-active {
-            position: relative;
-            overflow: hidden;
-        }
-        .sail-power-active::before,
-        .sail-power-active::after {
-            content: '';
-            position: absolute;
-            left: 0;
-            width: 150%;
-            height: 1px;
-            opacity: 0.6;
-            background: linear-gradient(90deg, transparent, var(--neon-cyan), transparent);
-            animation: wind-flow 4s linear infinite;
-        }
-        .sail-power-active::after {
-            top: 75%;
-            animation-delay: -2s;
-            animation-duration: 3.5s;
-        }
-        .sail-power-active::before {
-            top: 25%;
-        }
-        @keyframes wind-flow {
-            from { transform: translateX(-100%); }
-            to { transform: translateX(100%); }
-        }
-
-        .spinner {
-            border: 4px solid rgba(255, 255, 255, 0.2);
-            border-left-color: var(--neon-cyan);
-            border-radius: 50%;
-            width: 50px;
-            height: 50px;
-            animation: spin 1s linear infinite;
-        }
-
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-        
-        @keyframes log-flow {
-            from { background-position: 0 0; }
-            to { background-position: 100% 0; }
-        }
-
-        .progress-bar-glow {
-            box-shadow: 0 0 5px var(--neon-green);
-            transition: box-shadow 0.5s;
-        }
-
-        .progress-bar-danger {
-            animation: glow-red 0.5s infinite alternate;
-        }
-
-        @keyframes glow-red {
-            from { box-shadow: 0 0 5px var(--neon-red); }
-            to { box-shadow: 0 0 10px var(--neon-red); }
-        }
-
-        #game-area {
-            position: relative;
-            z-index: 10;
-            width: 100%;
-            max-width: 1200px;
-            padding: 1rem;
-            padding-bottom: 80px; /* NEW: Space for the nav bar */
-            height: 100%;
-        }
-        .progress-bar {
-            background-color: #273041;
-            height: 16px;
-        }
-        .progress-fill {
-            transition: width 0.5s ease-out;
-            background-color: var(--neon-pink);
-        }
-        .stat-grid-item {
-            padding: 0.5rem;
-            border: 1px dashed rgba(0, 255, 65, 0.2);
-        }
-
-        .activity-gauge {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-end;
-            height: 10px;
-            padding: 1px;
-            background-color: rgba(0,0,0,0.4);
-            border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 2px;
-            margin-top: 4px;
-        }
-
-        .gauge-segment {
-            width: 5%;
-            background-color: var(--neon-green);
-            height: 100%;
-            transition: height 0.08s ease-in-out, opacity 0.1s;
-            transform-origin: bottom;
-        }
-
-        .gauge-segment.yellow { background-color: var(--neon-yellow); box-shadow: 0 0 3px var(--neon-yellow); }
-        .gauge-segment.orange { background-color: var(--neon-orange); box-shadow: 0 0 3px var(--neon-orange); }
-        .gauge-segment.cyan   { background-color: var(--neon-cyan); box-shadow: 0 0 3px var(--neon-cyan); }
-
-        .flame-gauge {
-            position: relative;
-            overflow: hidden;
-            display: block;
-            height: 15px;
-        }
-
-        .flame-gauge::before,
-        .flame-gauge::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 50%;
-            width: 250px;
-            height: 100px;
-            background: radial-gradient(circle, var(--neon-yellow) 0%, var(--neon-orange) 40%, transparent 70%);
-            border-radius: 50% 50% 0 0 / 100% 100% 0 0;
-            transform-origin: bottom center;
-            animation: flame-flicker 1.5s ease-in-out infinite alternate;
-        }
-
-        .flame-gauge::after {
-            left: 50%;
-            width: 220px;
-            animation-delay: -0.7s;
-            animation-duration: 1.2s;
-            opacity: 0.6;
-        }
-
-        @keyframes flame-flicker {
-            0% { transform: translateX(-50%) scaleX(1) rotate(-1deg); opacity: 0.8; }
-            50% { transform: translateX(-52%) scaleX(1.2) rotate(2deg); opacity: 1; }
-            100% { transform: translateX(-50%) scaleX(1.1) rotate(0deg); opacity: 0.7; }
-        }
-
-        .meteor-gauge {
-            position: relative;
-            overflow: hidden;
-            display: block;
-        }
-        .meteor-gauge::before {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 0;
-            width: 5px;
-            height: 5px;
-            background: white;
-            border-radius: 50%;
-            box-shadow: 0 0 10px 3px var(--neon-cyan), 
-                         0 0 20px 8px white, 
-                         10px 0 10px -2px var(--neon-cyan),
-                         20px 0 10px -4px var(--neon-cyan),
-                         30px 0 10px -6px var(--neon-cyan);
-            animation: shoot-meteor 2.5s linear infinite;
-            transform: translateY(-50%);
-        }
-
-        @keyframes shoot-meteor {
-            from { left: -20px; }
-            to { left: 100%; }
-        }
-        
-        .fuse-box-panel {
-            background-color: #1e293b;
-            border: 3px solid #475569;
-            padding: 1rem;
-            position: relative;
-            border-radius: 4px;
-            box-shadow: inset 0 0 15px rgba(0,0,0,0.5);
-            overflow: hidden; /* Important for canvas containment */
-        }
-
-        .inventory-slot-item {
-            min-height: 100px;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            position: relative;
-            border: 2px solid #475569;
-            background-color: rgba(30, 41, 59, 0.5); /* Semi-transparent background */
-        }
-
-        .inventory-slot-item::before, .inventory-slot-item::after {
-            content: '';
-            position: absolute;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 40%;
-            height: 6px;
-            background-color: #64748b;
-            border: 1px solid #94a3b8;
-            border-radius: 2px;
-        }
-        .inventory-slot-item::before { top: -9px; }
-        .inventory-slot-item::after { bottom: -9px; }
-        
-        .fuse-box-spark {
-            position: absolute;
-            width: 4px;
-            height: 4px;
-            background: white;
-            border-radius: 50%;
-            box-shadow: 0 0 8px 3px var(--neon-yellow), 0 0 15px 7px white;
-            animation: spark-flash 2s infinite ease-out;
-            opacity: 0;
-            pointer-events: none;
-            z-index: 5;
-        }
-
-        @keyframes spark-flash {
-            0%, 100% { opacity: 0; transform: scale(0.5); }
-            1% { opacity: 1; transform: scale(1); }
-            3% { opacity: 0; transform: scale(0.5); }
-        }
-
-        .atom-decay {
-            position: absolute;
-            width: 3px;
-            height: 3px;
-            border-radius: 50%;
-            animation: atom-pop 3s infinite ease-out;
-            opacity: 0;
-            pointer-events: none;
-            z-index: 2; 
-        }
-
-        @keyframes atom-pop {
-            0%, 100% { opacity: 0; transform: scale(0.2); }
-            2% { opacity: 1; transform: scale(1.2); }
-            15% { opacity: 0.5; transform: scale(0.5); }
-            20% { opacity: 0; }
-        }
-
-        .atom-yellow {
-            background-color: var(--neon-yellow);
-            box-shadow: 0 0 6px var(--neon-yellow);
-        }
-
-        .data-scanner {
-            flex-grow: 1;
-            height: 60px;
-            background: #0f172a;
-            border: 1px solid #475569;
-            border-radius: 4px;
-            padding: 4px;
-            font-family: 'Courier New', monospace;
-            font-size: 10px;
-            color: var(--neon-green);
-            overflow: hidden;
-            position: relative;
-        }
-        .data-scanner .scanner-bar {
-            position: absolute;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 2px;
-            background: var(--neon-green);
-            box-shadow: 0 0 5px var(--neon-green);
-            animation: scan-anim 4s linear infinite;
-        }
-        @keyframes scan-anim {
-            0%, 100% { top: 0; }
-            50% { top: 98%; }
-        }
-        .data-scanner .text-stream {
-            animation: scroll-text 10s linear infinite;
-            white-space: pre;
-        }
-        @keyframes scroll-text {
-            from { transform: translateY(0); }
-            to { transform: translateY(-50%); }
-        }
-
-        .map-aux-dashboard {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 0.5rem; /* Reduced gap */
-            margin-top: 0.25rem;
-            padding: 0.5rem;
-            background-color: rgba(0,0,0,0.3);
-            border-top: 1px solid var(--neon-green);
-        }
-
-        .target-info-panel, .system-status-panel {
-            flex: 1;
-            padding: 0.5rem;
-            border: 1px solid rgba(0, 255, 65, 0.2);
-            font-family: 'Courier New', monospace;
-            font-size: 9px; /* Reduced font size */
-        }
-
-        .target-info-panel h3, .system-status-panel h3 {
-            font-weight: bold;
-            color: var(--neon-yellow);
-            text-transform: uppercase;
-            margin-bottom: 4px;
-            font-size: 10px; /* Reduced font size */
-        }
-
-        .target-info-panel span {
-            animation: text-flicker 0.15s infinite alternate;
-        }
-        
-        @keyframes text-flicker {
-            from { opacity: 0.8; }
-            to { opacity: 1; }
-        }
-
-        .radar-container {
-            width: 90px;  /* Increased size */
-            height: 90px; /* Increased size */
-            padding: 4px;
-            border: 1px solid rgba(0, 255, 65, 0.2);
-            background: black;
-            border-radius: 50%;
-            flex-shrink: 0; 
-        }
-        #radar-canvas, #targeting-canvas {
-            width: 100%;
-            height: 100%;
-        }
-
-        /* NEW: Tab Navigation Styling */
-        .bottom-nav {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            height: 65px;
-            background-color: rgba(15, 23, 42, 0.9); /* slate-900 with opacity */
-            backdrop-filter: blur(5px);
-            -webkit-backdrop-filter: blur(5px);
-            border-top: 2px solid var(--neon-green);
-            box-shadow: 0 -5px 15px rgba(0, 255, 65, 0.2);
-            display: flex;
-            justify-content: space-around;
-            align-items: center;
-            z-index: 1000;
-        }
-
-        .nav-button {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            gap: 4px;
-            flex-grow: 1;
-            height: 100%;
-            border: none;
-            background: none;
-            color: rgba(0, 255, 65, 0.6);
-            font-size: 10px;
-            font-family: 'Inter', sans-serif;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            cursor: pointer;
-            transition: color 0.2s ease-in-out, text-shadow 0.2s ease-in-out;
-        }
-        
-        .nav-button i {
-            font-size: 20px;
-            margin-bottom: 2px;
-        }
-
-        .nav-button.active, .nav-button:hover {
-            color: var(--neon-green);
-            text-shadow: 0 0 8px var(--neon-green);
-        }
-
-        .tab-content {
-            display: none; /* Hidden by default */
-        }
-        .tab-content.active {
-            display: block; /* Shown when active */
-        }
-        
-        /* START: Minigame specific styles */
-        .warp-game-font {
-            font-family: 'VT323', monospace;
-        }
-        
-        #minigame-container {
-            height: 500px;
-        }
-
-        .warp-game-container {
-            width: 100%;
-            height: 100%; 
-            display: flex;
-            flex-direction: column;
-            border: 4px solid #FF8800; 
-            box-shadow: 0 0 20px #FF8800;
-            border-radius: 8px;
-            overflow: hidden;
-            background-color: #111100;
-        }
-
-        #warp-viewContainer {
-            position: relative;
-            flex-grow: 1;
-        }
-
-        #warp-gameCanvas {
-            display: block;
-            width: 100%;
-            height: 100%; 
-        }
-        
-        .warp-control-button {
-            transition: all 0.1s;
-            text-shadow: 0 0 5px #FF8800;
-            user-select: none;
-        }
-
-        .warp-control-button:active {
-            box-shadow: 0 0 10px #FF8800, inset 0 0 10px #FF8800;
-            transform: translateY(2px);
-        }
-
-        .warp-boost-active {
-            animation: warp-pulse-red 0.1s infinite alternate;
-        }
-
-        @keyframes warp-pulse-red {
-            from { box-shadow: 0 0 10px #CC0033; }
-            to { box-shadow: 0 0 20px #CC0033; }
-        }
-
-        .warp-slider {
-            -webkit-appearance: none;
-            width: 100%;
-            height: 15px;
-            background: #332A00;
-            outline: none;
-            border: 2px solid #B8FF42;
-            border-radius: 8px;
-            box-shadow: 0 0 5px #B8FF42;
-            transition: all 0.2s ease;
-        }
-
-        .warp-slider::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            appearance: none;
-            width: 30px;
-            height: 30px;
-            background: #FF8800;
-            border: 2px solid #FFAA44;
-            border-radius: 50%;
-            cursor: pointer;
-            box-shadow: 0 0 10px #FF8800;
-            transition: background 0.2s, box-shadow 0.2s, transform 0.1s;
-        }
-
-        .warp-slider::-moz-range-thumb {
-            width: 30px;
-            height: 30px;
-            background: #FF8800;
-            border: 2px solid #FFAA44;
-            border-radius: 50%;
-            cursor: pointer;
-            box-shadow: 0 0 10px #FF8800;
-        }
-
-        .warp-slider::-webkit-slider-thumb:active {
-            background: #FFFF00;
-            box-shadow: 0 0 20px #FFFF00;
-            transform: scale(1.1);
-        }
-        /* END: Minigame specific styles */
-
-    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
     
+    <!-- Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-</head>
-<body class="p-4">
-
     
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Tone.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
+    
+    <!-- Main Styles -->
+    <link rel="stylesheet" href="css/main.css">
+    
+    <!-- Main Script (ES Module) -->
+    <script type="module" src="js/main.js"></script>
+</head>
+<body class="overflow-x-hidden">
+    <!-- Background Starfield -->
     <div id="starfield"></div>
 
-    <div id="game-area" class="space-y-6">
-        
-        <div id="mint-overlay" class="text-center flex flex-col items-center justify-center fixed inset-0 bg-black/80 z-50 p-4">
-            <h1 class="font-title text-2xl text-yellow-300 mb-8 leading-relaxed" style="text-shadow: 0 0 10px var(--neon-yellow);">DILLINGER<br>OUTLAW SPACE<br>COMMANDO<br>1995</h1>
-            <p class="max-w-md text-gray-300 font-mono text-sm mb-8">Welcome to Dillinger Outlaw Space Commando 1995. Help Captain Dillinger reach the edge of each star system and outrun the relentless galactic police before time runs out. May your infamy span the galaxy like a constellation.</p>
-            <button id="mint-button" class="p-4 retro-button text-xl font-bold" style="border-color: var(--neon-yellow); color: var(--neon-yellow);">
-                <i class="fas fa-rocket mr-2"></i> Start Game
-            </button>
-        </div>
-
-
-        
-        <div id="game-header" class="w-full flex justify-between items-center mb-4 hidden">
-            <div id="map-timer-display" class="font-title text-lg text-red-500 w-24 text-left">05:00</div>
-            <h1 class="font-title text-xs text-center font-extrabold tracking-tight text-shadow-neon uppercase flex-grow px-2">
-                Dillinger Outlaw Space Commando 1995
+    <!-- ========================================= -->
+    <!-- MINT OVERLAY (Start Screen) -->
+    <!-- ========================================= -->
+    <div id="mint-overlay" class="fixed inset-0 z-50 flex flex-col items-center justify-center bg-black/90 p-4">
+        <div class="text-center max-w-md">
+            <h1 class="font-title text-2xl md:text-3xl text-yellow-400 mb-2 tracking-wider" style="text-shadow: 0 0 10px #facc15;">
+                DILLINGER
             </h1>
-            <button id="mute-button" title="Toggle Music" class="retro-button p-2 rounded-full leading-none text-xs w-8 h-8 flex items-center justify-center">
-                <i id="mute-icon" class="fas fa-volume-up"></i>
+            <p class="font-title text-xs text-green-400 mb-6">OUTLAW SPACE COMMANDO 1995</p>
+            
+            <div class="wireframe-container">
+                <svg id="wireframe-ship-0" class="wireframe-ship-part" viewBox="0 0 100 100">
+                    <polygon points="50,10 20,90 50,70 80,90"/>
+                    <line x1="50" y1="10" x2="50" y2="70"/>
+                    <line x1="20" y1="90" x2="80" y2="90"/>
+                </svg>
+                <svg id="wireframe-ship-45" class="wireframe-ship-part" viewBox="0 0 100 100">
+                    <polygon points="50,10 20,90 50,70 80,90"/>
+                    <line x1="50" y1="10" x2="50" y2="70"/>
+                    <line x1="20" y1="90" x2="80" y2="90"/>
+                </svg>
+                <svg id="wireframe-ship-90" class="wireframe-ship-part" viewBox="0 0 100 100">
+                    <polygon points="50,10 20,90 50,70 80,90"/>
+                    <line x1="50" y1="10" x2="50" y2="70"/>
+                    <line x1="20" y1="90" x2="80" y2="90"/>
+                </svg>
+                <svg id="wireframe-ship-135" class="wireframe-ship-part" viewBox="0 0 100 100">
+                    <polygon points="50,10 20,90 50,70 80,90"/>
+                    <line x1="50" y1="10" x2="50" y2="70"/>
+                    <line x1="20" y1="90" x2="80" y2="90"/>
+                </svg>
+            </div>
+            
+            <p class="text-sm text-gray-400 mb-6 px-4">
+                Pilot The Outrider across 1,000,000 lightyears. Craft solar sails, manage your photon reactor, and evade the law.
+            </p>
+            
+            <button id="mint-button" class="retro-button font-title text-sm py-3 px-8 rounded text-green-400 hover:text-white">
+                [ LAUNCH MISSION ]
             </button>
         </div>
-        
-        <div id="loading-spinner" class="text-center text-lg flex flex-col items-center justify-center h-64 hidden">
-            <div class="spinner mb-4"></div>
-            Initializing Stardrive...
-        </div>
+    </div>
 
-        <div id="game-container" class="hidden">
+    <!-- ========================================= -->
+    <!-- LOADING SPINNER -->
+    <!-- ========================================= -->
+    <div id="loading-spinner" class="fixed inset-0 z-40 flex flex-col items-center justify-center bg-black/80 hidden">
+        <div class="spinner"></div>
+        <p class="mt-4 font-title text-xs text-green-400">INITIALIZING SYSTEMS...</p>
+    </div>
 
-            
-            <div id="tab-content-container">
-                
-                <div id="vitals-tab-content" class="tab-content active">
-                    <div class="p-2 retro-border space-y-2 secondary-panel-bg">
-                        <h2 class="font-title text-base font-bold uppercase border-b border-neon-green pb-1">System Vitals</h2>
-                        
-                        <div class="stat-grid-item photons-gauge flex justify-between items-center text-base rounded">
-                            <span class="font-mono text-yellow-300">PHOTONS (FUEL):</span>
-                            <span id="photons-display" class="font-bold text-yellow-300">0</span>
-                        </div>
-                        <div class="activity-gauge" id="photons-activity-gauge"></div>
+    <!-- ========================================= -->
+    <!-- GAME HEADER -->
+    <!-- ========================================= -->
+    <header id="game-header" class="w-full max-w-lg mx-auto p-2 flex justify-between items-center hidden">
+        <p id="user-id-display" class="text-xs text-gray-500 hidden">FID: ---</p>
+        <button id="mute-button" class="audio-control-button">
+            <i id="mute-icon" class="fas fa-volume-up"></i>
+        </button>
+    </header>
 
-                        <div class="stat-grid-item btc-glow flex justify-between items-center text-base rounded">
-                            <span class="font-mono text-orange-400">SUN INTENSITY:</span>
-                            <span id="btc-price-display" class="font-bold text-orange-400">--</span>
-                        </div>
-                        <div class="activity-gauge" id="sun-activity-gauge"></div>
+    <!-- ========================================= -->
+    <!-- MAIN GAME CONTAINER -->
+    <!-- ========================================= -->
+    <main id="game-container" class="w-full max-w-lg mx-auto p-2 hidden">
+        <div id="game-area">
 
-                        <div class="stat-grid-item substrate-glow flex justify-between items-center text-base rounded">
-                            <span class="font-mono text-pink-400">SUBSTRATE CONDUCTIVITY:</span>
-                            <span id="eth-price-display" class="font-bold text-pink-400">--</span>
-                        </div>
-                        <div class="activity-gauge" id="substrate-activity-gauge"></div>
+            <!-- ===== VITALS TAB ===== -->
+            <section id="vitals-tab-content" class="tab-content active">
+                <div class="retro-border secondary-panel-bg rounded-lg p-3 mb-3">
+                    <div class="flex justify-between items-center mb-2">
+                        <h2 class="font-title text-xs text-green-400">// SYSTEM VITALS</h2>
+                        <span id="system-mode-display" class="text-xs font-bold" style="color: var(--neon-green);">STANDARD</span>
+                    </div>
 
-                        <div id="power-display-item" class="stat-grid-item lightyears-glow flex justify-between items-center text-base rounded">
-                            <span class="font-mono text-cyan-400">TOTAL SAIL POWER:</span>
-                            <span id="total-power-display" class="font-bold text-cyan-400">0</span>
+                    <!-- Stats Grid -->
+                    <div class="grid grid-cols-2 gap-2 text-xs">
+                        <!-- Photons -->
+                        <div class="stat-grid-item photons-gauge rounded p-2">
+                            <p class="text-yellow-400 font-bold">PHOTONS</p>
+                            <p id="photons-display" class="text-xl text-white font-bold">0</p>
+                            <p id="photon-rate-display" class="text-yellow-300 text-xs">+0/s</p>
+                            <div id="photons-activity-gauge" class="activity-gauge"></div>
                         </div>
-                        <div class="activity-gauge" id="lightyears-activity-gauge"></div>
-                        
-                        <div class="stat-grid-item flex justify-between items-center text-base sail-power-active">
-                            <span class="font-mono" style="color: var(--neon-cyan);">LIGHTYEARS:</span>
-                            <span id="lightyears-display" class="font-bold" style="color: var(--neon-cyan);">0</span>
+                        <!-- Sun Intensity -->
+                        <div class="stat-grid-item btc-glow rounded p-2">
+                            <p class="text-orange-400 font-bold">SUN INTENSITY</p>
+                            <p id="btc-price-display" class="text-xl text-white font-bold">500,000</p>
+                            <p class="text-orange-300 text-xs">lux</p>
+                            <div id="sun-activity-gauge" class="activity-gauge"></div>
                         </div>
+                        <!-- Substrate -->
+                        <div class="stat-grid-item substrate-glow rounded p-2">
+                            <p class="text-pink-400 font-bold">ETH SUBSTRATE</p>
+                            <p id="eth-price-display" class="text-xl text-white font-bold">4,000</p>
+                            <p class="text-pink-300 text-xs">gwei</p>
+                            <div id="substrate-activity-gauge" class="activity-gauge electric-gauge"></div>
+                        </div>
+                        <!-- Lightyears -->
+                        <div class="stat-grid-item lightyears-glow rounded p-2">
+                            <p class="text-cyan-400 font-bold">LIGHTYEARS</p>
+                            <p id="lightyears-display" class="text-xl text-white font-bold">0</p>
+                            <p id="lightyear-rate-display" class="text-cyan-300 text-xs">~0/s</p>
+                            <div id="lightyears-activity-gauge" class="activity-gauge"></div>
+                        </div>
+                    </div>
 
-                        <div id="warrant-display-item" class="stat-grid-item flex justify-between items-center text-base" style="border-color: var(--neon-red);">
-                            <span class="font-mono" style="color: var(--neon-red);">INFAMY WARRANTS:</span>
-                            <span id="warrants-display" class="font-bold" style="color: var(--neon-red);"><i class="fas fa-skull-crossbones mr-2"></i> 0</span>
+                    <!-- Progress Bar -->
+                    <div class="mt-3">
+                        <div class="flex justify-between text-xs mb-1">
+                            <span class="text-gray-400">PROGRESS TO FREEDOM</span>
+                            <span class="text-pink-400">1,000,000 LY</span>
                         </div>
-                        
-                        <div class="mt-2 pt-2 border-t border-neon-green/50">
-                            <p class="text-xs font-mono text-center mb-1 uppercase">Slot Allocation</p>
-                            <div class="flex h-4 w-full bg-black rounded-full overflow-hidden retro-border" title="Balance between Photon generation (Yellow) and Lightyear travel (Pink)">
-                                <div id="battery-ratio-bar" class="h-full transition-all duration-500" style="width: 0%; background-color: var(--neon-yellow); box-shadow: 0 0 8px var(--neon-yellow);"></div>
-                                <div id="sail-ratio-bar" class="h-full transition-all duration-500" style="width: 0%; background-color: var(--neon-cyan); box-shadow: 0 0 8px var(--neon-cyan);"></div>
-                            </div>
-                            <div class="flex justify-between text-xs mt-1 px-1">
-                                <span class="font-bold" style="color: var(--neon-yellow);">BATTERIES</span>
-                                <span class="font-bold" style="color: var(--neon-cyan);">SAILS</span>
-                            </div>
-                            <div class="flex justify-between text-xs mt-1 px-1 opacity-80">
-                                <span id="photon-rate-display" class="font-mono" style="color: var(--neon-yellow);">+0/s</span>
-                                <span id="lightyear-rate-display" class="font-mono" style="color: var(--neon-cyan);">~0/s</span>
-                            </div>
+                        <div class="progress-bar rounded-full overflow-hidden">
+                            <div id="progress-fill" class="progress-fill h-full rounded-full" style="width: 0%;"></div>
                         </div>
-                        <div class="mt-2 pt-2 border-t border-neon-green/50">
-                            <p class="text-sm font-semibold">Escape Progress (Goal: 1,000,000 LY)</p>
-                            <div id="progress-container" class="progress-bar progress-bar-glow rounded-full overflow-hidden mt-1">
-                                <div id="progress-fill" class="progress-fill h-full" style="width: 0%;"></div>
-                            </div>
-                        </div>
+                    </div>
+
+                    <!-- Warrants -->
+                    <div class="mt-3 text-center">
+                        <p id="warrants-display" class="text-red-500 font-bold text-sm">
+                            <i class="fas fa-skull-crossbones mr-2"></i> 0
+                        </p>
+                        <p class="text-gray-500 text-xs">OUTSTANDING WARRANTS</p>
                     </div>
                 </div>
 
-                
-                <div id="map-tab-content" class="tab-content">
-                    <div class="p-2 retro-border flex flex-col gap-1 relative bg-black bg-opacity-75">
-                         <div class="relative py-1">
-                            <canvas id="title-starfield-canvas" class="absolute top-0 left-0 w-full h-full pointer-events-none opacity-70"></canvas>
-                            <h2 class="font-title text-base font-bold uppercase border-b border-neon-green pb-1 z-20 relative text-center">Navigation Map</h2>
-                            <h3 id="system-name-display" class="font-title text-sm text-center text-cyan-200 z-20 relative">Orion's Anvil</h3>
+                <!-- Log Display -->
+                <div class="retro-border secondary-panel-bg rounded-lg p-3">
+                    <h2 class="font-title text-xs text-green-400 mb-2">// COMM LOG</h2>
+                    <div id="log-display" class="log-container text-xs font-mono p-2 rounded bg-black/50">
+                        <p class="text-gray-400">[BOOT] Systems online...</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ===== MAP TAB ===== -->
+            <section id="map-tab-content" class="tab-content">
+                <div class="retro-border secondary-panel-bg rounded-lg p-3">
+                    <div class="flex justify-between items-center mb-2">
+                        <h2 class="font-title text-xs text-green-400">// NAVIGATION</h2>
+                        <div class="flex items-center gap-2">
+                            <span class="text-xs text-gray-400">SYSTEM:</span>
+                            <span id="system-name-display" class="text-xs text-yellow-400 font-bold">Orion's Anvil</span>
                         </div>
-                        <div id="navigation-map" class="relative w-full h-64 bg-black retro-border overflow-hidden" style="border-color: var(--neon-yellow);">
-                            <canvas id="map-overlay-canvas" class="absolute top-0 left-0 w-full h-full pointer-events-none z-20 opacity-75"></canvas>
-                            <svg id="main-map-svg" width="100%" height="100%" viewBox="0 0 400 400" class="absolute inset-0 z-10 opacity-80" style="background-color: transparent;">
-                                 <defs>
-                                    <filter id="neon-glow" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur in="SourceGraphic" stdDeviation="2" result="blur" /><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
-                                    <filter id="pixelate" x="0" y="0" width="100%" height="100%"><feFlood x="2" y="2" height="4" width="4" flood-color="#00ff41" result="color" /><feComposite in="SourceGraphic" in2="color" operator="in" /><feComponentTransfer><feFuncA type="discrete" tableValues="0 1"/></feComponentTransfer><feGaussianBlur stdDeviation="0.8" result="blur" /><feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0 0 1 0 0 0 0 0 1 0 0 0 0 0 20 -10" result="sharpen"/></filter>
-                                    <filter id="pixelate_planet" x="0" y="0" width="100%" height="100%"><feGaussianBlur stdDeviation="0.5" result="blur"/><feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0 0 1 0 0 0 0 0 1 0 0 0 0 0 10 -5" result="sharpen"/><feComponentTransfer><feFuncA type="discrete" tableValues="0 1"/></feComponentTransfer></filter>
-                                    <g id="dillinger-ship" filter="url(#neon-glow)"><circle cx="0" cy="0" r="4" fill="#00ff41" /></g>
-                                    <g id="retro-stars" fill="white"><circle cx="50" cy="50" r="1" /> <circle cx="200" cy="150" r="2" /> <circle cx="350" cy="300" r="1" /> <circle cx="100" cy="380" r="2" /> <circle cx="300" cy="50" r="1" /> <circle cx="10" cy="300" r="1" /> <circle cx="380" cy="10" r="2" /></g>
-                                    <g id="armada-icon" fill="#d1d5db" stroke="#6b7280" stroke-width="1"><rect x="0" y="10" width="25" height="5" filter="url(#pixelate)" /> <polygon points="10,0 20,0 25,10" filter="url(#pixelate)" /> <rect x="30" y="15" width="15" height="3" filter="url(#pixelate)" /> <rect x="15" y="25" width="20" height="4" filter="url(#pixelate)" /></g>
-                                    <g id="jupiter-sprite"><circle cx="30" cy="30" r="28" fill="#a0522d" filter="url(#pixelate_planet)" /> <rect x="2" y="5" width="56" height="6" rx="2" fill="#d2b48c" filter="url(#pixelate_planet)" /> <rect x="0" y="15" width="60" height="6" fill="#8b4513" filter="url(#pixelate_planet)" /> <rect x="0" y="25" width="60" height="10" fill="#d2b48c" filter="url(#pixelate_planet)" /> <rect x="0" y="37" width="60" height="6" fill="#8b4513" filter="url(#pixelate_planet)" /> <rect x="2" y="48" width="56" height="6" rx="2" fill="#d2b48c" filter="url(#pixelate_planet)" /> <ellipse cx="40" cy="30" rx="6" ry="4" fill="#800000" filter="url(#pixelate_planet)" /> <circle cx="41" cy="30" r="1.5" fill="#f08080" filter="url(#pixelate_planet)" /> <circle cx="45" cy="15" r="5" fill="white" opacity="0.1" filter="url(#pixelate_planet)" /></g>
-                                    <g id="nebula-sprite"><rect x="0" y="0" width="40" height="40" fill="#1a1a2e" filter="url(#pixelate_planet)" opacity="0.1"/> <circle cx="20" cy="20" r="15" fill="#00ffff" opacity="0.4" filter="url(#pixelate_planet)" /> <path d="M 25 5 C 35 5, 40 15, 30 25 L 10 30 L 5 15 Z" fill="#ff00ff" opacity="0.3" filter="url(#pixelate_planet)" /> <path d="M 5 35 L 20 40 L 40 30 L 30 20 Z" fill="#0000ff" opacity="0.35" filter="url(#pixelate_planet)" /> <rect x="18" y="18" width="4" height="4" fill="white" filter="url(#pixelate_planet)" /></g>
-                                    <g id="red-planet-sprite"><circle cx="20" cy="20" r="18" fill="#c34a2c" filter="url(#pixelate_planet)" /> <rect x="5" y="15" width="30" height="5" fill="#e97451" filter="url(#pixelate_planet)" /> <circle cx="15" cy="25" r="3" fill="#8b3a20" filter="url(#pixelate_planet)" /> <circle cx="28" cy="10" r="2" fill="#e97451" opacity="0.8" filter="url(#pixelate_planet)" /></g>
-                                    <g id="icy-dwarf-sprite"><circle cx="15" cy="15" r="13" fill="#607d8b" filter="url(#pixelate_planet)" /> <path d="M 15 2 C 18 8, 12 10, 15 28 A 13 13 0 0 0 15 2" fill="#b0bec5" opacity="0.9" filter="url(#pixelate_planet)" /> <rect x="5" y="20" width="10" height="5" fill="#37474f" filter="url(#pixelate_planet)" /></g>
-                                    <g id="toxic-gas-sprite"><circle cx="25" cy="25" r="22" fill="#008080" filter="url(#pixelate_planet)" /> <path d="M 25 3 C 35 5, 40 15, 30 25 L 10 30 L 5 15 Z" fill="#00ffff" opacity="0.4" filter="url(#pixelate_planet)" /> <circle cx="35" cy="15" r="5" fill="#00ff00" opacity="0.6" filter="url(#pixelate_planet)" /> <rect x="5" y="30" width="40" height="4" fill="#006666" filter="url(#pixelate_planet)" /></g>
-                                    <g id="black-hole-sprite"><circle cx="20" cy="20" r="18" fill="#000000" /> <circle cx="20" cy="20" r="10" fill="#1a1a2e" stroke="#330033" stroke-width="2" /> <circle cx="20" cy="20" r="15" fill="none" stroke="#ff00ff" stroke-width="2" opacity="0.5" /> <circle cx="20" cy="20" r="20" fill="none" stroke="#00ffff" stroke-width="2" opacity="0.3" /></g>
-                                    <g id="ufo-sprite"><ellipse cx="25" cy="15" rx="20" ry="8" fill="#a0a0a0" filter="url(#pixelate)" /> <ellipse cx="25" cy="15" rx="15" ry="5" fill="#d0d0d0" filter="url(#pixelate)" /> <path d="M 15 5 L 35 5 L 40 15 L 10 15 Z" fill="#60a5fa" filter="url(#pixelate)" /> <circle cx="15" cy="15" r="2" fill="#00ff00" /> <circle cx="35" cy="15" r="2" fill="#00ff00" /></g>
-                                    <g id="space-swirl-sprite"><path d="M 5 20 C 10 10, 30 10, 35 20 C 30 30, 10 30, 5 20 Z" fill="#ff00ff" opacity="0.2" filter="url(#pixelate_planet)" /> <path d="M 10 15 C 20 5, 30 25, 10 35 Z" fill="#00ffff" opacity="0.3" filter="url(#pixelate_planet)" /> <circle cx="20" cy="20" r="5" fill="white" opacity="0.5" filter="url(#pixelate_planet)" /></g>
-                                    <g id="pulsar-sprite"><circle cx="20" cy="20" r="15" fill="#4f46e5" filter="url(#pixelate_planet)"/><path d="M 20 5 L 20 35 M 5 20 L 35 20" stroke="white" stroke-width="2" opacity="0.8"/></g>
-                                    <g id="crystal-planet-sprite"><polygon points="20,2 38,15 30,38 10,38 2,15" fill="#a78bfa" filter="url(#pixelate_planet)"/><polygon points="20,2 10,38 30,38" fill="#8b5cf6" filter="url(#pixelate_planet)"/></g>
-                                    <g id="volcanic-planet-sprite"><circle cx="25" cy="25" r="22" fill="#ef4444" filter="url(#pixelate_planet)"/><path d="M 10 25 C 15 15, 35 15, 40 25" stroke="#facc15" stroke-width="3" fill="none"/><circle cx="25" cy="18" r="4" fill="#f97316" filter="url(#pixelate_planet)"/></g>
-                                    <g id="ringed-planet-sprite"><circle cx="25" cy="25" r="18" fill="#3b82f6" filter="url(#pixelate_planet)"/><ellipse cx="25" cy="25" rx="28" ry="8" stroke="#93c5fd" stroke-width="3" fill="none" transform="rotate(-20 25 25)"/></g>
-                                    <g id="ghost-station-sprite"><rect x="10" y="10" width="30" height="30" fill="none" stroke="#00ffff" stroke-width="1" opacity="0.5"/><circle cx="25" cy="25" r="5" fill="#00ffff" opacity="0.7"/></g>
-                                    <g id="binary-star-sprite"><circle cx="15" cy="25" r="10" fill="#ffff00"/><circle cx="35" cy="15" r="8" fill="#ff8c00"/></g>
-                                    <g id="forge-planet-sprite"><circle cx="25" cy="25" r="22" fill="#ff4500"/><circle cx="25" cy="25" r="15" fill="#ff8c00"/><circle cx="25" cy="25" r="8" fill="#ffff00"/></g>
-                                    <g id="scrap-field-icon" fill="#a9a9a9"><rect x="0" y="5" width="10" height="2"/><rect x="5" y="0" width="2" height="12"/><rect x="-2" y="10" width="15" height="3"/></g>
-                                    <g id="living-planet-sprite"><circle cx="25" cy="25" r="23" fill="#006400"/><path d="M 10 10 C 20 30, 30 15, 40 40" stroke="#90ee90" stroke-width="2" fill="none"/></g>
-                                    <g id="bio-ship-icon"><path d="M 10 10 Q 25 0, 40 10 T 10 10" fill="#2e8b57"/><path d="M 15 10 L 25 25 L 35 10" fill="none" stroke="#3cb371" stroke-width="2"/></g>
-                                </defs>
-                                <use href="#retro-stars" />
-                                <g id="ship-trail-group"></g>
+                    </div>
 
-                                
-                                <g id="map-display-1" style="display: none;"><line x1="50" y1="350" x2="350" y2="50" stroke="#00ff41" stroke-width="4" style="filter: url(#pixelate);" /><line x1="150" y1="250" x2="100" y2="150" stroke="#00882e" stroke-width="3" style="filter: url(#pixelate);" /><line x1="280" y1="180" x2="330" y2="280" stroke="#00882e" stroke-width="3" style="filter: url(#pixelate);" /><circle cx="50" cy="350" r="20" fill="#2563eb" filter="url(#pixelate_planet)" /><path d="M 50 330 C 55 340, 45 350, 50 370 A 20 20 0 0 0 50 330" fill="#60a5fa" opacity="0.8" filter="url(#pixelate_planet)" /><circle cx="350" cy="50" r="30" fill="#94a3b8" stroke="#00ff41" stroke-width="3" filter="url(#pixelate_planet)" /><path d="M 350 20 C 370 30, 350 50, 350 80 A 30 30 0 0 0 350 20" fill="#e2e8f0" opacity="0.7" filter="url(#pixelate_planet)" /><g transform="translate(175, 195) scale(0.6)"><use href="#red-planet-sprite" /></g><g transform="translate(120, 220) scale(0.9)"><use href="#jupiter-sprite" /></g><g transform="translate(230, 275) scale(0.6)"><use href="#toxic-gas-sprite" /></g><g transform="translate(315, 265) scale(0.8)"><use href="#icy-dwarf-sprite" /></g><g transform="translate(260, 160)"><use href="#armada-icon" transform="scale(2)" /></g><g transform="translate(30, 270) scale(0.8)"><use href="#ufo-sprite" /></g><g transform="translate(290, 120) scale(1.2)"><use href="#space-swirl-sprite" /></g><g transform="translate(80, 130) scale(1.5)"><use href="#nebula-sprite" /></g><g transform="translate(-5, 130) scale(1.3)"><use href="#black-hole-sprite" /></g></g>
-                                <g id="map-display-2" style="display: none;"><line x1="50" y1="350" x2="350" y2="50" stroke="#f43f5e" stroke-width="4" style="filter: url(#pixelate);" /><line x1="200" y1="300" x2="100" y2="200" stroke="#8c2f4a" stroke-width="3" style="filter: url(#pixelate);" /><line x1="250" y1="150" x2="350" y2="250" stroke="#8c2f4a" stroke-width="3" style="filter: url(#pixelate);" /><g transform="translate(30, 330) scale(1.2)"><use href="#crystal-planet-sprite" /></g><g transform="translate(320, 20) scale(1.5)"><use href="#pulsar-sprite" /></g><g transform="translate(80, 180) scale(1.1)"><use href="#icy-dwarf-sprite"/></g><g transform="translate(180, 280) scale(0.8)"><use href="#red-planet-sprite"/></g><g transform="translate(230, 130) scale(1.4)"><use href="#black-hole-sprite"/></g><g transform="translate(330, 230) scale(1)"><use href="#toxic-gas-sprite"/></g></g>
-                                <g id="map-display-3" style="display: none;"><line x1="50" y1="350" x2="350" y2="50" stroke="#f97316" stroke-width="4" style="filter: url(#pixelate);" /><line x1="50" y1="200" x2="200" y2="350" stroke="#8a400d" stroke-width="3" style="filter: url(#pixelate);" /><line x1="350" y1="200" x2="200" y2="50" stroke="#8a400d" stroke-width="3" style="filter: url(#pixelate);" /><g transform="translate(25, 325) scale(1.3)"><use href="#volcanic-planet-sprite" /></g><g transform="translate(320, 20) scale(1.4)"><use href="#ringed-planet-sprite" /></g><g transform="translate(180, 320) scale(1.1)"><use href="#jupiter-sprite" /></g><g transform="translate(30, 180) scale(0.9)"><use href="#nebula-sprite" /></g><g transform="translate(180, 30) scale(1.5)"><use href="#ufo-sprite" /></g><g transform="translate(330, 180) scale(1.2)"><use href="#space-swirl-sprite" /></g></g>
-                                <g id="map-display-4" style="display: none;"><line x1="50" y1="350" x2="350" y2="50" stroke="#00ffff" stroke-width="4" style="filter: url(#pixelate);" /><g transform="translate(30, 330) scale(1.2)"><use href="#binary-star-sprite" /></g><g transform="translate(320, 20) scale(1.5)"><use href="#ghost-station-sprite" /></g><g transform="translate(150, 150) scale(1.8)"><use href="#black-hole-sprite"/></g><g transform="translate(250, 250) scale(1.2)"><use href="#nebula-sprite"/></g></g>
-                                <g id="map-display-5" style="display: none;"><line x1="50" y1="350" x2="350" y2="50" stroke="#ffff00" stroke-width="4" style="filter: url(#pixelate);" /><g transform="translate(25, 325) scale(1.3)"><use href="#forge-planet-sprite" /></g><g transform="translate(320, 20) scale(1.4)"><use href="#armada-icon" /></g><g transform="translate(100, 100) scale(2)"><use href="#scrap-field-icon" /></g><g transform="translate(280, 280) scale(1.5)"><use href="#red-planet-sprite" /></g></g>
-                                <g id="map-display-6" style="display: none;"><line x1="50" y1="350" x2="350" y2="50" stroke="#90ee90" stroke-width="4" style="filter: url(#pixelate);" /><g transform="translate(30, 330) scale(1.2)"><use href="#living-planet-sprite" /></g><g transform="translate(320, 20) scale(1.5)"><use href="#bio-ship-icon" /></g><g transform="translate(200, 200) scale(2)"><use href="#space-swirl-sprite" /></g><g transform="translate(100, 250) scale(1.2)"><use href="#toxic-gas-sprite" /></g></g>
+                    <!-- Map Timer -->
+                    <div class="text-center mb-2 p-2 bg-black/30 rounded border border-red-500/50">
+                        <p class="text-xs text-red-400">TIME TO INTERCEPT</p>
+                        <p id="map-timer-display" class="text-2xl font-bold text-red-500 font-title">05:00</p>
+                    </div>
 
-                                <g id="dillinger-ship-group" class="pixelated"><use href="#dillinger-ship" /></g>
+                    <!-- Navigation Map -->
+                    <div id="navigation-map" class="relative w-full aspect-square bg-black/50 rounded overflow-hidden border border-green-500/30">
+                        <canvas id="title-starfield-canvas" class="absolute top-0 left-0 w-full h-full"></canvas>
+                        <canvas id="map-overlay-canvas" class="absolute top-0 left-0 w-full h-full pointer-events-none"></canvas>
+
+                        <!-- SVG Maps -->
+                        <svg id="map-display-1" class="absolute top-0 left-0 w-full h-full" viewBox="0 0 400 400" style="display: block;">
+                            <g id="ship-trail-group"></g>
+                            <circle cx="50" cy="350" r="8" fill="#00ff41" opacity="0.8"/>
+                            <circle cx="350" cy="50" r="10" fill="#ff4100" opacity="0.8"/>
+                            <text x="50" y="380" fill="#00ff41" font-size="10" text-anchor="middle">START</text>
+                            <text x="350" y="30" fill="#ff4100" font-size="10" text-anchor="middle">FREEDOM</text>
+                            <g id="dillinger-ship-group">
+                                <polygon points="0,-8 -5,8 5,8" fill="#00ffff" stroke="#ffffff" stroke-width="1"/>
+                                <circle cx="0" cy="0" r="12" fill="none" stroke="#00ffff" stroke-width="1" opacity="0.5">
+                                    <animate attributeName="r" values="12;18;12" dur="1.5s" repeatCount="indefinite"/>
+                                    <animate attributeName="opacity" values="0.5;0.1;0.5" dur="1.5s" repeatCount="indefinite"/>
+                                </circle>
+                            </g>
+                        </svg>
+                        <svg id="map-display-2" class="absolute top-0 left-0 w-full h-full" viewBox="0 0 400 400" style="display: none;"></svg>
+                        <svg id="map-display-3" class="absolute top-0 left-0 w-full h-full" viewBox="0 0 400 400" style="display: none;"></svg>
+                        <svg id="map-display-4" class="absolute top-0 left-0 w-full h-full" viewBox="0 0 400 400" style="display: none;"></svg>
+                        <svg id="map-display-5" class="absolute top-0 left-0 w-full h-full" viewBox="0 0 400 400" style="display: none;"></svg>
+                        <svg id="map-display-6" class="absolute top-0 left-0 w-full h-full" viewBox="0 0 400 400" style="display: none;"></svg>
+                    </div>
+
+                    <!-- Map Aux Dashboard -->
+                    <div class="map-aux-dashboard">
+                        <div class="target-info-panel">
+                            <h3>TARGET</h3>
+                            <p>ID: <span id="target-id">UN-77-B</span></p>
+                            <p>CLASS: <span id="target-class">Nebula Fragment</span></p>
+                            <p>DIST: <span id="target-dist">1.2 AU</span></p>
+                            <p>SIGNAL: <span id="target-signal">Weak EM</span></p>
+                        </div>
+                        <div class="radar-container">
+                            <canvas id="radar-canvas"></canvas>
+                        </div>
+                        <div class="system-status-panel">
+                            <h3>STATUS</h3>
+                            <p>SHIELDS: <span class="text-green-400">ONLINE</span></p>
+                            <p>WEAPONS: <span class="text-yellow-400">STANDBY</span></p>
+                            <p>ENGINES: <span class="text-green-400">NOMINAL</span></p>
+                            <p>LIFE SUP: <span class="text-green-400">98%</span></p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ===== ENGINES TAB ===== -->
+            <section id="engines-tab-content" class="tab-content">
+                <div class="retro-border secondary-panel-bg rounded-lg p-3 mb-3">
+                    <h2 class="font-title text-xs text-green-400 mb-2">// PROPULSION BAY</h2>
+
+                    <!-- Ship Visualization -->
+                    <div class="relative w-full h-32 bg-black/50 rounded overflow-hidden mb-3 border border-cyan-500/30">
+                        <canvas id="airstream-canvas" class="absolute top-0 left-0 w-full h-full"></canvas>
+                        <div class="absolute inset-0 flex items-center justify-center">
+                            <svg viewBox="0 0 100 60" class="w-24 h-16 sail-power-active">
+                                <polygon points="50,5 10,55 50,45 90,55" fill="none" stroke="#00ffff" stroke-width="2"/>
+                                <line x1="50" y1="5" x2="50" y2="45" stroke="#00ffff" stroke-width="1"/>
                             </svg>
                         </div>
-                        <div class="map-aux-dashboard">
-                            <div class="target-info-panel flex-grow">
-                                <h3>Target Data</h3>
-                                <p>ID: <span id="target-id" class="text-cyan-300">UN-77-B</span></p>
-                                <p>Class: <span id="target-class" class="text-cyan-300">Nebula Fragment</span></p>
-                                <p>Distance: <span id="target-dist" class="text-cyan-300">1.2 AU</span></p>
-                                <p>Signal: <span id="target-signal" class="text-cyan-300">Weak EM</span></p>
-                            </div>
-                            <div class="system-status-panel text-center">
-                                <h3>System Mode</h3>
-                                <p id="system-mode-display" class="font-bold text-xl my-1 w-28 mx-auto" style="color: var(--neon-green);">STANDARD</p>
-                                <button id="cycle-mode-button" class="w-full p-1 text-xs retro-button">CYCLE</button>
-                            </div>
-                        </div>
-                         <div class="flex justify-between items-center gap-2 p-2 retro-border" style="border-style: dashed; border-color: rgba(0, 255, 65, 0.3);">
-                            <div class="data-scanner flex-grow">
-                                <div class="scanner-bar"></div>
-                                <div class="text-stream">SYSTEM SCAN: OK :: STARDIVE CORES: NOMINAL :: FUSION LEVELS: 98% :: DEFLECTOR SHIELDS: ONLINE :: TACHYON CANNONS: STANDBY</div>
-                            </div>
-                            <button id="toggle-scanner-btn" class="retro-button p-2 text-xs">TOGGLE</button>
-                        </div>
-                        <p id="status-message" class="text-center font-mono text-lg mt-1 text-red-500 z-20"></p>
                     </div>
-                </div>
 
+                    <!-- Power Stats -->
+                    <div class="grid grid-cols-2 gap-3 mb-3">
+                        <div class="text-center p-2 bg-black/30 rounded border border-cyan-500/30">
+                            <p class="text-xs text-gray-400">TOTAL POWER</p>
+                            <p id="total-power-display" class="text-2xl font-bold text-cyan-400">0</p>
+                        </div>
+                        <div class="text-center p-2 bg-black/30 rounded border border-green-500/30">
+                            <p class="text-xs text-gray-400">COOLDOWN</p>
+                            <p id="cooldown-timer" class="text-2xl font-bold text-green-400">READY</p>
+                        </div>
+                    </div>
 
-                
-                <div id="engines-tab-content" class="tab-content">
-                    <div class="p-4 retro-border secondary-panel-bg">
-                        <h2 class="font-title text-lg font-bold uppercase border-b border-neon-green pb-2 mb-3">Ship Operations</h2>
-                        
-                        <div class="flex flex-col gap-8">
-                            <div class="text-center space-y-4">
-                                <div class="wireframe-container relative">
-                                     <svg class="absolute top-0 left-0 w-full h-full" viewBox="0 0 100 100">
-                                        <g class="wireframe-ship-part" transform="translate(50, 50) scale(0.7) translate(-50, -50)">
-                                            <path d="M 10,50 L 30,35 L 70,35 L 90,50 L 70,65 L 30,65 Z" /><line x1="10" y1="50" x2="5" y2="50" /><line x1="30" y1="35" x2="5" y2="50" /><line x1="30" y1="65" x2="5" y2="50" /><line x1="70" y1="35" x2="80" y2="15" /><line x1="90" y1="50" x2="100" y2="25" /><line x1="70" y1="65" x2="80" y2="85" /><line x1="90" y1="50" x2="100" y2="75" /><path d="M 85,30 L 95,5 L 100,20 L 90,30 Z" /><path d="M 85,70 L 95,95 L 100,80 L 90,70 Z" /><circle cx="85" cy="40" r="8" /><circle cx="85" cy="60" r="8" /><line x1="85" y1="40" x2="90" y2="40" /><line x1="85" y1="60" x2="90" y2="60" /><line x1="82" y1="37" x2="88" y2="37" /><line x1="82" y1="63" x2="88" y2="63" /><line x1="50" y1="35" x2="50" y2="65" /><line x1="70" y1="50" x2="90" y2="50" /><line x1="30" y1="50" x2="50" y2="50" />
-                                        </g>
-                                        <g id="wireframe-ship-45" class="wireframe-ship-part" transform="translate(50, 50) scale(0.7) translate(-50, -50)">
-                                            <path d="M 10,50 L 30,35 L 70,35 L 90,50 L 70,65 L 30,65 Z" /><line x1="10" y1="50" x2="5" y2="50" /><line x1="30" y1="35" x2="5" y2="50" /><line x1="30" y1="65" x2="5" y2="50" /><line x1="70" y1="35" x2="80" y2="15" /><line x1="90" y1="50" x2="100" y2="25" /><line x1="70" y1="65" x2="80" y2="85" /><line x1="90" y1="50" x2="100" y2="75" /><path d="M 85,30 L 95,5 L 100,20 L 90,30 Z" /><path d="M 85,70 L 95,95 L 100,80 L 90,70 Z" /><circle cx="85" cy="40" r="8" /><circle cx="85" cy="60" r="8" /><line x1="85" y1="40" x2="90" y2="40" /><line x1="85" y1="60" x2="90" y2="60" /><line x1="82" y1="37" x2="88" y2="37" /><line x1="82" y1="63" x2="88" y2="63" /><line x1="50" y1="35" x2="50" y2="65" /><line x1="70" y1="50" x2="90" y2="50" /><line x1="30" y1="50" x2="50" y2="50" />
-                                        </g>
-                                        <g id="wireframe-ship-90" class="wireframe-ship-part" transform="translate(50, 50) scale(0.7) translate(-50, -50)">
-                                            <path d="M 10,50 L 30,35 L 70,35 L 90,50 L 70,65 L 30,65 Z" /><line x1="10" y1="50" x2="5" y2="50" /><line x1="30" y1="35" x2="5" y2="50" /><line x1="30" y1="65" x2="5" y2="50" /><line x1="70" y1="35" x2="80" y2="15" /><line x1="90" y1="50" x2="100" y2="25" /><line x1="70" y1="65" x2="80" y2="85" /><line x1="90" y1="50" x2="100" y2="75" /><path d="M 85,30 L 95,5 L 100,20 L 90,30 Z" /><path d="M 85,70 L 95,95 L 100,80 L 90,70 Z" /><circle cx="85" cy="40" r="8" /><circle cx="85" cy="60" r="8" /><line x1="85" y1="40" x2="90" y2="40" /><line x1="85" y1="60" x2="90" y2="60" /><line x1="82" y1="37" x2="88" y2="37" /><line x1="82" y1="63" x2="88" y2="63" /><line x1="50" y1="35" x2="50" y2="65" /><line x1="70" y1="50" x2="90" y2="50" /><line x1="30" y1="50" x2="50" y2="50" />
-                                        </g>
-                                        <g id="wireframe-ship-135" class="wireframe-ship-part" transform="translate(50, 50) scale(0.7) translate(-50, -50)">
-                                            <path d="M 10,50 L 30,35 L 70,35 L 90,50 L 70,65 L 30,65 Z" /><line x1="10" y1="50" x2="5" y2="50" /><line x1="30" y1="35" x2="5" y2="50" /><line x1="30" y1="65" x2="5" y2="50" /><line x1="70" y1="35" x2="80" y2="15" /><line x1="90" y1="50" x2="100" y2="25" /><line x1="70" y1="65" x2="80" y2="85" /><line x1="90" y1="50" x2="100" y2="75" /><path d="M 85,30 L 95,5 L 100,20 L 90,30 Z" /><path d="M 85,70 L 95,95 L 100,80 L 90,70 Z" /><circle cx="85" cy="40" r="8" /><circle cx="85" cy="60" r="8" /><line x1="85" y1="40" x2="90" y2="40" /><line x1="85" y1="60" x2="90" y2="60" /><line x1="82" y1="37" x2="88" y2="37" /><line x1="82" y1="63" x2="88" y2="63" /><line x1="50" y1="35" x2="50" y2="65" /><line x1="70" y1="50" x2="90" y2="50" /><line x1="30" y1="50" x2="50" y2="50" />
-                                        </g>
-                                    </svg>
-                                    <canvas id="airstream-canvas" class="absolute top-0 left-0 w-full h-full pointer-events-none opacity-50"></canvas>
-                                </div>
-                                <div>
-                                    <p class="text-xs text-center text-yellow-300 mb-1">Balance: <span id="photon-balance-engines">0</span> photons</p>
-                                    <button id="craft-sail-button" class="w-full max-w-xs mx-auto p-2 retro-button mb-2 font-semibold disabled:opacity-50">CRAFT SAIL (250 photons)</button>
-                                    <p class="text-xs text-center text-cyan-400 mt-2 mb-1">Balance: <span id="lightyear-balance-engines">0</span> LY</p>
-                                    <button id="craft-battery-button" class="w-full max-w-xs mx-auto p-2 retro-button font-semibold disabled:opacity-50" style="border-color: var(--neon-yellow); color: var(--neon-yellow);">CRAFT BATTERY (5,000 LY)</button>
-                                    <p class="text-xs text-center mt-2 text-yellow-400 opacity-75 font-mono">It's dangerous to sail without a battery!</p>
-                                </div>
-                                <p id="craft-cooldown-display" class="text-center text-sm">Next craft available: <span id="cooldown-timer">READY</span></p>
-                            </div>
-                            <div class="mt-4">
-                                <h3 class="font-semibold text-center md:text-left flex-shrink-0 mb-2"><i class="fas fa-radiation mr-2 text-yellow-300"></i>Radiation Chamber</h3>
-                                <div class="fuse-box-panel">
-                                    <div class="fuse-box-spark" style="top: 50%; left: 12.5%; animation-delay: -1.3s;"></div><div class="fuse-box-spark" style="top: 20%; left: 37.5%; animation-delay: -0.5s;"></div><div class="fuse-box-spark" style="top: 80%; left: 62.5%; animation-delay: -1.8s;"></div><div class="fuse-box-spark" style="top: 50%; left: 87.5%; animation-delay: -0.2s;"></div>
-                                    <div id="inventory-slots" class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-4 gap-x-8 gap-y-6 text-sm relative z-10 my-4"></div>
-                                </div>
-                            </div>
+                    <!-- Balances -->
+                    <div class="grid grid-cols-2 gap-3 mb-3 text-xs">
+                        <div class="p-2 bg-black/30 rounded border border-yellow-500/30">
+                            <span class="text-yellow-400">PHOTONS:</span>
+                            <span id="photon-balance-engines" class="text-white font-bold ml-1">0</span>
+                        </div>
+                        <div class="p-2 bg-black/30 rounded border border-cyan-500/30">
+                            <span class="text-cyan-400">LIGHTYEARS:</span>
+                            <span id="lightyear-balance-engines" class="text-white font-bold ml-1">0</span>
+                        </div>
+                    </div>
+
+                    <!-- Craft Buttons -->
+                    <div class="grid grid-cols-2 gap-3 mb-3">
+                        <button id="craft-sail-button" class="retro-button p-3 rounded text-center">
+                            <i class="fas fa-solar-panel text-2xl text-cyan-400 mb-1"></i>
+                            <p class="text-xs text-white font-bold">CRAFT SAIL</p>
+                            <p class="text-xs text-yellow-400">250 Photons</p>
+                        </button>
+                        <button id="craft-battery-button" class="retro-button p-3 rounded text-center">
+                            <i class="fas fa-battery-full text-2xl text-yellow-400 mb-1"></i>
+                            <p class="text-xs text-white font-bold">CRAFT BATTERY</p>
+                            <p class="text-xs text-cyan-400">5,000 LY</p>
+                        </button>
+                    </div>
+
+                    <!-- Slot Ratios -->
+                    <div class="mb-3">
+                        <div class="flex justify-between text-xs mb-1">
+                            <span class="text-cyan-400">SAILS</span>
+                            <span class="text-yellow-400">BATTERIES</span>
+                        </div>
+                        <div class="h-2 bg-black/50 rounded-full overflow-hidden flex">
+                            <div id="sail-ratio-bar" class="bg-cyan-400 h-full transition-all" style="width: 0%;"></div>
+                            <div id="battery-ratio-bar" class="bg-yellow-400 h-full transition-all" style="width: 0%;"></div>
                         </div>
                     </div>
                 </div>
 
-                
-                <div id="action-tab-content" class="tab-content">
-                    <div class="p-4 retro-border secondary-panel-bg space-y-4">
-                        <div>
-                            <div id="encounter-debrief-panel" class="hidden mb-4">
-                                <h3 class="font-title text-md font-bold uppercase border-b border-neon-yellow pb-1 mb-2 text-yellow-300">Last Encounter Debrief</h3>
-                                <p id="encounter-debrief-text" class="text-sm font-mono text-gray-300"></p>
-                            </div>
-                            <h2 class="font-title text-lg font-bold uppercase border-b border-neon-green pb-2 mb-3">Mission Log & Encounters</h2>
-                            <div id="encounter-modal" class="p-3 bg-red-900 bg-opacity-30 retro-border mb-3 hidden">
-                                <p id="encounter-description" class="font-bold text-yellow-300 mb-2"></p>
-                                <p class="text-sm mb-3">Participation Cost: 10,000 lightyears (Required)</p>
-                                <div class="flex space-x-2">
-                                    <button id="encounter-risk-it" class="flex-1 p-2 bg-red-600 hover:bg-red-700 rounded font-semibold text-white"><i class="fas fa-hand-rock mr-2"></i> RISK IT!</button>
-                                    <button id="encounter-avoid" class="flex-1 p-2 bg-gray-600 hover:bg-gray-700 rounded font-semibold text-white"><i class="fas fa-hand-paper mr-2"></i> AVOID</button>
-                                </div>
-                            </div>
-                            <div id="log-display" class="log-container retro-border p-2 bg-black bg-opacity-30 text-xs font-mono"></div>
+                <!-- Inventory Slots -->
+                <div class="retro-border secondary-panel-bg rounded-lg p-3">
+                    <h2 class="font-title text-xs text-green-400 mb-2">// RADIATION CHAMBER</h2>
+                    <div class="fuse-box-panel">
+                        <div id="inventory-slots" class="grid grid-cols-4 gap-3">
+                            <!-- Slots rendered by JS -->
                         </div>
-                        <div>
-                            <h2 class="font-title text-lg font-bold uppercase border-b border-neon-green pb-2 mb-3">Blackhole Warp</h2>
-                            <div id="debrief-content" class="space-y-4">
-                                 
-                                <div id="minigame-prompt" class="text-center p-4">
-                                    <p class="text-xs mb-2 text-cyan-300">Divert power to enter the black hole? This will destroy all current sails.</p>
-                                    <button id="enter-blackhole-button" class="w-full p-2 retro-button font-semibold" style="border-color: var(--neon-pink); color: var(--neon-pink);">ENTER BLACK HOLE</button>
-                                    <p class="text-xs mt-1 font-mono text-pink-400">Cost: 250,000 LY</p>
-                                </div>
+                    </div>
+                </div>
+            </section>
 
-                                
-                                <div id="minigame-container" class="hidden">
-                                    <div class="warp-game-container">
-                                        
-                                        <div class="p-3 text-center text-lg font-bold bg-[#111100] text-[#FF8800] border-b-2 border-[#FF8800] warp-game-font">
-                                            WARP DRIVE CONTROLLER
-                                        </div>
-                                        
-                                        <div id="warp-viewContainer" class="flex-grow relative">
-                                            <div id="warp-gameView" class="h-full w-full">
-                                                <canvas id="warp-gameCanvas"></canvas>
-                                            </div>
-                                        </div>
-                                        
-                                        <div id="warp-controlPanel" class="p-4 bg-[#111100] flex flex-col space-y-3 border-t-2 border-[#FF8800]">
-                                            <button id="warp-out-button" class="warp-control-button w-full py-2 rounded-xl bg-[#220022] text-xl font-bold text-[#FF00FF] border-2 border-[#FF00FF] warp-game-font">
-                                                WARP OUT & CLAIM SCORE
-                                            </button>
-                                            <div class="px-4 pt-4">
-                                                <input type="range" min="-100" max="100" value="0" class="warp-slider" id="warp-slider">
-                                            </div>
-                                        </div>
-                                    </div>
+            <!-- ===== ACTION TAB ===== -->
+            <section id="action-tab-content" class="tab-content">
+                <div class="retro-border secondary-panel-bg rounded-lg p-3 mb-3">
+                    <h2 class="font-title text-xs text-green-400 mb-2">// TACTICAL OPTIONS</h2>
+
+                    <!-- Encounter Debrief -->
+                    <div id="encounter-debrief-panel" class="hidden mb-3 p-3 bg-black/50 rounded border border-yellow-500/50">
+                        <p class="text-xs text-yellow-400 font-bold mb-1">DEBRIEF:</p>
+                        <p id="encounter-debrief-text" class="text-xs text-gray-300"></p>
+                    </div>
+
+                    <!-- Blackhole Entry -->
+                    <div id="minigame-prompt" class="p-3 bg-black/50 rounded border border-purple-500/50 mb-3">
+                        <h3 class="text-sm text-purple-400 font-bold mb-2">
+                            <i class="fas fa-atom mr-2"></i>BLACK HOLE JUMP
+                        </h3>
+                        <p class="text-xs text-gray-400 mb-3">
+                            Risk everything for a massive lightyear boost. Costs 250,000 LY and destroys all sails. Navigate the warp tunnel to escape!
+                        </p>
+                        <button id="enter-blackhole-button" class="retro-button w-full p-2 rounded text-purple-400 border-purple-500">
+                            ENTER BLACK HOLE
+                        </button>
+                    </div>
+
+                    <!-- Warp Minigame Container -->
+                    <div id="minigame-container" class="hidden">
+                        <div class="warp-game-container warp-game-font">
+                            <div id="warp-gameView" class="flex-grow relative">
+                                <div id="warp-viewContainer" class="w-full h-full">
+                                    <canvas id="warp-gameCanvas"></canvas>
                                 </div>
+                            </div>
+                            <div class="p-3 bg-black/80 border-t-2 border-orange-500">
+                                <input type="range" id="warp-slider" class="warp-slider w-full mb-3" min="-100" max="100" value="0">
+                                <button id="warp-out-button" class="warp-control-button w-full py-3 text-xl bg-green-900 border-2 border-green-500 text-green-400 rounded">
+                                    WARP OUT & CLAIM
+                                </button>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                
-                <div id="briefing-tab-content" class="tab-content">
-                    <div class="w-full mt-8 p-4 retro-border secondary-panel-bg">
-                        <h2 class="font-title text-lg font-bold uppercase border-b border-neon-green pb-2 mb-3">Command Protocol: How to Play</h2>
-                        <div class="grid md:grid-cols-1 gap-6 text-sm space-y-4">
-                            <div>
-                                <h3 class="font-bold text-yellow-300 mb-1">Objective:</h3>
-                                <p>Travel 1,000,000 lightyears to reach the edge of each star system and escape the galactic police force. User's can then earn a Warrant at the end of the star system by burning 1 million lightyears to progress to the next map.</p>
-                            </div>
-                            <div>
-                                <h3 class="font-bold text-yellow-300 mb-1">Core Mechanics:</h3>
-                                <p>Empty Engine Slots are useless. Users must install modules in the Radiation Box:</p>
-                                <ul class="list-disc list-inside ml-2 space-y-1 mt-1">
-                                    <li><strong>Craft Batteries</strong> into empty slots. This costs <strong>lightyears</strong>. Each Battery generates <strong>photons</strong> over time. The rate of photons earned depends on the "Substrate Conductivity" at the time of crafting.</li>
-                                    <li><strong>Craft Solar Sails</strong> into empty slots. This costs <strong>photons</strong>. Each Sail generates <strong>lightyears</strong> over time but decays. The rate of lightyears earned depends on the "Sun Intensity" at the time of crafting.</li>
-                                </ul>
-                            </div>
-                            <div>
-                                <h3 class="font-bold text-yellow-300 mb-1">Encounters & Strategy:</h3>
-                                 <ul class="list-disc list-inside ml-2 space-y-1">
-                                     <li>Crafting Solar Sails has a chance to trigger a Random Encounters on the Action tab. User can opt in to Risk 10K lightyears for chance to be rewarded.</li>
-                                     <li>Users can also burn 250K lightyears at any time to enter the Blackhole. Doing so opens the blackhole minigame in which users can manually navigate obstacles to earn lightyears at a quicker pace.</li>
-                                     <li>Balance your slots between Batteries (fuel) and Sails (travel) to progress efficiently.</li>
-                                </ul>
-                            </div>
-                             <div>
-                                <h3 class="font-bold text-yellow-300 mb-1">Note from the creator:</h3>
-                                <p class="italic text-gray-400">Hi! thx for trying my game. I plan to keep updating it and releasing new versions. Please feel free to ask me any question or give feedback and ideas! Sorry in advanced for bugs and issues. I've left the debugging buttons on this page as well but they are not part of the "game" :)</p>
-                                <p class="italic text-gray-400 mt-2">-Broc, from the Stickrnet</p>
-                            </div>
-                        </div>
-                        <div class="mt-4 pt-4 border-t border-neon-green/50">
-                            <h3 class="font-title text-md font-bold uppercase text-center mb-3">Communications & Audio</h3>
-                            <div class="flex items-center justify-center gap-4 p-2 rounded secondary-panel-bg retro-border">
-                                <button id="mute-music-button" class="flex-1 p-2 retro-button text-sm"><i id="mute-music-icon" class="fas fa-volume-up mr-2"></i>Mute Music</button>
-                                <button id="mute-sfx-button" class="flex-1 p-2 retro-button text-sm"><i id="mute-sfx-icon" class="fas fa-volume-up mr-2"></i>Mute SFX</button>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="text-center mt-8">
-                        <button id="reset-prompt-button" class="p-2 retro-button text-sm opacity-70" style="border-color: var(--neon-red); color: var(--neon-red);">Manual Game Reset</button>
-                    </div>
-                     <div class="text-center mt-4 space-x-2">
-                        <button id="test-lightyears-button" class="p-2 retro-button text-xs" style="border-color: var(--neon-cyan); color: var(--neon-cyan);">+250,000 LY (TEST)</button>
-                        <button id="test-encounter-button" class="p-2 retro-button text-xs" style="border-color: var(--neon-yellow); color: var(--neon-yellow);">Trigger Encounter (TEST)</button>
-                        <button id="test-photons-button" class="p-2 retro-button text-xs" style="border-color: var(--neon-yellow); color: var(--neon-yellow);">+1K Photons (TEST)</button>
-                    </div>
-                    <div class="text-center mt-8">
-                        <p id="user-id-display" class="text-xs opacity-50 font-mono hidden">Awaiting Signal...</p>
+                <!-- Test Buttons (Dev) -->
+                <div class="retro-border secondary-panel-bg rounded-lg p-3">
+                    <h2 class="font-title text-xs text-gray-500 mb-2">// DEV TOOLS</h2>
+                    <div class="grid grid-cols-3 gap-2">
+                        <button id="test-photons-button" class="retro-button p-2 rounded text-xs text-yellow-400 border-yellow-500/50">
+                            +1K PHOTONS
+                        </button>
+                        <button id="test-lightyears-button" class="retro-button p-2 rounded text-xs text-cyan-400 border-cyan-500/50">
+                            +250K LY
+                        </button>
+                        <button id="test-encounter-button" class="retro-button p-2 rounded text-xs text-red-400 border-red-500/50">
+                            ENCOUNTER
+                        </button>
                     </div>
                 </div>
-            </div>
+            </section>
 
-            
-            <div id="win-message" class="fixed inset-0 bg-black bg-opacity-95 flex flex-col justify-center items-center text-center text-white text-5xl font-extrabold tracking-widest hidden z-50">
-                <i class="fas fa-trophy text-yellow-500 text-7xl mb-4"></i>
-                <p>VICTORY!</p>
-                <p class="text-3xl mt-4 text-green-400">DILLINGER HAS ESCAPED!</p>
-                <p class="text-xl mt-8 text-gray-400">You have earned an Inter-dimensional Warrant.</p>
-                <button id="claim-warrant-button" class="mt-8 p-4 retro-button text-2xl border-2" style="border-color: var(--neon-yellow); color: var(--neon-yellow);">BURN 1M LIGHTYEARS & CLAIM WARRANT</button>
-                <button id="win-reset-button" class="mt-4 p-2 retro-button text-sm opacity-70">(Full Reset)</button>
-            </div>
+            <!-- ===== BRIEFING TAB ===== -->
+            <section id="briefing-tab-content" class="tab-content">
+                <div class="retro-border secondary-panel-bg rounded-lg p-3 mb-3">
+                    <h2 class="font-title text-xs text-green-400 mb-3">// MISSION BRIEFING</h2>
 
-             
-            <div id="game-over-message" class="fixed inset-0 bg-black bg-opacity-95 flex flex-col justify-center items-center text-center text-white text-5xl font-extrabold tracking-widest hidden z-50">
-                <i class="fas fa-skull text-red-500 text-7xl mb-4"></i>
-                <p>GAME OVER</p>
-                <p class="text-3xl mt-4 text-red-400">TIME'S UP!</p>
-                <p class="text-xl mt-8 text-gray-400">The Galactic Police have closed in.</p>
-                <button id="game-over-reset-button" class="mt-8 p-4 retro-button text-2xl border-2" style="border-color: var(--neon-yellow); color: var(--neon-yellow);">TRY AGAIN</button>
-            </div>
-            
+                    <div class="space-y-4 text-xs text-gray-300">
+                        <div class="p-3 bg-black/30 rounded border-l-2 border-yellow-500">
+                            <h3 class="text-yellow-400 font-bold mb-1">OBJECTIVE</h3>
+                            <p>Travel 1,000,000 lightyears to escape the law. Collect outstanding warrants to prove your infamy.</p>
+                        </div>
+
+                        <div class="p-3 bg-black/30 rounded border-l-2 border-cyan-500">
+                            <h3 class="text-cyan-400 font-bold mb-1">SOLAR SAILS</h3>
+                            <p>Craft sails to generate lightyears. Power scales with sun intensity. Sails degrade over time and must be jettisoned when broken.</p>
+                        </div>
+
+                        <div class="p-3 bg-black/30 rounded border-l-2 border-yellow-500">
+                            <h3 class="text-yellow-400 font-bold mb-1">PHOTON BATTERIES</h3>
+                            <p>Generate passive photon income. Rate scales with ETH substrate price. Essential for continuous sail production.</p>
+                        </div>
+
+                        <div class="p-3 bg-black/30 rounded border-l-2 border-red-500">
+                            <h3 class="text-red-400 font-bold mb-1">ENCOUNTERS</h3>
+                            <p>Random events trigger during crafting. Risk it for rewards or play it safe. Each has different odds and payouts.</p>
+                        </div>
+
+                        <div class="p-3 bg-black/30 rounded border-l-2 border-purple-500">
+                            <h3 class="text-purple-400 font-bold mb-1">BLACK HOLE</h3>
+                            <p>High-risk minigame. Costs 250K LY and all sails. Navigate the warp tunnel to claim massive distance. Failure ends the run.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Settings -->
+                <div class="retro-border secondary-panel-bg rounded-lg p-3">
+                    <h2 class="font-title text-xs text-green-400 mb-3">// SETTINGS</h2>
+
+                    <div class="flex justify-between items-center mb-3">
+                        <span class="text-xs text-gray-400">SYSTEM MODE</span>
+                        <button id="cycle-mode-button" class="retro-button px-3 py-1 rounded text-xs">
+                            CYCLE MODE
+                        </button>
+                    </div>
+
+                    <div class="flex justify-center gap-4 mb-3">
+                        <button id="mute-music-button" class="audio-control-button">
+                            <i id="mute-music-icon" class="fas fa-volume-up"></i>
+                        </button>
+                        <button id="mute-sfx-button" class="audio-control-button">
+                            <i id="mute-sfx-icon" class="fas fa-volume-up"></i>
+                        </button>
+                    </div>
+
+                    <div class="flex justify-between items-center mb-3">
+                        <span class="text-xs text-gray-400">SCANNER</span>
+                        <button id="toggle-scanner-btn" class="retro-button px-3 py-1 rounded text-xs">
+                            TOGGLE
+                        </button>
+                    </div>
+
+                    <!-- Data Scanner -->
+                    <div class="data-scanner">
+                        <div class="scanner-bar"></div>
+                        <div class="text-stream">SYSTEM SCAN: OK :: STARDIVE CORES: NOMINAL</div>
+                    </div>
+
+                    <!-- Reset -->
+                    <div class="mt-4 pt-4 border-t border-red-500/30">
+                        <button id="reset-prompt-button" class="retro-button w-full p-2 rounded text-red-400 border-red-500/50">
+                            <i class="fas fa-skull mr-2"></i>ABORT MISSION
+                        </button>
+                    </div>
+                </div>
+            </section>
+
         </div>
-    </div>
+    </main>
 
-    
-    <div id="reset-confirm-modal" class="fixed inset-0 bg-black bg-opacity-90 flex justify-center items-center hidden z-50">
-        <div class="p-6 retro-border secondary-panel-bg text-center max-w-sm">
-            <h3 class="font-title text-xl text-red-400 mb-4">Confirm Reset</h3>
-            <p class="mb-6">Are you sure you want to erase all progress, including Warrants, and start over?</p>
-            <div class="flex gap-4">
-                <button id="reset-confirm-button" class="flex-1 p-2 retro-button" style="border-color: var(--neon-red); color: var(--neon-red);">CONFIRM RESET</button>
-                <button id="reset-cancel-button" class="flex-1 p-2 retro-button">CANCEL</button>
-            </div>
-        </div>
-    </div>
-
-    
+    <!-- ========================================= -->
+    <!-- BOTTOM NAVIGATION -->
+    <!-- ========================================= -->
     <nav id="bottom-nav-bar" class="bottom-nav hidden">
         <button id="nav-vitals" class="nav-button active">
             <i class="fas fa-heartbeat"></i>
@@ -1158,993 +470,77 @@
             <span>Engines</span>
         </button>
         <button id="nav-action" class="nav-button">
-            <i class="fas fa-fist-raised"></i>
+            <i class="fas fa-crosshairs"></i>
             <span>Action</span>
         </button>
         <button id="nav-briefing" class="nav-button">
-            <i class="fas fa-book-open"></i>
-            <span>Briefing</span>
+            <i class="fas fa-file-alt"></i>
+            <span>Brief</span>
         </button>
     </nav>
 
+    <!-- ========================================= -->
+    <!-- MODALS -->
+    <!-- ========================================= -->
+
+    <!-- Encounter Modal -->
+    <div id="encounter-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4 hidden">
+        <div class="retro-border secondary-panel-bg rounded-lg p-4 max-w-sm w-full">
+            <h2 class="font-title text-sm text-red-400 mb-3 text-center">
+                <i class="fas fa-exclamation-triangle mr-2"></i>ENCOUNTER
+            </h2>
+            <p id="encounter-description" class="text-sm text-gray-300 mb-4 text-center"></p>
+            <div class="grid grid-cols-2 gap-3">
+                <button id="encounter-avoid" class="retro-button p-2 rounded text-gray-400">
+                    AVOID
+                </button>
+                <button id="encounter-risk-it" class="retro-button p-2 rounded text-yellow-400 border-yellow-500">
+                    RISK IT
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Win Modal -->
+    <div id="win-message" class="fixed inset-0 z-50 flex items-center justify-center bg-black/90 p-4 hidden">
+        <div class="retro-border secondary-panel-bg rounded-lg p-6 max-w-sm w-full text-center">
+            <h2 class="font-title text-xl text-green-400 mb-3">FREEDOM!</h2>
+            <p class="text-gray-300 mb-4">You've escaped the law... for now. Claim your warrant and continue the run!</p>
+            <button id="claim-warrant-button" class="retro-button w-full p-3 rounded text-yellow-400 border-yellow-500 mb-2">
+                <i class="fas fa-trophy mr-2"></i>CLAIM WARRANT
+            </button>
+            <button id="win-reset-button" class="retro-button w-full p-2 rounded text-gray-400">
+                NEW GAME
+            </button>
+        </div>
+    </div>
+
+    <!-- Game Over Modal -->
+    <div id="game-over-message" class="fixed inset-0 z-50 flex items-center justify-center bg-black/90 p-4 hidden">
+        <div class="retro-border secondary-panel-bg rounded-lg p-6 max-w-sm w-full text-center" style="border-color: var(--neon-red);">
+            <h2 class="font-title text-xl text-red-400 mb-3">CAPTURED</h2>
+            <p class="text-gray-300 mb-4">The authorities have caught up. Your run ends here.</p>
+            <button id="game-over-reset-button" class="retro-button w-full p-3 rounded text-red-400 border-red-500">
+                <i class="fas fa-redo mr-2"></i>TRY AGAIN
+            </button>
+        </div>
+    </div>
+
+    <!-- Reset Confirmation Modal -->
+    <div id="reset-confirm-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4 hidden">
+        <div class="retro-border secondary-panel-bg rounded-lg p-4 max-w-sm w-full">
+            <h2 class="font-title text-sm text-red-400 mb-3 text-center">ABORT MISSION?</h2>
+            <p class="text-sm text-gray-300 mb-4 text-center">All progress will be lost. Are you sure?</p>
+            <div class="grid grid-cols-2 gap-3">
+                <button id="reset-cancel-button" class="retro-button p-2 rounded text-gray-400">
+                    CANCEL
+                </button>
+                <button id="reset-confirm-button" class="retro-button p-2 rounded text-red-400 border-red-500">
+                    CONFIRM
+                </button>
+            </div>
+        </div>
+    </div>
 
-    <script type="module">
-        // Farcaster Mini App SDK
-        import { sdk } from 'https://esm.sh/@farcaster/miniapp-sdk';
-        
-        let gameState = null;
-        
-        const WIN_DISTANCE = 1000000;
-        const PHOTONS_DRIP_INTERVAL = 1000;
-        const MINING_INTERVAL = 5000; 
-        const CRAFT_SAIL_COST = 250;
-        const CRAFT_BATTERY_COST = 5000;
-        const SAIL_MAX_DURABILITY = 100;
-        const SAIL_SLOTS = 8;
-        const CRAFT_COOLDOWN = 10;
-        const MAP_DURATIONS = [300, 180, 120, 150, 60]; // 5, 3, 2, 2.5, 1 minutes
-        
-        const SYSTEM_NAMES = ["Orion's Anvil", "The Crimson Expanse", "Hyperion Reach", "Specter's Drift", "The Cygnus Forge", "Leviathan's Cradle"];
-
-        const START_NODE = { x: 50, y: 350 };
-        const END_NODE = { x: 350, y: 50 };
-        
-        let pastShipPositions = []; 
-
-        const ENCOUNTER_TRIGGER_CHANCE = 0.75;
-        const ENCOUNTERS = [
-            { name: "Corporate Interdictor", chance: 0.04, lyCost: 10000, winChance: 0.75, type: 'loss', minLy: 10000, maxLy: 25000, description: "Megacorp cruiser demands inspection. Reroute power to stealth field (RISK)?", successDescription: "With a surge of power to the stealth field, The Outrider vanishes from their scopes! The corporate pigs are left scanning empty space, another costly failure for their quarterly reports.", failureDescription: "The stealth field flickers and dies! The Interdictor's tractor beam locks on, and a hefty 'fine' is siphoned from your lightyear reserves. A costly encounter with corporate justice." },
-            { name: "Derelict Freighter", chance: 0.04, lyCost: 10000, winChance: 0.50, type: 'gain', minLy: 15000, maxLy: 45000, description: "Unstable reactor, high-value cargo. Brave radiation to salvage (RISK)?", successDescription: "Navigating the sparking corridors, you grab the primary fusion cells just as the reactor goes critical! A clean getaway with a massive lightyear boost.", failureDescription: "A sudden radiation spike forces a hasty retreat! You escape with your life, but the salvage is lost to the void, along with the lightyears spent on the attempt." },
-            { name: "The Ghost Market", chance: 0.03, lyCost: 10000, winChance: 0.40, type: 'mix', minLy: 5000, maxLy: 30000, description: "Shadowy dealer offers a 'jump drive shortcut.' Trap or huge payoff?", successDescription: "The dealer was legitimate! The 'shortcut' was a stable wormhole that propels you thousands of lightyears in an instant. The galaxy just got a little smaller.", failureDescription: "It was a trap! The 'shortcut' leads directly into a pirate ambush. You escape with heavy damage, losing precious lightyears to evasive maneuvers." },
-            { name: "The Quantum Storm", chance: 0.04, lyCost: 10000, winChance: 0.30, type: 'gain', minLy: 30000, maxLy: 75000, description: "Wild anomaly rips open. Try to ride the current for a massive slingshot (HIGH RISK)?", successDescription: "Masterful piloting! The Outrider surfs the quantum wave, emerging light-years ahead of schedule. The crew celebrates a legendary feat of navigation.", failureDescription: "The storm is too powerful! The ship is tossed violently, and you emerge battered and disoriented, having lost significant ground." },
-            { name: "Asteroid Belt Run", chance: 0.03, lyCost: 10000, winChance: 0.65, type: 'mix', minLy: 8000, maxLy: 20000, description: "Fast route through rock field. Dangerous maneuvering required.", successDescription: "You weave through the debris field like a phantom. The shortcut pays off, shaving precious time off your journey.", failureDescription: "A rogue asteroid clips a sail! You manage to stabilize, but the repairs cost you time and distance." },
-            { name: "Civilian Distress Call", chance: 0.03, lyCost: 10000, winChance: 0.60, type: 'gain', minLy: 12000, maxLy: 40000, description: "Transport disabled but rigged to explode. Risk rescue for reward?", successDescription: "A daring rescue! You save the crew and they gratefully transfer their spare lightyear reserves to you before their ship goes supernova.", failureDescription: "It was a setup! The distress call was a lure by scavengers. You fight them off but lose lightyears in the skirmish." },
-            { name: "Bounty Hunter Tracking", chance: 0.04, lyCost: 10000, winChance: 0.70, type: 'loss', minLy: 15000, maxLy: 35000, description: "Professional hunter closing. Use counter-measure or hide?", successDescription: "Your counter-measures work perfectly! The bounty hunter's tracking system is fried, and they fly right past, oblivious.", failureDescription: "The hunter is too good. They anticipate your move and force a long, costly chase before you can shake them." },
-            { name: "Abandoned Orbital", chance: 0.03, lyCost: 10000, winChance: 0.55, type: 'gain', minLy: 10000, maxLy: 25000, description: "Silent station. Check for forgotten fuel cells.", successDescription: "Jackpot! The station's emergency power cells are still charged. You siphon their energy, gaining a significant lightyear boost.", failureDescription: "The station is a deathtrap. Automated defenses activate, forcing a rapid retreat. The risk was for nothing." },
-            { name: "Engine Malfunction", chance: 0.03, lyCost: 10000, winChance: 0.70, type: 'loss', minLy: 5000, maxLy: 15000, description: "The Outrider's drives stutter. Attempt emergency field repairs under stress?", successDescription: "With sparks flying, you jury-rig a bypass and the engines roar back to life! Crisis averted with minimal distance lost.", failureDescription: "The repair fails! The engines sputter and die, forcing you to drift while you perform a full system reboot, losing valuable time and distance." },
-            { name: "Signal Interception", chance: 0.04, lyCost: 10000, winChance: 0.60, type: 'gain', minLy: 15000, maxLy: 45000, description: "Intercepted massive data transfer. Decrypt route data for a shortcut?", successDescription: "The decryption is successful! You've uncovered a secret smuggler's route that bypasses police patrols, catapulting you forward.", failureDescription: "The data is a logic bomb! Your systems crash, and by the time they're back online, you've drifted far off course." },
-            { name: "Vacuum Leak", chance: 0.03, lyCost: 10000, winChance: 0.90, type: 'loss', minLy: 1000, maxLy: 5000, description: "Minor hull breach on The Outrider. Divert power from life support to propulsion?", successDescription: "The patch holds! You managed to seal the breach without losing too much ground. A close call, but you're still on the run.", failureDescription: "The breach is worse than it looked! You have to divert significant power to life support, slowing your progress to a crawl." },
-            { name: "Gravity Well Swing", chance: 0.04, lyCost: 10000, winChance: 0.55, type: 'gain', minLy: 20000, maxLy: 50000, description: "Heavy planet nearby. Attempt a precision gravity sling maneuver?", successDescription: "Perfect execution! The Outrider slingshots around the gas giant, gaining immense speed and leaving pursuers in the dust.", failureDescription: "You miscalculate the trajectory! The planet's gravity pulls you in too close, and you have to burn precious fuel to escape, losing significant distance." },
-            { name: "Plasma Cloud", chance: 0.03, lyCost: 10000, winChance: 0.45, type: 'loss', minLy: 15000, maxLy: 40000, description: "Corrosive energy cloud. Boost The Outrider through before shields fail?", successDescription: "Shields hold just long enough! You punch through the cloud, emerging singed but having taken a valuable shortcut.", failureDescription: "The plasma eats through the shields! Your sails take direct damage, crippling your speed and forcing you to limp away." },
-            { name: "Xenomorph Hive", chance: 0.04, lyCost: 10000, winChance: 0.30, type: 'loss', minLy: 40000, maxLy: 80000, description: "Hostile bioforms in abandoned habitat. Attempt a fast, dangerous purge?", successDescription: "You vent the main reactor coolant into the habitat, flash-freezing the aliens. A risky, but clean, escape.", failureDescription: "They're on the ship! You fight off the boarders, but the damage is extensive. The cost in lightyears is staggering." },
-            { name: "Warp Gate Alignment", chance: 0.04, lyCost: 10000, winChance: 0.35, type: 'gain', minLy: 75000, maxLy: 150000, description: "Unstable Warp Gate found. Risk alignment for a huge jump?", successDescription: "The gate stabilizes for a split second, and you jump! The Outrider is flung across an entire sector, a massive gain.", failureDescription: "The gate collapses as you enter! You're violently shunted into an unknown, dangerous region, far from your intended path." },
-        ];
-        
-        let activeEncounter = null;
-        let craftCooldownTimer = 0;
-        let miningIntervalId = null;
-        let mapTimerIntervalId = null;
-        let currentSunIntensity = 500000;
-        const MIN_SUN_INTENSITY = 500000;
-        const MAX_SUN_INTENSITY = 690000;
-        let currentEthPrice = 4000;
-        const MIN_ETH_PRICE = 3000;
-        const MAX_ETH_PRICE = 5000;
-        let lastEncounterResult = null; 
-
-        // Music player state
-        let musicTracks = [];
-        let trackNames = ["Outlaw Radio", "Stardust Echoes", "Void Drifter", "Red Alert", "Distress Signal"];
-        let currentTrackIndex = 2;
-        let isPlaying = false;
-        let soundsReady = false;
-        let synth, metalSynth, errorSynth, isMusicMuted = false, isSfxMuted = false;
-        
-        let engineTabInitialized = false;
-        let mapTabInitialized = false;
-
-
-        const THEMES = [
-            { name: "STANDARD", color: "#00ff41", trackIndex: 2 }, // Void Drifter
-            { name: "COMBAT", color: "#ff4100", trackIndex: 3 }, // Red Alert
-            { name: "STEALTH", color: "#00ffff", trackIndex: 4 }, // Distress Signal
-            { name: "HAZARD", color: "#ffff00", trackIndex: 1 }, // Stardust Echos
-            { name: "OUTLAW", color: "#a855f7", trackIndex: 0 }  // Outlaw Radio
-        ];
-        let currentThemeIndex = 0;
-
-        const TARGET_DATA = {
-            "STANDARD": { id: "UN-77-B", class: "Nebula Fragment", dist: "1.2 AU", signal: "Weak EM" },
-            "COMBAT": { id: "HOSTILE-X1", class: "Pirate Fighter", dist: "0.4 AU", signal: "Weapons Hot" },
-            "STEALTH": { id: "GHOST-SHIP", class: "Unknown", dist: "3.1 AU", signal: "Faint Echo" },
-            "HAZARD": { id: "FIELD-A9", class: "Radiation Cloud", dist: "0.8 AU", signal: "High Gamma" },
-            "OUTLAW": { id: "BLACK-MKT", class: "Smuggler's Den", dist: "4.3 AU", signal: "Encrypted Bid" }
-        };
-
-        let scannerDisplayIndex = 0;
-        const scannerTexts = [
-            "SYSTEM SCAN: OK :: STARDIVE CORES: NOMINAL :: FUSION LEVELS: 98% :: DEFLECTOR SHIELDS: ONLINE :: TACHYON CANNONS: STANDBY",
-            "DECRYPTING GHOST SIGNAL... :: SOURCE: VEGA-9 :: TYPE: HYPER-ENCRYPTED :: WARNING: POLICE TRACKER DETECTED",
-            "MAINTENANCE CYCLE :: PLASMA CONDUITS: STABLE :: HULL INTEGRITY: 99.4% :: GRAVITON PLATING: 98.9% :: LIFE SUPPORT: OPTIMAL",
-            "GALACTIC BOUNTY ALERT :: TARGET ID: DILLINGER :: PAYOUT: 1.5M CREDITS :: STATUS: ARMED & DANGEROUS :: NOTE: APPROACH WITH EXTREME CAUTION"
-        ];
-
-        const $ = (id) => document.getElementById(id);
-        const randRange = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
-        
-        const formatTime = (seconds) => (seconds <= 0) ? "READY" : `${seconds}s`;
-        
-        const addLog = (message, type = 'info') => {
-            const timestamp = new Date().toLocaleTimeString();
-            const color = type === 'success' ? 'text-green-400' : type === 'error' ? 'text-red-400' : 'text-gray-400';
-            const logElement = $(`log-display`);
-            const newMessage = `<p class="mb-1 ${color}">[${timestamp}] <span class="text-white">${message}</span></p>`;
-            logElement.innerHTML = newMessage + logElement.innerHTML;
-            if (logElement.children.length > 50) logElement.removeChild(logElement.lastChild);
-            if (gameState) {
-                gameState.log = [{ timestamp, message, type }, ...gameState.log].slice(0, 50);
-            }
-        };
-
-        const initializeAudio = async () => {
-            if (soundsReady || typeof Tone === 'undefined') return;
-            await Tone.start();
-            
-            synth = new Tone.PolySynth(Tone.Synth).toDestination();
-            metalSynth = new Tone.MetalSynth({ frequency: 50, envelope: { attack: 0.001, decay: 0.4, release: 0.2 }, harmonicity: 5.1, modulationIndex: 32, resonance: 4000, octaves: 1.5 }).toDestination();
-            errorSynth = new Tone.MonoSynth({ oscillator: { type: "square" }, envelope: { attack: 0.01, decay: 0.2, release: 0.2 } }).toDestination();
-
-            // --- Track 1: "Outlaw Radio" ---
-            const track1_kick = new Tone.MembraneSynth({ pitchDecay: 0.02, octaves: 6, envelope: { attack: 0.001, decay: 0.3, sustain: 0.01, release: 0.8 } }).toDestination(); track1_kick.volume.value = -4;
-            const track1_snare = new Tone.NoiseSynth({ noise: { type: 'white', playbackRate: 2 }, envelope: { attack: 0.001, decay: 0.15, sustain: 0, release: 0.1 } }).toDestination(); track1_snare.volume.value = -9;
-            const track1_bass = new Tone.MonoSynth({ oscillator: { type: 'sawtooth' }, envelope: { attack: 0.01, decay: 0.1, release: 0.2, sustain: 0.1 }, filter: { Q: 4, type: 'lowpass', frequency: 600, rolloff: -24 }, filterEnvelope: { attack: 0.01, decay: 0.1, sustain: 0.2, baseFrequency: 200, octaves: 2 } }).toDestination(); track1_bass.volume.value = -8;
-            const track1_distortion = new Tone.Distortion(0.7).toDestination();
-            const track1_lead = new Tone.MonoSynth({ oscillator: { type: 'sawtooth' }, envelope: { attack: 0.001, decay: 0.1, sustain: 0.1, release: 0.1 } }).connect(track1_distortion); track1_lead.volume.value = -20;
-            const track1_lead_part = new Tone.Part((time, value) => { track1_lead.triggerAttackRelease(value.note, value.duration, time); }, [ { time: '0:0', note: 'G4', duration: '16n' }, { time: '0:0:2', note: 'C5', duration: '16n' }, { time: '0:1', note: 'D#5', duration: '16n' }, { time: '0:1:2', note: 'C5', duration: '16n' }, { time: '0:2', note: 'G4', duration: '16n' }, { time: '0:2:2', note: 'C5', duration: '16n' }, { time: '0:3', note: 'D#5', duration: '16n' }, { time: '0:3:2', note: 'C5', duration: '16n' }, { time: '1:0', note: 'G4', duration: '16n' }, { time: '1:0:2', note: 'C5', duration: '16n' }, { time: '1:1', note: 'D#5', duration: '16n' }, { time: '1:1:2', note: 'C5', duration: '16n' }, { time: '1:2', note: 'A#4', duration: '16n' }, { time: '1:2:2', note: 'C5', duration: '16n' }, { time: '1:3', note: 'G4', duration: '16n' }, { time: '2:0', note: 'G4', duration: '16n' }, { time: '2:0:2', note: 'B4', duration: '16n' }, { time: '2:1', note: 'D5', duration: '16n' }, { time: '2:1:2', note: 'B4', duration: '16n' }, { time: '2:2', note: 'G4', duration: '16n' }, { time: '2:2:2', note: 'B4', duration: '16n' }, { time: '2:3', note: 'D5', duration: '16n' }, { time: '2:3:2', note: 'B4', duration: '16n' }, { time: '3:0', note: 'G4', duration: '16n' }, { time: '3:0:2', note: 'B4', duration: '16n' }, { time: '3:1', note: 'D5', duration: '16n' }, { time: '3:1:2', note: 'B4', duration: '16n' }, { time: '3:2', note: 'F#5', duration: '8n' }, { time: '3:3', note: 'D5', duration: '16n' }, { time: '4:0', note: 'Ab4', duration: '16n' }, { time: '4:0:2', note: 'C5', duration: '16n' }, { time: '4:1', note: 'F5', duration: '16n' }, { time: '4:1:2', note: 'C5', duration: '16n' }, { time: '4:2', note: 'Ab4', duration: '16n' }, { time: '4:2:2', note: 'C5', duration: '16n' }, { time: '4:3', note: 'F5', duration: '16n' }, { time: '4:3:2', note: 'C5', duration: '16n' }, { time: '5:2', note: 'G5', duration: '8n' }, { time: '6:0', note: 'G4', duration: '16n' }, { time: '6:0:2', note: 'A#4', duration: '16n' }, { time: '6:1', note: 'D#5', duration: '16n' }, { time: '6:1:2', note: 'A#4', duration: '16n' }, { time: '7:0', note: 'G4', duration: '8n' }, { time: '7:1', note: 'A#4', duration: '8n' }, { time: '7:2', note: 'C5', duration: '8n' }, { time: '7:3', note: 'D5', duration: '8n'}, { time: '8:0', note: 'D#5', duration: '4n'}, { time: '8:2', note: 'D5', duration: '4n'}, { time: '9:0', note: 'C5', duration: '2n'}, ]);
-            track1_lead_part.loop = true; track1_lead_part.loopEnd = '10m';
-            const track1_sequences = [ new Tone.Sequence((time, note) => { track1_bass.triggerAttackRelease(note, '16n', time); }, ['G1', ['G#1', 'G1'], 'G1', null, 'G1', null, ['A#1', 'G1'], null, 'C2', null, 'C2', null, 'C2', ['C2', 'A#1'], 'G1', null], '8n'), new Tone.Sequence((time, note) => { track1_kick.triggerAttackRelease(note, '8n', time); }, ['C1', null, [null, 'C1'], 'C1', null, 'C1', [null, 'C1'], null], '8n'), new Tone.Sequence((time) => { track1_snare.triggerAttack(time); }, [null, 'C2', null, 'C2', 'C2', null, ['C2', 'C2'], 'C2'], '8n'), track1_lead_part ];
-            musicTracks.push(track1_sequences);
-
-            // --- Track 2: "Stardust Echoes" ---
-            const reverb = new Tone.Reverb(6).toDestination(); const delay = new Tone.FeedbackDelay("8n", 0.7).connect(reverb);
-            const track2_pad = new Tone.PolySynth(Tone.AMSynth, { harmonicity: 1.5, envelope: { attack: 4, decay: 0.1, sustain: 0.2, release: 5 }, oscillator: { type: 'sine' }, modulation: {type: 'sawtooth'} }).connect(delay); track2_pad.volume.value = -10;
-            const track2_bass = new Tone.MonoSynth({ oscillator: { type: 'pulse', width: 0.4 }, envelope: { attack: 0.1, decay: 0.3, release: 2 }, filter: { type: 'lowpass', frequency: 800 }, filterEnvelope: { attack: 0.2, decay: 0.2, baseFrequency: 200, octaves: 3 } }).toDestination(); track2_bass.volume.value = -8;
-            const track2_arp = new Tone.FMSynth({ harmonicity: 2, modulationIndex: 5, envelope: { attack: 0.01, decay: 0.2, sustain: 0, release: 0.2}}).connect(delay); track2_arp.volume.value = -22;
-            const track2_sequences = [ new Tone.Sequence((time, note) => { track2_pad.triggerAttackRelease(note, '4m', time); }, [['C3', 'G3', 'D#4'], ['G#2', 'D#3', 'A#3'], ['D#3', 'A#3', 'F4'], ['A#2', 'F3', 'C4'], ['C3', 'G3', 'D#4'], ['G#2', 'D#3', 'A#3'], ['F3', 'C4', 'G4'], ['A#2', 'F3', 'C4']], '2m'), new Tone.Sequence((time, note) => { track2_bass.triggerAttackRelease(note, '2n', time); }, ['C1', null, 'G#1', null, 'D#1', null, 'A#1', null, 'C1', null, 'G#1', null, 'F1', null, 'A#1', null], '1m'), new Tone.Sequence((time, note) => { track2_arp.triggerAttackRelease(note, '16n', time); }, [['C5', 'D#5', 'G5', 'A#5'], null, ['G#4', 'C5', 'D#5', 'F5'], null, ['F5', 'G5', 'A#5', 'C6'], null, ['A#4', 'C5', 'D#5', 'F5'], null], '2n') ];
-            musicTracks.push(track2_sequences);
-
-            // --- Track 3: "Void Drifter" ---
-            const track3_arp = new Tone.FMSynth({ harmonicity: 3, modulationIndex: 10, detune: 0, oscillator: { type: "sine" }, envelope: { attack: 0.01, decay: 0.01, sustain: 1, release: 0.5 }, modulation: { type: "square" }, modulationEnvelope: { attack: 0.5, decay: 0, sustain: 1, release: 0.5 } }).connect(delay); track3_arp.volume.value = -18;
-            const track3_bass = new Tone.MonoSynth({ oscillator: { type: 'triangle' }, envelope: { attack: 0.1, decay: 0.3, release: 2 }, filter: { type: 'lowpass', frequency: 400 }, filterEnvelope: { attack: 0.5, decay: 0.2, baseFrequency: 150, octaves: 3 } }).toDestination(); track3_bass.volume.value = -8;
-            const track3_choir = new Tone.PolySynth(Tone.AMSynth, { harmonicity: 1.01, envelope: { attack: 3, release: 3 }, oscillator: {type: 'sine'}, modulation: {type: 'sawtooth'} }).connect(reverb); track3_choir.volume.value = -20;
-            const track3_sequences = [ new Tone.Sequence((time, note) => { track3_arp.triggerAttackRelease(note, '16n', time); }, ['C4', 'D#4', 'G4', 'A#4', 'C5', 'A#4', 'G4', 'D#4', 'C4', 'D#4', 'G4', 'A#4', 'D5', 'A#4', 'G4', 'D#4'], '8n'), new Tone.Sequence((time, note) => { track3_bass.triggerAttackRelease(note, '1m', time); }, ['C1', 'G#0', 'D#1', 'A#0', 'F1', 'C1', 'G1', 'A#0'], '1m'), new Tone.Sequence((time, note) => { track3_choir.triggerAttackRelease(note, '4m', time)}, [['G4', 'C5'], ['G#4', 'D#5'], ['D#4', 'A#4'], ['F4', 'C5']], '1m') ];
-            musicTracks.push(track3_sequences);
-
-            // --- Track 4: "Red Alert" ---
-            const track4_kick = new Tone.MembraneSynth({ pitchDecay: 0.05, octaves: 10, oscillator: { type: "sine" }, envelope: { attack: 0.001, decay: 0.4, sustain: 0.01, release: 1.4 } }).toDestination(); track4_kick.volume.value = -6;
-            const track4_alarm = new Tone.DuoSynth({ vibratoAmount: 0.5, vibratoRate: 5, harmonicity: 1.5, voice0: { volume: -10, portamento: 0, oscillator: { type: "square" }, filterEnvelope: { attack: 0.01, decay: 0, sustain: 1, release: 0.5 }, envelope: { attack: 0.01, decay: 0, sustain: 1, release: 0.5 } }, voice1: { volume: -10, portamento: 0, oscillator: { type: "square" }, filterEnvelope: { attack: 0.01, decay: 0, sustain: 1, release: 0.5 }, envelope: { attack: 0.01, decay: 0, sustain: 1, release: 0.5 } } }).toDestination(); track4_alarm.volume.value = -15;
-            const track4_sub = new Tone.MonoSynth({oscillator: {type: 'sine'}, envelope: {attack: 0.01, decay: 0.1, sustain: 0.2, release: 0.2}}).toDestination(); track4_sub.volume.value = -10;
-            const track4_sequences = [ new Tone.Sequence((time, note) => { track4_kick.triggerAttackRelease(note, "8n", time); }, ['C1', null, 'C1', ['C1', 'C1'], 'C1', null, 'C1', null], "8n"), new Tone.Sequence((time, note) => { track4_alarm.triggerAttackRelease(note, "8n", time); }, [['G5', 'G#5'], null, null, null, ['G5', 'G#5'], null, ['G5', 'G#5'], null], '4n'), new Tone.Sequence((time, note) => { track4_sub.triggerAttackRelease(note, '16n', time)}, ['C2', 'C#2', 'D2', 'D#2', 'C2', 'C#2', 'D2', 'D#2'], '4n') ];
-            musicTracks.push(track4_sequences);
-
-            // --- Track 5: "Distress Signal" ---
-            const track5_distressFilter = new Tone.AutoFilter("4n").toDestination().start();
-            const track5_distressDelay = new Tone.FeedbackDelay("8n", 0.8).connect(track5_distressFilter);
-            const track5_distressDistortion = new Tone.Distortion(0.9).connect(track5_distressDelay);
-            const track5_voice = new Tone.FMSynth({ harmonicity: 1.2, modulationIndex: 14, oscillator: { type: "sine" }, envelope: { attack: 0.1, decay: 0.2, sustain: 0.1, release: 0.8 }, modulation: { type: "square" }, modulationEnvelope: { attack: 0.2, decay: 0.1, sustain: 0.3, release: 0.8 } }).connect(track5_distressDistortion); track5_voice.volume.value = -22;
-            const track5_sequences = [ new Tone.Sequence((time, note) => { track5_voice.triggerAttackRelease(note, "4n", time); track5_voice.modulationIndex.rampTo(Math.random() * 20 + 5, 0.1); }, ['C3', null, null, 'D#3', null, 'C3', null, 'D#3', 'A#2', null, 'G2', null, 'A#2', null, 'D#3', null, 'C3', null, null, 'D#3', 'D#3', null, null, 'C3'], '2n') ];
-            musicTracks.push(track5_sequences);
-
-            // --- General Transport Setup ---
-            Tone.Transport.bpm.value = 160; Tone.Transport.loop = true; Tone.Transport.loopStart = 0; Tone.Transport.loopEnd = '16m'; 
-            musicTracks[currentTrackIndex].forEach(seq => seq.start(0));
-            Tone.Transport.start();
-            isPlaying = true; soundsReady = true; console.log("Audio context started.");
-        };
-
-        const playClickSound = () => { if (!soundsReady || isSfxMuted) return; synth.triggerAttackRelease("C4", "8n"); };
-        const playCraftSound = () => { if (!soundsReady || isSfxMuted) return; metalSynth.triggerAttackRelease("C2", "4n", Tone.now(), 0.8); };
-        const playSuccessSound = () => { if (!soundsReady || isSfxMuted) return; const now = Tone.now(); synth.triggerAttackRelease(["C5", "E5", "G5"], "16n", now); };
-        const playErrorSound = () => { if (!soundsReady || isSfxMuted) return; errorSynth.triggerAttackRelease("G#2", "8n"); };
-        const playEncounterAlertSound = () => { if (!soundsReady || isSfxMuted) return; const now = Tone.now(); synth.triggerAttackRelease("A4", "16n", now); synth.triggerAttackRelease("A4", "16n", now + 0.1); };
-
-        const toggleMusicMute = () => {
-            if (!soundsReady) return;
-            isMusicMuted = !isMusicMuted;
-            Tone.Destination.mute = isMusicMuted;
-            const mainIcon = $('mute-icon');
-            const commsIcon = $('mute-music-icon');
-            mainIcon.classList.toggle('fa-volume-up', !isMusicMuted);
-            mainIcon.classList.toggle('fa-volume-mute', isMusicMuted);
-            if(commsIcon) {
-                commsIcon.classList.toggle('fa-volume-up', !isMusicMuted);
-                commsIcon.classList.toggle('fa-volume-mute', isMusicMuted);
-            }
-        };
-
-        const toggleSfxMute = () => {
-            isSfxMuted = !isSfxMuted;
-            const icon = $('mute-sfx-icon');
-            if (icon) {
-                icon.classList.toggle('fa-volume-up', !isSfxMuted);
-                icon.classList.toggle('fa-volume-mute', isSfxMuted);
-            }
-            // This sound should always play to give feedback
-            if (!soundsReady) return; synth.triggerAttackRelease("C4", "8n");
-        };
-
-        
-        const setInitialScannerText = () => {
-            const textStream = document.querySelector('.text-stream');
-            if (textStream) {
-                textStream.innerHTML = scannerTexts[0].replace(/ :: /g, '<br>');
-            }
-        };
-
-        const toggleScanner = () => {
-            playClickSound();
-            scannerDisplayIndex = (scannerDisplayIndex + 1) % scannerTexts.length;
-            const textStream = document.querySelector('.text-stream');
-            if (textStream) {
-                textStream.innerHTML = scannerTexts[scannerDisplayIndex].replace(/ :: /g, '<br>');
-            }
-        };
-
-        const setTrack = (trackIndex) => {
-            if (!soundsReady || trackIndex === currentTrackIndex) return;
-            
-            musicTracks[currentTrackIndex].forEach(seq => seq.stop(0));
-            currentTrackIndex = trackIndex;
-            musicTracks[currentTrackIndex].forEach(seq => seq.start(0));
-            
-            const trackDisplay = $('track-display');
-            if (trackDisplay) {
-                trackDisplay.textContent = trackNames[currentTrackIndex];
-            }
-        };
-
-        const setSystemMode = (themeIndex, playSound = true) => {
-            currentThemeIndex = themeIndex;
-            const newTheme = THEMES[currentThemeIndex];
-            document.documentElement.style.setProperty('--neon-green', newTheme.color);
-            const displayEl = $('system-mode-display');
-            displayEl.textContent = newTheme.name;
-            displayEl.style.color = newTheme.color;
-            
-            const targetData = TARGET_DATA[newTheme.name];
-            $('target-id').textContent = targetData.id;
-            $('target-class').textContent = targetData.class;
-            $('target-dist').textContent = targetData.dist;
-            $('target-signal').textContent = targetData.signal;
-            
-            setTrack(newTheme.trackIndex);
-
-            if (playSound) {
-                playClickSound();
-            }
-        };
-        
-        const cycleSystemMode = (playSound = true) => {
-            const nextIndex = (currentThemeIndex + 1) % THEMES.length;
-            setSystemMode(nextIndex, playSound);
-        };
-
-        const showTab = (tabName, playSound = true) => {
-            if (playSound) {
-                playClickSound();
-            }
-            ['vitals', 'map', 'engines', 'action', 'briefing'].forEach(name => {
-                const content = $(`${name}-tab-content`);
-                const button = $(`nav-${name}`);
-                if (content && button) {
-                    const isActive = name === tabName;
-                    content.classList.toggle('active', isActive);
-                    button.classList.toggle('active', isActive);
-                }
-            });
-             // Lazy-load animations
-            if (tabName === 'map' && !mapTabInitialized) {
-                initTitleStarfield();
-                initMapOverlay();
-                mapTabInitialized = true;
-            }
-            if (tabName === 'engines' && !engineTabInitialized) {
-                initAirstream();
-                initAtomDecayEffect();
-                initPhotonBurstsEffect();
-                engineTabInitialized = true;
-            }
-        };
-
-        const initializeLocalGameState = () => { gameState = { photons: 250, lightyears: 0, warrants: 0, hasWon: false, maxLightyears: WIN_DISTANCE, slots: Array(SAIL_SLOTS).fill(null), log: [{ timestamp: new Date().toLocaleTimeString(), message: "The Outrider is ready for warp...", type: 'info' }], timestamp: Date.now(), mapTimer: MAP_DURATIONS[0] }; };
-        
-        let craftIntervalId;
-        const startGameLoops = () => { 
-            if (craftIntervalId) return; 
-            craftIntervalId = setInterval(handlePhotonsDrip, PHOTONS_DRIP_INTERVAL); 
-            miningIntervalId = setInterval(handleMiningAndDecay, MINING_INTERVAL); 
-            mapTimerIntervalId = setInterval(handleMapTimer, 1000);
-            setInterval(handleCraftCooldown, 1000); 
-            setInterval(updateSunIntensity, 3000); 
-            setInterval(updateEthPrice, 3000); 
-            setInterval(updateActivityGauges, 150); 
-            addLog("The Outrider is powered up. System check nominal.", 'info'); 
-        };
-
-        const stopGameLoops = () => { 
-            clearInterval(craftIntervalId); 
-            clearInterval(miningIntervalId); 
-            clearInterval(mapTimerIntervalId);
-            craftIntervalId = null; 
-            miningIntervalId = null; 
-            mapTimerIntervalId = null;
-        };
-
-        const handlePhotonsDrip = () => { if (!gameState) return; const totalPhotonGain = gameState.slots.filter(s => s && s.type === 'battery').reduce((sum, battery) => sum + (battery.rate || 0), 0); if (totalPhotonGain > 0) { gameState.photons += totalPhotonGain; renderGameUI(); } };
-        const handleMiningAndDecay = () => { if (!gameState || gameState.hasWon) return; let totalPower = 0; gameState.slots = gameState.slots.map(slot => { if (slot && slot.type === 'sail') { if (slot.durability > 0) { slot.durability -= randRange(1, 3); } if (slot.durability > 0) { totalPower += slot.power; } else if (slot.durability <= 0 && !slot.isBroken) { addLog(`Sail [${slot.power}P}] has broken down! It must be jettisoned.`, 'error'); slot.isBroken = true; } } return slot; }); const lyGain = totalPower * randRange(5, 15); if (lyGain > 0) addLog(`Travelled ${lyGain.toLocaleString()} lightyears. Total Power: ${totalPower}.`, 'success'); else if (gameState.slots.some(s => s && s.type === 'sail' && s.durability > 0) && totalPower === 0) { addLog("Warning: All functioning Solar Sails have broken down.", 'error'); } gameState.lightyears = Math.min(gameState.lightyears + lyGain, WIN_DISTANCE); if (gameState.lightyears >= WIN_DISTANCE && !gameState.hasWon) { gameState.hasWon = true; $('win-message').classList.remove('hidden'); stopGameLoops(); playSuccessSound(); } renderGameUI(); };
-        const handleCraftCooldown = () => { if (craftCooldownTimer > 0) { craftCooldownTimer--; } renderGameUI(); };
-        
-        const formatMapTime = (seconds) => {
-            if (seconds < 0) seconds = 0;
-            const minutes = Math.floor(seconds / 60);
-            const remainingSeconds = seconds % 60;
-            return `${String(minutes).padStart(2, '0')}:${String(remainingSeconds).padStart(2, '0')}`;
-        };
-
-        const handleMapTimer = () => {
-            if (!gameState || gameState.hasWon) return;
-
-            if (gameState.mapTimer > 0) {
-                gameState.mapTimer--;
-            }
-
-            renderGameUI();
-
-            if (gameState.mapTimer <= 0) {
-                $('game-over-message').classList.remove('hidden');
-                stopGameLoops();
-                playErrorSound();
-            }
-        };
-
-        const craftSolarSail = async () => { await initializeAudio(); const emptySlotIndex = gameState.slots.findIndex(s => s === null); if (!gameState || craftCooldownTimer > 0 || emptySlotIndex === -1 || gameState.photons < CRAFT_SAIL_COST) { playErrorSound(); return; } const newSail = { type: 'sail', id: crypto.randomUUID(), power: calculateSailPowerFromSunIntensity(), durability: SAIL_MAX_DURABILITY }; playCraftSound(); gameState.slots[emptySlotIndex] = newSail; gameState.photons -= CRAFT_SAIL_COST; craftCooldownTimer = CRAFT_COOLDOWN; addLog(`Crafted new Solar Sail with ${newSail.power} Power.`, 'info'); triggerRandomEncounter(); renderGameUI(); };
-        const craftBattery = async () => { if (!gameState) return; await initializeAudio(); const emptySlotIndex = gameState.slots.findIndex(s => s === null); if (craftCooldownTimer > 0 || emptySlotIndex === -1 || gameState.lightyears < CRAFT_BATTERY_COST) { playErrorSound(); addLog("Cannot craft battery: Requirements not met (Cooldown, Slots, or Lightyears).", "error"); return; } const newBattery = { type: 'battery', id: crypto.randomUUID(), rate: parseFloat((currentEthPrice * 0.001).toFixed(2)) }; playCraftSound(); gameState.slots[emptySlotIndex] = newBattery; gameState.lightyears -= CRAFT_BATTERY_COST; craftCooldownTimer = 5; addLog(`Crafted a Photon Battery with a rate of ${newBattery.rate} p/s, costing ${CRAFT_BATTERY_COST.toLocaleString()} LY.`, 'info'); triggerRandomEncounter(); renderGameUI(); };
-        const removeModule = async (index) => { if (!gameState || !gameState.slots[index]) return; await initializeAudio(); playClickSound(); const moduleType = gameState.slots[index].type; gameState.slots[index] = null; addLog(`Jettisoned ${moduleType} from inventory slot ${index + 1}.`, 'info'); renderGameUI(); };
-        const triggerRandomEncounter = () => { if (Math.random() > ENCOUNTER_TRIGGER_CHANCE) return; const roll = Math.random(); let cumulativeChance = 0; for (const encounter of ENCOUNTERS) { cumulativeChance += encounter.chance; if (roll <= cumulativeChance) { activeEncounter = encounter; $('encounter-description').textContent = `${encounter.name}: ${encounter.description}`; $('encounter-modal').classList.remove('hidden'); playEncounterAlertSound(); addLog(`[ENCOUNTER ALERT]: ${encounter.name} detected.`, 'error'); return; } } };
-        const handleEncounterDecision = async (riskIt) => { await initializeAudio(); playClickSound(); $('encounter-modal').classList.add('hidden'); if (!activeEncounter || !gameState) return; if (!riskIt) { addLog(`Avoided ${activeEncounter.name}.`, 'info'); activeEncounter = null; return; } if (gameState.lightyears < activeEncounter.lyCost) { playErrorSound(); addLog(`Insufficient lightyears to engage ${activeEncounter.name}.`, 'error'); activeEncounter = null; return; } let lyGain = 0; let logMessage, logType; const cost = activeEncounter.lyCost; const success = Math.random() < activeEncounter.winChance; if (success) { lyGain = randRange(activeEncounter.minLy, activeEncounter.maxLy); const netResult = lyGain - cost; logMessage = `SUCCESS: Gained ${lyGain.toLocaleString()} lightyears from ${activeEncounter.name}. (Net: ${netResult.toLocaleString()})`; logType = netResult >= 0 ? 'success' : 'error'; playSuccessSound(); lastEncounterResult = activeEncounter.successDescription; } else { lyGain = randRange(1000, 5000); const netResult = lyGain - cost; logMessage = `FAILURE: Only recovered ${lyGain.toLocaleString()} lightyears from ${activeEncounter.name}. (Net: ${netResult.toLocaleString()})`; logType = 'error'; playErrorSound(); lastEncounterResult = activeEncounter.failureDescription; } const netChange = lyGain - cost; gameState.lightyears = Math.max(0, gameState.lightyears + netChange); addLog(logMessage, logType); renderGameUI(); activeEncounter = null; showTab('action'); };
-        const GAUGE_SEGMENTS = 15;
-        const initializeActivityGauges = () => { const gaugeContainers = [ { id: 'photons-activity-gauge', color: 'yellow' }, { id: 'sun-activity-gauge', color: 'orange' }, { id: 'substrate-activity-gauge', color: 'pink'}, { id: 'lightyears-activity-gauge', color: 'cyan' }, ]; gaugeContainers.forEach(containerInfo => { const container = $(containerInfo.id); if(container) { container.innerHTML = ''; if (containerInfo.id === 'sun-activity-gauge') { container.classList.add('flame-gauge'); } else if (containerInfo.id === 'lightyears-activity-gauge') { container.classList.add('meteor-gauge'); } else if (containerInfo.id === 'substrate-activity-gauge') { container.classList.add('electric-gauge'); const canvas = document.createElement('canvas'); canvas.id = 'substrate-canvas'; container.appendChild(canvas); } else { for(let i = 0; i < GAUGE_SEGMENTS; i++) { const segment = document.createElement('div'); segment.className = `gauge-segment ${containerInfo.color}`; container.appendChild(segment); } } } }); };
-        const updateActivityGauges = () => { const segments = document.querySelectorAll('.gauge-segment'); segments.forEach(segment => { const randomHeight = Math.random() * 100; const randomOpacity = 0.5 + Math.random() * 0.5; segment.style.height = `${randomHeight}%`; segment.style.opacity = randomOpacity; }); };
-        
-        const updateSunIntensity = () => { const change = randRange(-2500, 2500); let newIntensity = currentSunIntensity + change; currentSunIntensity = Math.max(MIN_SUN_INTENSITY, Math.min(newIntensity, MAX_SUN_INTENSITY)); };
-        const updateEthPrice = () => { const change = randRange(-100, 100); let newPrice = currentEthPrice + change; currentEthPrice = Math.max(MIN_ETH_PRICE, Math.min(newPrice, MAX_ETH_PRICE)); };
-        const calculateSailPowerFromSunIntensity = () => Math.max(1, Math.round(currentSunIntensity * 0.001));
-        const getShipMapPosition = (p) => ({ x: START_NODE.x + (END_NODE.x - START_NODE.x) * p, y: START_NODE.y + (END_NODE.y - START_NODE.y) * p });
-        
-        const bindDynamicListeners = () => {
-            document.querySelectorAll('[data-action="remove-module"]').forEach(button => {
-                button.onclick = () => removeModule(parseInt(button.dataset.index, 10));
-            });
-        };
-        
-        const renderEncounterDebrief = () => {
-            const panel = $('encounter-debrief-panel');
-            const textEl = $('encounter-debrief-text');
-            if (lastEncounterResult) {
-                textEl.textContent = lastEncounterResult;
-                panel.classList.remove('hidden');
-            } else {
-                panel.classList.add('hidden');
-            }
-        };
-
-        const renderGameUI = () => { 
-            if (!gameState) return; 
-            $('photons-display').textContent = gameState.photons.toLocaleString(); 
-            $('lightyears-display').textContent = gameState.lightyears.toLocaleString(); 
-            $('photon-balance-engines').textContent = gameState.photons.toLocaleString(); 
-            $('lightyear-balance-engines').textContent = gameState.lightyears.toLocaleString(); 
-            $('btc-price-display').textContent = `${currentSunIntensity.toLocaleString()}`; 
-            $('eth-price-display').textContent = `${currentEthPrice.toLocaleString()}`; 
-            $('warrants-display').innerHTML = `<i class="fas fa-skull-crossbones mr-2"></i> ${gameState.warrants || 0}`; 
-            $('progress-fill').style.width = `${Math.min(100, (gameState.lightyears / WIN_DISTANCE) * 100)}%`; 
-            $('cooldown-timer').textContent = formatTime(craftCooldownTimer);
-            
-            const hasEmptySlot = gameState.slots.some(s => s === null);
-            $('craft-sail-button').disabled = !(gameState.photons >= CRAFT_SAIL_COST && hasEmptySlot && craftCooldownTimer <= 0);
-            $('craft-battery-button').disabled = !(gameState.lightyears >= CRAFT_BATTERY_COST && hasEmptySlot && craftCooldownTimer <= 0);
-
-            const timerDisplay = $('map-timer-display');
-            timerDisplay.textContent = formatMapTime(gameState.mapTimer);
-            if (gameState.mapTimer <= 60) {
-                timerDisplay.classList.add('animate-pulse');
-            } else {
-                timerDisplay.classList.remove('animate-pulse');
-            }
-
-            const inventorySlotsEl = $('inventory-slots'); 
-            inventorySlotsEl.innerHTML = ''; 
-            let totalPower = 0; 
-            let sailCount = 0; 
-            let batteryCount = 0; 
-            let totalPhotonRate = 0; 
-            gameState.slots.forEach((slot, index) => { if (slot && slot.type === 'sail') { sailCount++; const durabilityPercent = Math.max(0, Math.round(slot.durability)); if (durabilityPercent > 0) { totalPower += slot.power; inventorySlotsEl.innerHTML += `<div class="p-2 rounded-lg text-center inventory-slot-item" style="background-color: #1e293b; border-color: var(--neon-cyan);"><p class="font-bold text-white text-xs">SOLAR SAIL</p><div class="text-xs opacity-80" style="color: var(--neon-cyan);"><span>Pwr: ${slot.power}</span> | <span>Dur: ${durabilityPercent}%</span></div><div class="h-1 bg-black/50 mt-1 rounded"><div class="bg-cyan-400 h-1 rounded" style="width: ${durabilityPercent}%;"></div></div></div>`; } else { inventorySlotsEl.innerHTML += `<div class="p-2 rounded-lg text-center flex flex-col justify-between h-full inventory-slot-item" style="background-color: #1e293b; border-color: var(--neon-red); color: var(--neon-red);"><p class="font-bold text-xs">BROKEN SAIL</p><div class="text-xs opacity-80"><span>Pwr: ${slot.power}</span> | <span>Dur: 0%</span></div><button data-action="remove-module" data-index="${index}" class="mt-1 w-full text-xs p-1 rounded bg-red-800/50 hover:bg-red-700/50 text-white">JETTISON</button></div>`; } } else if (slot && slot.type === 'battery') { batteryCount++; totalPhotonRate += slot.rate || 0; inventorySlotsEl.innerHTML += `<div class="p-2 rounded-lg text-center flex flex-col items-center justify-between h-full inventory-slot-item" style="background-color: #1e293b; border-color: var(--neon-yellow); color: var(--neon-yellow);"><div class="flex-grow flex flex-col justify-center"><i class="fas fa-battery-full text-2xl mb-1"></i><span class="font-bold text-xs">PHOTON BATTERY</span><span class="text-xs opacity-80">${(slot.rate || 0).toFixed(2)} p/s</span></div><button data-action="remove-module" data-index="${index}" class="mt-1 w-full text-xs p-1 rounded bg-yellow-800/50 hover:bg-yellow-700/50 text-white">REMOVE</button></div>`; } else { inventorySlotsEl.innerHTML += `<div class="p-2 rounded-lg text-center flex flex-col items-center justify-center h-full bg-black/20 inventory-slot-item" style="border-color: #475569; color: #64748b;"><i class="far fa-circle text-2xl mb-1"></i><span class="font-bold text-xs">EMPTY SLOT</span></div>`; } }); 
-            $('total-power-display').textContent = totalPower; 
-            const avgLightyearRate = totalPower * 2; 
-            $('photon-rate-display').textContent = `+${totalPhotonRate.toFixed(2)}/s`; 
-            $('lightyear-rate-display').textContent = `~${avgLightyearRate.toLocaleString()}/s`; 
-            $('sail-ratio-bar').style.width = `${(sailCount / SAIL_SLOTS) * 100}%`; 
-            $('battery-ratio-bar').style.width = `${(batteryCount / SAIL_SLOTS) * 100}%`; 
-            const currentMapIndex = (gameState.warrants || 0) % 6; 
-            $('system-name-display').textContent = SYSTEM_NAMES[currentMapIndex]; 
-            ['map-display-1', 'map-display-2', 'map-display-3', 'map-display-4', 'map-display-5', 'map-display-6'].forEach((id, index) => { const mapEl = $(id); if (mapEl) { mapEl.style.display = (index === currentMapIndex) ? 'block' : 'none'; } }); 
-            const shipGroup = $('dillinger-ship-group'); 
-            const trailGroup = $('ship-trail-group'); 
-            const progressRatio = gameState.lightyears / WIN_DISTANCE; 
-            const currentPos = getShipMapPosition(progressRatio); 
-            if (pastShipPositions.length === 0 || Math.abs(pastShipPositions[pastShipPositions.length - 1].x - currentPos.x) > 2) { pastShipPositions.push(currentPos); if (pastShipPositions.length > 100) pastShipPositions.shift(); } if (trailGroup) { while (trailGroup.firstChild) trailGroup.removeChild(trailGroup.firstChild); pastShipPositions.forEach(pos => { const trailDot = document.createElementNS("http://www.w3.org/2000/svg", "circle"); trailDot.setAttribute('cx', pos.x); trailDot.setAttribute('cy', pos.y); trailDot.setAttribute('r', 2); trailDot.setAttribute('fill', '#00ff41'); trailDot.setAttribute('opacity', 0.4); trailGroup.appendChild(trailDot); }); } if (shipGroup) shipGroup.setAttribute('transform', `translate(${currentPos.x} ${currentPos.y})`); 
-            
-            renderEncounterDebrief();
-            // Always re-bind listeners after re-drawing the UI
-            bindDynamicListeners();
-        };
-        const createStar = () => { const star = document.createElement('div'); star.className = 'star'; star.style.width = star.style.height = `${randRange(1, 3)}px`; star.style.left = `${randRange(0, 100)}vw`; star.style.top = `-${randRange(0, 100)}vh`; star.style.animationDuration = `${randRange(5, 15)}s`; star.style.animationDelay = `-${randRange(0, 15)}s`; return star; };
-        const initStarfield = () => { const starfield = $('starfield'); for (let i = 0; i < 300; i++) starfield.appendChild(createStar()); };
-        const handleFullReset = async () => { 
-            await initializeAudio(); 
-            playClickSound(); 
-            initializeLocalGameState(); 
-            pastShipPositions = []; 
-            activeEncounter = null;
-            lastEncounterResult = null;
-            craftCooldownTimer = 0; 
-            $('win-message').classList.add('hidden'); 
-            $('game-over-message').classList.add('hidden');
-            $('reset-confirm-modal').classList.add('hidden'); 
-            stopGameLoops(); 
-            startGameLoops(); 
-            renderGameUI(); 
-        };
-        const promptForReset = async () => { await initializeAudio(); playClickSound(); $('reset-confirm-modal').classList.remove('hidden'); };
-        const cancelReset = async () => { await initializeAudio(); playClickSound(); $('reset-confirm-modal').classList.add('hidden'); };
-        const claimWarrant = async () => { 
-            await initializeAudio(); 
-            playSuccessSound(); 
-            gameState.warrants = (gameState.warrants || 0) + 1; 
-            gameState.lightyears = 0; 
-            gameState.hasWon = false; 
-            const nextTimerIndex = Math.min(gameState.warrants, MAP_DURATIONS.length - 1);
-            gameState.mapTimer = MAP_DURATIONS[nextTimerIndex];
-            pastShipPositions = []; 
-            activeEncounter = null; 
-            $('win-message').classList.add('hidden'); 
-            stopGameLoops(); 
-            startGameLoops(); 
-            renderGameUI(); 
-        };
-        const mintTestLightyears = async () => { if (!gameState) return; await initializeAudio(); playSuccessSound(); gameState.lightyears = Math.min(gameState.lightyears + 250000, WIN_DISTANCE); addLog("TEST: Minted 250,000 lightyears.", 'info'); renderGameUI(); if (gameState.lightyears >= WIN_DISTANCE && !gameState.hasWon) { gameState.hasWon = true; $('win-message').classList.remove('hidden'); stopGameLoops(); playSuccessSound(); } };
-        
-        const mintTestPhotons = async () => {
-            if (!gameState) return;
-            await initializeAudio();
-            playSuccessSound();
-            gameState.photons += 1000;
-            addLog("TEST: Minted 1,000 photons.", 'info');
-            renderGameUI();
-        };
-
-        const forceTriggerEncounter = async () => {
-            if (!gameState) return;
-            await initializeAudio();
-            playClickSound();
-            addLog("TEST: Forcing random encounter.", 'info');
-            
-            // This logic is copied from triggerRandomEncounter but without the initial chance check
-            const roll = Math.random();
-            let cumulativeChance = 0;
-            for (const encounter of ENCOUNTERS) {
-                cumulativeChance += encounter.chance;
-                if (roll <= cumulativeChance) {
-                    activeEncounter = encounter;
-                    $('encounter-description').textContent = `${encounter.name}: ${encounter.description}`;
-                    $('encounter-modal').classList.remove('hidden');
-                    playEncounterAlertSound();
-                    addLog(`[ENCOUNTER ALERT]: ${encounter.name} detected.`, 'error');
-                    return;
-                }
-            }
-            // Fallback just in case
-             const randomEncounter = ENCOUNTERS[Math.floor(Math.random() * ENCOUNTERS.length)];
-            activeEncounter = randomEncounter;
-            $('encounter-description').textContent = `${randomEncounter.name}: ${randomEncounter.description}`;
-            $('encounter-modal').classList.remove('hidden');
-            playEncounterAlertSound();
-            addLog(`[ENCOUNTER ALERT]: ${randomEncounter.name} detected.`, 'error');
-        };
-
-        const initMapOverlay = () => { const canvas = $('map-overlay-canvas'); if (!canvas) return; const container = $('navigation-map'); const ctx = canvas.getContext('2d'); let scanLineY = 0; let reticles = []; const NUM_RETICLES = 5; const resizeCanvas = () => { canvas.width = container.offsetWidth; canvas.height = container.offsetHeight; reticles = []; for (let i = 0; i < NUM_RETICLES; i++) { reticles.push(new Reticle()); } }; class Reticle { constructor() { this.reset(); } reset() { this.x = Math.random() * canvas.width * 0.8 + canvas.width * 0.1; this.y = Math.random() * canvas.height * 0.8 + canvas.height * 0.1; this.life = Math.random() * 250 + 150; this.maxLife = this.life; } update() { this.life--; if (this.life <= 0) this.reset(); } draw() { const size = 8; const alpha = Math.sin((this.life / this.maxLife) * Math.PI); ctx.strokeStyle = `rgba(255, 65, 0, ${alpha * 0.7})`; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(this.x - size, this.y); ctx.lineTo(this.x + size, this.y); ctx.moveTo(this.x, this.y - size); ctx.lineTo(this.x, this.y + size); ctx.stroke(); ctx.beginPath(); ctx.arc(this.x, this.y, size * 0.5, 0, Math.PI * 2); ctx.stroke(); } } const drawGrid = () => { const gridSize = 40; ctx.strokeStyle = "rgba(0, 255, 65, 0.1)"; ctx.lineWidth = 0.5; for (let i = 0; i < canvas.width; i += gridSize) { ctx.beginPath(); ctx.moveTo(i, 0); ctx.lineTo(i, canvas.height); ctx.stroke(); } for (let i = 0; i < canvas.height; i += gridSize) { ctx.beginPath(); ctx.moveTo(0, i); ctx.lineTo(canvas.width, i); ctx.stroke(); } }; const animate = () => { if (!canvas.isConnected) return; requestAnimationFrame(animate); ctx.clearRect(0, 0, canvas.width, canvas.height); drawGrid(); scanLineY = (scanLineY + 1.5) % (canvas.height + 10); const gradient = ctx.createLinearGradient(0, scanLineY - 10, 0, scanLineY); gradient.addColorStop(0, "rgba(0, 255, 65, 0)"); gradient.addColorStop(1, "rgba(0, 255, 65, 0.4)"); ctx.fillStyle = gradient; ctx.fillRect(0, scanLineY - 10, canvas.width, 10); reticles.forEach(r => { r.update(); r.draw(); }); }; window.addEventListener('resize', resizeCanvas); setTimeout(resizeCanvas, 0); animate(); };
-        const initSubstrateGauge = () => { const canvas = $('substrate-canvas'); if (!canvas) return; const ctx = canvas.getContext('2d'); let bolts = []; const resizeCanvas = () => { canvas.width = canvas.parentElement.offsetWidth; canvas.height = canvas.parentElement.offsetHeight; }; class Bolt { constructor() { this.path = [{ x: 0, y: canvas.height / 2 }]; this.life = 30; this.maxLife = this.life; } update() { this.life--; if (this.path[this.path.length-1].x < canvas.width) { const lastPoint = this.path[this.path.length-1]; const newPoint = { x: lastPoint.x + 10, y: lastPoint.y + (Math.random() - 0.5) * 10 }; this.path.push(newPoint); } } draw() { ctx.beginPath(); ctx.moveTo(this.path[0].x, this.path[0].y); for(let i=1; i < this.path.length; i++) { ctx.lineTo(this.path[i].x, this.path[i].y); } const alpha = this.life / this.maxLife; ctx.strokeStyle = `rgba(244, 63, 94, ${alpha})`; ctx.lineWidth = 1.5; ctx.shadowColor = `rgba(244, 63, 94, 1)`; ctx.shadowBlur = 5; ctx.stroke(); } } const animate = () => { if (!canvas.isConnected) return; requestAnimationFrame(animate); ctx.clearRect(0, 0, canvas.width, canvas.height); if(Math.random() > 0.8 && bolts.length < 3) { bolts.push(new Bolt()); } bolts = bolts.filter(b => b.life > 0); bolts.forEach(b => { b.update(); b.draw(); }); ctx.shadowBlur = 0; }; window.addEventListener('resize', resizeCanvas); resizeCanvas(); animate(); };
-        const initAirstream = () => { const canvas = $('airstream-canvas'); if (!canvas) return; const ctx = canvas.getContext('2d'); let particles = []; const numParticles = 50; const resizeCanvas = () => { canvas.width = canvas.offsetWidth; canvas.height = canvas.offsetHeight; }; class Particle { constructor() { this.reset(); } reset() { this.x = Math.random() * -canvas.width; this.y = Math.random() * canvas.height; this.vx = Math.random() * 2 + 1; this.life = Math.random() * 50 + 20; this.initialLife = this.life; this.color = Math.random() > 0.5 ? 'rgba(0, 255, 255,' : 'rgba(255, 255, 240,'; } update() { this.life--; if (this.life <= 0) { this.reset(); } this.x += this.vx; } draw() { ctx.beginPath(); ctx.moveTo(this.x, this.y); ctx.lineTo(this.x - this.vx * 15, this.y); ctx.lineWidth = 1.5; ctx.strokeStyle = `${this.color} ${this.life / this.initialLife})`; ctx.stroke(); } } const createParticles = () => { for (let i = 0; i < numParticles; i++) { particles.push(new Particle()); } }; const animate = () => { if(!canvas.isConnected) return; ctx.clearRect(0, 0, canvas.width, canvas.height); particles.forEach(p => { p.update(); p.draw(); }); requestAnimationFrame(animate); }; window.addEventListener('resize', resizeCanvas); resizeCanvas(); createParticles(); animate(); };
-        
-        const initAtomDecayEffect = () => {
-            const chamber = document.querySelector('.fuse-box-panel');
-            if (!chamber) return;
-
-            const numAtoms = 30;
-            const colors = ['atom-yellow', 'atom-yellow', 'atom-yellow'];
-
-            for (let i = 0; i < numAtoms; i++) {
-                const atom = document.createElement('div');
-                const colorClass = colors[Math.floor(Math.random() * colors.length)];
-                atom.className = `atom-decay ${colorClass}`;
-
-                atom.style.top = `${Math.random() * 100}%`;
-                atom.style.left = `${Math.random() * 100}%`;
-                atom.style.animationDelay = `${Math.random() * -3}s`; // Use negative delay to start randomly
-                atom.style.animationDuration = `${Math.random() * 2 + 2}s`; // Random duration between 2s and 4s
-
-                chamber.appendChild(atom);
-            }
-        }
-        
-        const initPhotonBurstsEffect = () => {
-            const canvas = document.createElement('canvas');
-            const chamber = document.querySelector('.fuse-box-panel');
-            if (!chamber) return;
-
-            canvas.id = 'photon-bursts-canvas';
-            canvas.className = 'absolute top-0 left-0 w-full h-full pointer-events-none z-[4]';
-            chamber.appendChild(canvas);
-            
-            const ctx = canvas.getContext('2d');
-            let bursts = [];
-            const particleColors = ['rgba(255, 255, 0,'];
-
-            const resizeCanvas = () => {
-                canvas.width = chamber.clientWidth;
-                canvas.height = chamber.clientHeight;
-            };
-
-            class Particle {
-                constructor(x, y, color) {
-                    this.x = x;
-                    this.y = y;
-                    const angle = Math.random() * Math.PI * 2;
-                    const speed = Math.random() * 2 + 0.5;
-                    this.vx = Math.cos(angle) * speed;
-                    this.vy = Math.sin(angle) * speed;
-                    this.life = randRange(30, 60);
-                    this.maxLife = this.life;
-                    this.color = color;
-                }
-                update() {
-                    this.life--;
-                    this.x += this.vx;
-                    this.y += this.vy;
-                }
-                draw() {
-                    ctx.beginPath();
-                    ctx.arc(this.x, this.y, 2, 0, Math.PI * 2);
-                    ctx.fillStyle = `${this.color}${this.life / this.maxLife * 0.9})`;
-                    ctx.fill();
-                }
-            }
-
-            class Burst {
-                constructor() {
-                    this.x = Math.random() * canvas.width;
-                    this.y = Math.random() * canvas.height;
-                    this.particles = [];
-                    this.life = 60;
-                     const color = particleColors[0];
-                    const numParticles = randRange(10, 20);
-                    for(let i = 0; i < numParticles; i++) {
-                        this.particles.push(new Particle(this.x, this.y, color));
-                    }
-                }
-                update() {
-                    this.life--;
-                    this.particles.forEach(p => p.update());
-                    this.particles = this.particles.filter(p => p.life > 0);
-                }
-                draw() {
-                    this.particles.forEach(p => p.draw());
-                }
-            }
-            
-            const animate = () => {
-                if (!canvas.isConnected) return;
-                requestAnimationFrame(animate);
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-                if (Math.random() > 0.95 && bursts.length < 5) {
-                    bursts.push(new Burst());
-                }
-                
-                bursts.forEach(b => {
-                    b.update();
-                    b.draw();
-                });
-                bursts = bursts.filter(b => b.life > 0 && b.particles.length > 0);
-            };
-
-            window.addEventListener('resize', resizeCanvas);
-            setTimeout(resizeCanvas, 0);
-            animate();
-        };
-
-        const initTitleStarfield = () => { const canvas = $('title-starfield-canvas'); if (!canvas) return; const ctx = canvas.getContext('2d'); let stars = []; let shootingStars = []; const numStars = 200; const numShootingStars = 3; const resizeCanvas = () => { canvas.width = canvas.offsetWidth; canvas.height = canvas.offsetHeight; stars = []; shootingStars = []; createStars(); }; class Star { constructor() { this.x = Math.random() * canvas.width; this.y = Math.random() * canvas.height; this.radius = Math.random() * 1.5; this.alpha = Math.random(); this.blinkSpeed = (Math.random() - 0.5) * 0.05; } update() { this.alpha += this.blinkSpeed; if (this.alpha > 1 || this.alpha < 0) { this.alpha = Math.max(0, Math.min(1, this.alpha)); this.blinkSpeed *= -1; } } draw() { ctx.beginPath(); ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2); ctx.fillStyle = `rgba(255, 255, 255, ${this.alpha})`; ctx.fill(); } } class ShootingStar { constructor() { this.reset(); } reset() { this.x = Math.random() * canvas.width + canvas.width; this.y = Math.random() * canvas.height; this.len = Math.random() * 80 + 10; this.speed = Math.random() * 5 + 2; this.waitTime = Math.random() * 500; } update() { if (this.waitTime > 0) { this.waitTime--; return; } this.x -= this.speed; if (this.x < -this.len) { this.reset(); } } draw() { if (this.waitTime > 0) return; ctx.beginPath(); ctx.moveTo(this.x, this.y); ctx.lineTo(this.x + this.len, this.y); ctx.lineWidth = 2; const gradient = ctx.createLinearGradient(this.x, this.y, this.x + this.len, this.y); gradient.addColorStop(0, "rgba(255, 255, 255, 0)"); gradient.addColorStop(1, "rgba(255, 255, 255, 0.5)"); ctx.strokeStyle = gradient; ctx.stroke(); } } const createStars = () => { for (let i = 0; i < numStars; i++) { stars.push(new Star()); } for (let i = 0; i < numShootingStars; i++) { shootingStars.push(new ShootingStar()); } }; const animate = () => { if(!canvas.isConnected) return; ctx.clearRect(0, 0, canvas.width, canvas.height); stars.forEach(s => { s.update(); s.draw(); }); shootingStars.forEach(s => { s.update(); s.draw(); }); requestAnimationFrame(animate); }; window.addEventListener('resize', resizeCanvas); resizeCanvas(); animate(); };
-
-        const handleMintAndStart = async () => {
-            const mintOverlay = $('mint-overlay');
-            const loadingSpinner = $('loading-spinner');
-            const gameHeader = $('game-header');
-            const userIdDisplay = $('user-id-display');
-
-            mintOverlay.classList.add('hidden');
-            loadingSpinner.classList.remove('hidden');
-            
-            // Show game elements that were previously hidden by default
-            gameHeader.classList.remove('hidden');
-
-            await initializeAudio();
-
-            // Farcaster logic - Get user context after game starts
-            try {
-                const isMiniApp = await sdk.isInMiniApp({ timeoutMs: 200 });
-                if (isMiniApp) {
-                    userIdDisplay.classList.remove('hidden');
-                    const context = await sdk.context;
-                    if (context.user) {
-                        $('user-id-display').textContent = `FID: ${context.user.fid}`;
-                    } else {
-                        $('user-id-display').textContent = `Connected, no user`;
-                    }
-                }
-            } catch (err) {
-                console.error("Farcaster SDK Error during context fetch:", err);
-                $('user-id-display').textContent = `Error fetching Farcaster context`;
-            }
-            
-
-            setTimeout(async () => {
-                loadingSpinner.classList.add('hidden');
-                
-                $('game-container').classList.remove('hidden');
-                $('bottom-nav-bar').classList.remove('hidden');
-                
-                initializeLocalGameState();
-                initializeActivityGauges();
-                renderGameUI(); 
-                startGameLoops();
-                setInitialScannerText();
-                initSubstrateGauge();
-                
-                warpMinigame.init(); // Initialize the minigame elements and listeners
-
-                showTab('vitals', false); // Set initial tab without sound
-                setSystemMode(0, false); // Set initial target data and music to STANDARD
-
-            }, 1500);
-        };
-
-        // --- START: Warp Minigame Integration ---
-        const warpMinigame = {
-            canvas: null, ctx: null, warpOutBtn: null, gameView: null,
-            C_BG_VERY_DARK: '#111100', C_TRACK_GREEN: '#B8FF42', C_PLAYER_ORANGE: '#FF8800', C_HAZARD_RED: '#CC0033', C_STAR_COLOR: '#FFAA44',
-            isRunning: false, score: 0, playerX: 0, playerWidth: 20, trackWidthRatio: 0.5,
-            obstacles: [], obstacleSpawnRate: 120, frameCount: 0, GRACE_PERIOD_FRAMES: 60,
-            slider: null,
-            baseSpeed: 4, gameSpeed: 4,
-            stars: [], STAR_COUNT: 80,
-            onSuccessCallback: null, onFailureCallback: null,
-
-            getCanvasX(x) {
-                const trackW = this.canvas.width * this.trackWidthRatio;
-                const trackLeft = (this.canvas.width - trackW) / 2;
-                return trackLeft + (trackW / 2) + x;
-            },
-
-            resizeCanvas() {
-                if (!this.gameView || !this.canvas) return;
-                const parent = this.gameView;
-                this.canvas.width = parent.clientWidth;
-                this.canvas.height = parent.clientHeight;
-                this.playerX = 0;
-                this.initStars();
-                this.draw();
-            },
-
-            initStars() {
-                if (!this.canvas) return;
-                this.stars = [];
-                for (let i = 0; i < this.STAR_COUNT; i++) {
-                    this.stars.push({
-                        x: Math.random() * this.canvas.width,
-                        y: Math.random() * this.canvas.height,
-                        size: Math.random() * 2 + 0.5,
-                    });
-                }
-            },
-            
-            update() {
-                if (!this.isRunning) return;
-
-                if (this.slider) {
-                    const sliderValue = parseInt(this.slider.value, 10);
-                    const maxDeviation = (this.canvas.width * this.trackWidthRatio) / 2 - this.playerWidth / 2;
-                    this.playerX = maxDeviation * (sliderValue / 100);
-                }
-                
-                const continuousRate = 167;
-                this.score = this.frameCount * continuousRate;
-                this.baseSpeed = 4 + Math.floor(this.frameCount / 480) * 0.5;
-                this.gameSpeed = this.baseSpeed;
-                this.obstacleSpawnRate = Math.max(30, 120 - Math.floor(this.frameCount / 600) * 10);
-                this.stars.forEach(star => { star.y += this.gameSpeed * star.size * 0.25; if (star.y > this.canvas.height) { star.y = -star.size; star.x = Math.random() * this.canvas.width; } });
-                this.obstacles.forEach(obs => { obs.y += this.gameSpeed; });
-                this.obstacles = this.obstacles.filter(obs => obs.y < this.canvas.height);
-                if (this.frameCount > this.GRACE_PERIOD_FRAMES && this.frameCount % Math.floor(this.obstacleSpawnRate) === 0) {
-                    const trackW = this.canvas.width * this.trackWidthRatio;
-                    const minGapW = trackW * 0.25; const maxGapW = trackW * 0.6;
-                    const gapWidth = minGapW + Math.random() * (maxGapW - minGapW);
-                    const trackHalfW = trackW / 2;
-                    const minGapCenter = -trackHalfW + gapWidth / 2; const maxGapCenter = trackHalfW - gapWidth / 2;
-                    const gapCenter = minGapCenter + Math.random() * (maxGapCenter - minGapCenter);
-                    this.obstacles.push({ y: -10, h: 30, gapX: gapCenter, gapW: gapWidth });
-                }
-                this.checkCollisions();
-                this.frameCount++;
-            },
-
-            checkCollisions() {
-                if (!this.canvas || this.canvas.width === 0) return;
-                const trackW = this.canvas.width * this.trackWidthRatio;
-                const trackLeft = (this.canvas.width - trackW) / 2;
-                const pCanvasX = this.getCanvasX(this.playerX);
-                const playerHeight = this.playerWidth * 1.5;
-                const playerYOffsetFromBottom = this.canvas.height * 0.2;
-                const playerY = this.canvas.height - playerYOffsetFromBottom - playerHeight;
-                const playerRect = { left: pCanvasX - this.playerWidth / 2, right: pCanvasX + this.playerWidth / 2, top: playerY, bottom: playerY + playerHeight };
-                for (const obs of this.obstacles) {
-                    if (obs.y + obs.h > playerRect.top && obs.y < playerRect.bottom) {
-                        const obsLeftEnd = trackLeft + trackW / 2 + obs.gapX - obs.gapW / 2;
-                        const obsRightStart = trackLeft + trackW / 2 + obs.gapX + obs.gapW / 2;
-                        if (playerRect.left < obsLeftEnd || playerRect.right > obsRightStart) { this.gameOver(); return; }
-                    }
-                }
-            },
-
-            draw() {
-                if (!this.ctx || !this.canvas) return;
-                this.ctx.fillStyle = this.C_BG_VERY_DARK; this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
-                this.ctx.fillStyle = this.C_STAR_COLOR; this.ctx.shadowColor = this.C_STAR_COLOR; this.ctx.shadowBlur = 4;
-                this.stars.forEach(star => { this.ctx.beginPath(); this.ctx.arc(star.x, star.y, star.size, 0, Math.PI * 2); this.ctx.fill(); });
-                this.ctx.shadowBlur = 0;
-                const trackW = this.canvas.width * this.trackWidthRatio; const trackLeft = (this.canvas.width - trackW) / 2; const trackRight = trackLeft + trackW;
-                this.ctx.strokeStyle = this.C_TRACK_GREEN; this.ctx.lineWidth = 4; this.ctx.setLineDash([10, 5]);
-                const lineOffset = this.frameCount % 15;
-                this.ctx.beginPath();
-                for (let i = 0; i < this.canvas.height / 15 + 2; i++) { this.ctx.moveTo(trackLeft, i * 15 - lineOffset); this.ctx.lineTo(trackLeft, (i * 15 + 10) - lineOffset); }
-                for (let i = 0; i < this.canvas.height / 15 + 2; i++) { this.ctx.moveTo(trackRight, i * 15 - lineOffset); this.ctx.lineTo(trackRight, (i * 15 + 10) - lineOffset); }
-                this.ctx.stroke(); this.ctx.setLineDash([]);
-                this.ctx.fillStyle = this.C_HAZARD_RED; this.ctx.shadowColor = this.C_HAZARD_RED; this.ctx.shadowBlur = 10;
-                this.obstacles.forEach(obs => {
-                    const obsLeftEnd = trackLeft + trackW / 2 + obs.gapX - obs.gapW / 2;
-                    this.ctx.fillRect(trackLeft, obs.y, obsLeftEnd - trackLeft, obs.h);
-                    const obsRightStart = trackLeft + trackW / 2 + obs.gapX + obs.gapW / 2;
-                    this.ctx.fillRect(obsRightStart, obs.y, trackRight - obsRightStart, obs.h);
-                });
-                this.ctx.shadowBlur = 0;
-                const pCanvasX = this.getCanvasX(this.playerX);
-                const playerHeight = this.playerWidth * 1.5; const playerYOffsetFromBottom = this.canvas.height * 0.2;
-                const playerY = this.canvas.height - playerYOffsetFromBottom - playerHeight;
-                this.ctx.fillStyle = this.C_PLAYER_ORANGE; this.ctx.shadowColor = this.C_PLAYER_ORANGE;
-                this.ctx.shadowBlur = this.isRunning ? 8 : 0;
-                this.ctx.beginPath(); this.ctx.fillRect(pCanvasX - this.playerWidth / 2, playerY, this.playerWidth, playerHeight); this.ctx.closePath();
-                this.ctx.shadowBlur = 0;
-                this.ctx.fillStyle = this.C_PLAYER_ORANGE; this.ctx.font = '24px "VT323", monospace'; this.ctx.textAlign = 'left';
-                this.ctx.fillText(`SCORE: ${this.score.toLocaleString('en-US')}`, 10, 30);
-                
-                if (!this.isRunning && this.onFailureCallback) {
-                    this.ctx.fillStyle = 'rgba(0, 0, 0, 0.7)'; this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
-                    this.ctx.fillStyle = this.C_HAZARD_RED; this.ctx.shadowColor = this.C_HAZARD_RED; this.ctx.shadowBlur = 20;
-                    this.ctx.font = '48px "VT323", monospace'; this.ctx.textAlign = 'center'; this.ctx.fillText('FAILURE', this.canvas.width / 2, this.canvas.height / 2 - 20);
-                    this.ctx.font = '24px "VT323", monospace'; this.ctx.fillText('The Outrider was lost to the warp...', this.canvas.width / 2, this.canvas.height / 2 + 30);
-                    this.ctx.shadowBlur = 0;
-                }
-            },
-
-            gameLoop() {
-                this.update();
-                this.draw();
-                if (this.isRunning) { requestAnimationFrame(this.gameLoop.bind(this)); }
-            },
-            
-            gameOver() {
-                this.isRunning = false;
-                this.draw();
-                if(this.onFailureCallback) this.onFailureCallback();
-            },
-
-            warpOut() {
-                if (!this.isRunning) return;
-                this.isRunning = false;
-                if(this.onSuccessCallback) this.onSuccessCallback(this.score);
-            },
-
-            start(onSuccess, onFailure) {
-                if (this.isRunning) return;
-                this.onSuccessCallback = onSuccess; this.onFailureCallback = onFailure;
-                this.score = 0; this.playerX = 0; this.obstacles = []; this.frameCount = 0;
-                this.gameSpeed = this.baseSpeed;
-                if (this.slider) this.slider.value = 0;
-                this.initStars();
-                this.isRunning = true;
-                this.gameLoop();
-            },
-
-            init() {
-                this.canvas = $('warp-gameCanvas');
-                if (!this.canvas) return;
-                this.ctx = this.canvas.getContext('2d');
-                this.warpOutBtn = $('warp-out-button');
-                this.gameView = $('warp-gameView');
-                this.slider = $('warp-slider');
-                
-                this.resizeCanvas();
-                window.addEventListener('resize', this.resizeCanvas.bind(this));
-
-                const resetSlider = () => {
-                    if(this.slider && this.isRunning) {
-                        this.slider.value = 0;
-                    }
-                };
-
-                if (this.slider) {
-                    this.slider.addEventListener('mouseup', resetSlider);
-                    this.slider.addEventListener('touchend', resetSlider);
-                }
-
-                this.warpOutBtn.addEventListener('click', this.warpOut.bind(this));
-            }
-        };
-        // --- END: Warp Minigame Integration ---
-
-        const attemptEnterBlackhole = () => {
-            const costLY = 250000;
-            if (gameState.lightyears >= costLY) {
-                playSuccessSound();
-                gameState.lightyears -= costLY;
-                
-                // Destroy all sails
-                gameState.slots = gameState.slots.map(slot => (slot && slot.type === 'battery') ? slot : null);
-                addLog("All sails destroyed! Entering black hole...", 'error');
-                renderGameUI();
-
-                // --- NEW SEQUENCE: Show, Resize, then Start ---
-                // 1. Show the container
-                $('minigame-prompt').classList.add('hidden');
-                const minigameContainer = $('minigame-container');
-                minigameContainer.classList.remove('hidden');
-                
-                // Scroll the minigame into view
-                minigameContainer.scrollIntoView({ behavior: 'smooth', block: 'center' });
-
-                // 2. Force the canvas to resize now that it's visible
-                warpMinigame.resizeCanvas();
-                
-                // 3. Start the game with correct dimensions
-                warpMinigame.start(handleMinigameSuccess, handleMinigameFailure);
-
-            } else {
-                playErrorSound();
-                addLog("Insufficient resources to enter black hole.", 'error');
-            }
-        };
-
-        const handleMinigameSuccess = (finalScore) => {
-            addLog(`Successfully warped out of the black hole! Gained ${finalScore.toLocaleString()} lightyears.`, 'success');
-            gameState.lightyears = Math.min(WIN_DISTANCE, gameState.lightyears + finalScore);
-            
-            $('minigame-prompt').classList.remove('hidden');
-            $('minigame-container').classList.add('hidden');
-            renderGameUI();
-
-            if (gameState.lightyears >= WIN_DISTANCE && !gameState.hasWon) {
-                gameState.hasWon = true;
-                $('win-message').classList.remove('hidden');
-                stopGameLoops();
-                playSuccessSound();
-            }
-        };
-
-        const handleMinigameFailure = () => {
-            addLog("Lost in the black hole! The Outrider is gone...", 'error');
-            $('minigame-prompt').classList.remove('hidden');
-            $('minigame-container').classList.add('hidden');
-            
-            // Trigger the main game over screen
-            $('game-over-message').classList.remove('hidden');
-            stopGameLoops();
-        };
-
-        window.onload = () => {
-            initStarfield();
-            // Ensure the mint overlay is visible and the game is hidden
-            $('mint-overlay').classList.remove('hidden');
-            $('loading-spinner').classList.add('hidden');
-            $('game-container').classList.add('hidden');
-            $('bottom-nav-bar').classList.add('hidden');
-            $('game-header').classList.add('hidden');
-            $('user-id-display').classList.add('hidden');
-
-            // Central event listener
-            document.body.addEventListener('click', e => {
-                const button = e.target.closest('button');
-                if (!button) return;
-
-                let action = button.id;
-                // Handle dynamically created buttons
-                if (button.dataset.action) {
-                    action = button.dataset.action;
-                }
-
-                switch(action) {
-                    case 'mint-button': handleMintAndStart(); break;
-                    case 'mute-button': toggleMusicMute(); break;
-                    case 'mute-music-button': toggleMusicMute(); break;
-                    case 'mute-sfx-button': toggleSfxMute(); break;
-                    
-                    case 'play-pause-button': togglePlayPause(); break;
-                    case 'next-track-button': nextTrack(); break;
-                    case 'cycle-mode-button': cycleSystemMode(); break;
-                    case 'toggle-scanner-btn': toggleScanner(); break;
-                    case 'craft-sail-button': craftSolarSail(); break;
-                    case 'craft-battery-button': craftBattery(); break;
-
-                    case 'nav-vitals': showTab('vitals'); break;
-                    case 'nav-map':
-                        showTab('map');
-                        if (!mapTabInitialized) {
-                            initTitleStarfield();
-                            initMapOverlay();
-                            mapTabInitialized = true;
-                        }
-                        break;
-                    case 'nav-engines':
-                        showTab('engines');
-                        if (!engineTabInitialized) {
-                            initAirstream();
-                            initAtomDecayEffect();
-                            initPhotonBurstsEffect();
-                            initFuseBoxWires();
-                            engineTabInitialized = true;
-                        }
-                        break;
-                    case 'nav-action': showTab('action'); break;
-                    case 'nav-briefing': showTab('briefing'); break;
-
-                    case 'encounter-risk-it': handleEncounterDecision(true); break;
-                    case 'encounter-avoid': handleEncounterDecision(false); break;
-
-                    case 'claim-warrant-button': claimWarrant(); break;
-                    case 'win-reset-button': handleFullReset(); break;
-                    case 'game-over-reset-button': handleFullReset(); break;
-
-                    case 'reset-prompt-button': promptForReset(); break;
-                    case 'reset-confirm-button': handleFullReset(); break;
-                    case 'reset-cancel-button': cancelReset(); break;
-
-                    case 'enter-blackhole-button': attemptEnterBlackhole(); break;
-
-                    case 'test-lightyears-button': mintTestLightyears(); break;
-                    case 'test-encounter-button': forceTriggerEncounter(); break;
-                    case 'test-photons-button': mintTestPhotons(); break;
-                    
-                    case 'remove-module':
-                        removeModule(parseInt(button.dataset.index, 10));
-                        break;
-                }
-            });
-        };
-    </script>
 </body>
 </html>
-
-
-
-
-
-
-
