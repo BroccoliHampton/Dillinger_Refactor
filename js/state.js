@@ -157,7 +157,7 @@ export class GameState {
         this.slots = this.slots.map(slot => {
             if (slot && slot.type === 'sail') {
                 if (slot.durability > 0) {
-                    slot.durability -= randRange(4, 12);
+                    slot.durability -= randRange(3, 8);
                 }
                 if (slot.durability > 0) {
                     totalPower += slot.power;
