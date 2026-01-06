@@ -1,1237 +1,615 @@
-/* ===========================================
-   DILLINGER OUTLAW SPACE COMMANDO 1995
-   Main Stylesheet
-   =========================================== */
+// ===========================================
+// MAIN ENTRY POINT
+// ===========================================
 
-/* ===========================================
-   CSS VARIABLES
-   =========================================== */
-:root {
-    --neon-green: #00ff41;
-    --neon-red: #ff4100;
-    --neon-yellow: #ffff00;
-    --neon-cyan: #00ffff;
-    --neon-pink: #f43f5e;
-    --neon-orange: #f97316;
-    --dark-space: #0f172a;
-    --secondary-blue: #273041;
-    --background-dark: #10141f;
-}
+import { $ } from './utils.js';
+import { GAME_CONFIG, MAP_DURATIONS } from './config.js';
+import { GameState, MarketState, UIState } from './state.js';
+import { AudioManager } from './audio.js';
+import { UIRenderer } from './ui.js';
+import { WarpMinigame } from './minigame.js';
+import { EncounterManager } from './encounters.js';
+import {
+    initStarfield,
+    initMapOverlay,
+    initTitleStarfield,
+    initSubstrateGauge,
+    initAirstream,
+    initAtomDecayEffect,
+    initPhotonBurstsEffect,
+    initializeActivityGauges,
+    updateActivityGauges
+} from './animations.js';
 
-/* ===========================================
-   BASE STYLES
-   =========================================== */
-html, body {
-    overscroll-behavior-y: contain;
-}
+// ===========================================
+// GAME INSTANCE
+// ===========================================
 
-body {
-    font-family: 'Inter', sans-serif;
-    background-color: var(--background-dark);
-    color: var(--neon-green);
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
+class Game {
+    constructor() {
+        // State managers
+        this.gameState = new GameState();
+        this.marketState = new MarketState();
+        this.uiState = new UIState();
 
-.font-title {
-    font-family: 'Press Start 2P', cursive;
-}
+        // Managers
+        this.audioManager = new AudioManager();
+        this.uiRenderer = new UIRenderer(this.gameState, this.marketState, this.uiState);
+        this.warpMinigame = new WarpMinigame();
+        this.encounterManager = new EncounterManager(
+            this.gameState,
+            this.uiState,
+            this.audioManager,
+            this.uiRenderer
+        );
 
-/* ===========================================
-   RETRO UI COMPONENTS
-   =========================================== */
-.retro-border {
-    border: 2px solid var(--neon-green);
-    box-shadow: 0 0 10px var(--neon-green), inset 0 0 5px var(--neon-green);
-}
+        // Interval IDs
+        this.craftIntervalId = null;
+        this.miningIntervalId = null;
+        this.mapTimerIntervalId = null;
 
-.secondary-panel-bg {
-    background-color: rgba(39, 48, 65, 0.75);
-}
-
-.retro-button {
-    transition: all 0.1s ease-in-out;
-    border: 1px solid var(--neon-green);
-    background-color: rgba(0, 255, 65, 0.1);
-}
-
-.retro-button:hover {
-    box-shadow: 0 0 15px var(--neon-green);
-    background-color: rgba(0, 255, 65, 0.2);
-}
-
-.retro-button:active {
-    transform: scale(0.98);
-}
-
-.audio-control-button {
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 1.2rem;
-    border-width: 2px;
-    background-color: rgba(0, 255, 65, 0.1);
-    border-color: var(--neon-green);
-    color: var(--neon-green);
-}
-
-.audio-control-button:hover {
-    box-shadow: 0 0 15px var(--neon-green);
-}
-
-/* ===========================================
-   STARFIELD BACKGROUND
-   =========================================== */
-#starfield {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: -1;
-    pointer-events: none;
-    overflow: hidden;
-    opacity: 0.9;
-}
-
-.star {
-    position: absolute;
-    background: white;
-    border-radius: 50%;
-    animation: moveStar linear infinite;
-}
-
-@keyframes moveStar {
-    from { transform: translateY(0); }
-    to { transform: translateY(100vh); }
-}
-
-/* ===========================================
-   STARFIELD NEBULA ANIMATION
-   =========================================== */
-.starfield-container {
-    width: 100%;
-    max-width: 300px;
-    height: 150px;
-    margin: 0 auto 1.5rem auto;
-    position: relative;
-    overflow: hidden;
-    border-radius: 8px;
-    background: linear-gradient(to bottom, #000 0%, #0a0a1a 100%);
-    border: 1px solid rgba(0, 255, 65, 0.2);
-}
-
-.nebula {
-    position: absolute;
-    inset: 0;
-    background: 
-        radial-gradient(ellipse at 30% 40%, rgba(138, 43, 226, 0.3) 0%, transparent 50%),
-        radial-gradient(ellipse at 70% 60%, rgba(255, 20, 147, 0.25) 0%, transparent 45%),
-        radial-gradient(ellipse at 50% 80%, rgba(0, 191, 255, 0.2) 0%, transparent 40%),
-        radial-gradient(ellipse at 20% 70%, rgba(255, 100, 100, 0.15) 0%, transparent 35%);
-    animation: nebula-drift 20s ease-in-out infinite alternate;
-    filter: blur(15px);
-}
-
-@keyframes nebula-drift {
-    0% { transform: scale(1) translate(0, 0); opacity: 0.8; }
-    50% { transform: scale(1.1) translate(5px, -5px); opacity: 1; }
-    100% { transform: scale(1) translate(-5px, 5px); opacity: 0.8; }
-}
-
-.stars {
-    position: absolute;
-    inset: 0;
-    background-repeat: repeat;
-    animation: stars-twinkle 3s ease-in-out infinite;
-}
-
-.stars-small {
-    background-image: 
-        radial-gradient(1px 1px at 20px 30px, white, transparent),
-        radial-gradient(1px 1px at 40px 70px, rgba(255,255,255,0.8), transparent),
-        radial-gradient(1px 1px at 50px 120px, white, transparent),
-        radial-gradient(1px 1px at 90px 40px, rgba(255,255,255,0.9), transparent),
-        radial-gradient(1px 1px at 130px 80px, white, transparent),
-        radial-gradient(1px 1px at 160px 20px, rgba(255,255,255,0.7), transparent),
-        radial-gradient(1px 1px at 200px 100px, white, transparent),
-        radial-gradient(1px 1px at 230px 50px, rgba(255,255,255,0.8), transparent),
-        radial-gradient(1px 1px at 260px 130px, white, transparent),
-        radial-gradient(1px 1px at 280px 30px, rgba(255,255,255,0.9), transparent),
-        radial-gradient(1px 1px at 70px 110px, white, transparent),
-        radial-gradient(1px 1px at 110px 15px, rgba(255,255,255,0.7), transparent);
-    animation-delay: 0s;
-}
-
-.stars-medium {
-    background-image: 
-        radial-gradient(1.5px 1.5px at 80px 60px, #00ff41, transparent),
-        radial-gradient(1.5px 1.5px at 150px 90px, #00ffff, transparent),
-        radial-gradient(1.5px 1.5px at 220px 35px, white, transparent),
-        radial-gradient(1.5px 1.5px at 45px 100px, #ffff00, transparent),
-        radial-gradient(1.5px 1.5px at 180px 120px, white, transparent),
-        radial-gradient(1.5px 1.5px at 250px 80px, #00ff41, transparent);
-    animation-delay: 0.5s;
-}
-
-.stars-large {
-    background-image: 
-        radial-gradient(2px 2px at 100px 50px, white, transparent),
-        radial-gradient(2.5px 2.5px at 200px 70px, #00ffff, transparent),
-        radial-gradient(2px 2px at 60px 85px, #facc15, transparent);
-    animation-delay: 1s;
-}
-
-@keyframes stars-twinkle {
-    0%, 100% { opacity: 0.7; }
-    50% { opacity: 1; }
-}
-
-.shooting-star {
-    position: absolute;
-    width: 80px;
-    height: 1px;
-    background: linear-gradient(90deg, white, transparent);
-    top: 20%;
-    left: -80px;
-    animation: shoot 4s ease-out infinite;
-    animation-delay: 2s;
-    opacity: 0;
-}
-
-.shooting-star-2 {
-    top: 60%;
-    animation-delay: 5s;
-    width: 60px;
-}
-
-@keyframes shoot {
-    0% { left: -80px; opacity: 0; }
-    5% { opacity: 1; }
-    30% { left: 110%; opacity: 0; }
-    100% { left: 110%; opacity: 0; }
-}
-
-.supernova {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 80px;
-    height: 80px;
-    border-radius: 50%;
-    background: radial-gradient(circle, 
-        rgba(255, 255, 255, 0.9) 0%,
-        rgba(255, 200, 100, 0.7) 15%,
-        rgba(255, 100, 50, 0.5) 30%,
-        rgba(200, 50, 150, 0.3) 50%,
-        rgba(100, 0, 200, 0.1) 70%,
-        transparent 100%);
-    animation: supernova-pulse 3s ease-in-out infinite;
-    filter: blur(2px);
-}
-
-.supernova-core {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 12px;
-    height: 12px;
-    border-radius: 50%;
-    background: white;
-    box-shadow: 
-        0 0 10px 5px rgba(255, 255, 255, 0.9),
-        0 0 20px 10px rgba(255, 200, 100, 0.7),
-        0 0 40px 20px rgba(255, 100, 50, 0.5),
-        0 0 60px 30px rgba(200, 50, 150, 0.3);
-    animation: supernova-core-pulse 3s ease-in-out infinite;
-}
-
-@keyframes supernova-pulse {
-    0%, 100% { 
-        transform: translate(-50%, -50%) scale(0.8);
-        opacity: 0.6;
+        // Farcaster SDK
+        this.sdk = null;
     }
-    50% { 
-        transform: translate(-50%, -50%) scale(1.2);
-        opacity: 1;
+
+    // ===========================================
+    // INITIALIZATION
+    // ===========================================
+
+    async init() {
+        // Import Farcaster SDK
+        try {
+            const { sdk } = await import('https://esm.sh/@farcaster/miniapp-sdk');
+            this.sdk = sdk;
+            
+            // Signal ready to Farcaster
+            try {
+                await sdk.actions.ready();
+            } catch (e) {
+                console.error("Farcaster initial ready signal failed:", e);
+            }
+        } catch (e) {
+            console.log("Farcaster SDK not available");
+        }
+
+        // Initialize background starfield
+        initStarfield();
+
+        // Ensure initial UI state
+        $('mint-overlay').classList.remove('hidden');
+        $('loading-spinner').classList.add('hidden');
+        $('game-container').classList.add('hidden');
+        $('bottom-nav-bar').classList.add('hidden');
+        $('game-header').classList.add('hidden');
+        $('user-id-display').classList.add('hidden');
+
+        // Bind all event listeners
+        this.bindEventListeners();
     }
-}
 
-@keyframes supernova-core-pulse {
-    0%, 100% { 
-        transform: translate(-50%, -50%) scale(0.8);
-        box-shadow: 
-            0 0 10px 5px rgba(255, 255, 255, 0.9),
-            0 0 20px 10px rgba(255, 200, 100, 0.7),
-            0 0 40px 20px rgba(255, 100, 50, 0.5),
-            0 0 60px 30px rgba(200, 50, 150, 0.3);
+    // ===========================================
+    // EVENT LISTENERS
+    // ===========================================
+
+    bindEventListeners() {
+        document.body.addEventListener('click', async (e) => {
+            const button = e.target.closest('button');
+            if (!button) return;
+
+            let action = button.id;
+            if (button.dataset.action) {
+                action = button.dataset.action;
+            }
+
+            await this.handleAction(action, button);
+        });
     }
-    50% { 
-        transform: translate(-50%, -50%) scale(1.1);
-        box-shadow: 
-            0 0 15px 8px rgba(255, 255, 255, 1),
-            0 0 30px 15px rgba(255, 200, 100, 0.8),
-            0 0 50px 25px rgba(255, 100, 50, 0.6),
-            0 0 80px 40px rgba(200, 50, 150, 0.4);
+
+    async handleAction(action, button) {
+        switch (action) {
+            // Startup
+            case 'mint-button':
+                await this.handleMintAndStart();
+                break;
+
+            // Audio controls
+            case 'mute-button':
+            case 'mute-music-button':
+                this.toggleMusicMute();
+                break;
+            case 'mute-sfx-button':
+                this.toggleSfxMute();
+                break;
+
+            // Mode & Scanner
+            case 'cycle-mode-button':
+                this.cycleSystemMode();
+                break;
+            case 'toggle-scanner-btn':
+                this.toggleScanner();
+                break;
+
+            // Crafting
+            case 'craft-sail-button':
+                await this.craftSolarSail();
+                break;
+            case 'craft-battery-button':
+                await this.craftBattery();
+                break;
+
+            // Navigation
+            case 'nav-vitals':
+                this.showTab('vitals');
+                break;
+            case 'nav-map':
+                this.showTab('map');
+                break;
+            case 'nav-engines':
+                this.showTab('engines');
+                break;
+            case 'nav-action':
+                this.showTab('action');
+                break;
+            case 'nav-briefing':
+                this.showTab('briefing');
+                break;
+
+            // Encounters
+            case 'encounter-risk-it':
+                await this.handleEncounterDecision(true);
+                break;
+            case 'encounter-avoid':
+                await this.handleEncounterDecision(false);
+                break;
+            case 'encounter-result-close':
+                this.uiRenderer.hideEncounterResult();
+                break;
+
+            // Win/Game Over
+            case 'next-map-button':
+                await this.advanceToNextMap();
+                break;
+            case 'win-reset-button':
+            case 'game-over-reset-button':
+            case 'reset-confirm-button':
+                await this.handleFullReset();
+                break;
+
+            // Reset
+            case 'reset-prompt-button':
+                await this.promptForReset();
+                break;
+            case 'reset-cancel-button':
+                await this.cancelReset();
+                break;
+
+            // Blackhole
+            case 'enter-blackhole-button':
+                this.attemptEnterBlackhole();
+                break;
+
+            // Test buttons
+            case 'test-lightyears-button':
+                await this.mintTestLightyears();
+                break;
+            case 'test-encounter-button':
+                await this.forceTriggerEncounter();
+                break;
+            case 'test-photons-button':
+                await this.mintTestPhotons();
+                break;
+
+            // Dynamic actions
+            case 'remove-module':
+                await this.removeModule(parseInt(button.dataset.index, 10));
+                break;
+        }
     }
-}
 
-#satellite-schematic {
-    fill: none;
-    stroke: var(--neon-yellow);
-    stroke-width: 0.7;
-    animation: rotate-satellite 15s linear infinite, pulse-glow-yellow 2.2s infinite alternate;
-    opacity: 0.8;
-    transform-origin: center center;
-}
-
-@keyframes rotate-satellite {
-    from { transform: rotateY(0deg); }
-    to { transform: rotateY(360deg); }
-}
-
-@keyframes pulse-glow-yellow {
-    from { filter: drop-shadow(0 0 5px var(--neon-yellow)); }
-    to { filter: drop-shadow(0 0 15px var(--neon-yellow)); }
-}
-
-/* ===========================================
-   STAT GAUGES
-   =========================================== */
-.photons-gauge {
-    border: 1px solid var(--neon-yellow);
-    box-shadow: 0 0 5px var(--neon-yellow);
-    animation: pulse-yellow 1.5s infinite alternate;
-}
-
-@keyframes pulse-yellow {
-    from { box-shadow: 0 0 5px var(--neon-yellow), inset 0 0 3px var(--neon-yellow); }
-    to { box-shadow: 0 0 10px var(--neon-yellow), inset 0 0 6px var(--neon-yellow); }
-}
-
-.btc-glow {
-    border: 1px solid var(--neon-orange);
-    box-shadow: 0 0 8px var(--neon-orange);
-    animation: pulse-orange 1.8s infinite alternate;
-}
-
-@keyframes pulse-orange {
-    from { box-shadow: 0 0 5px var(--neon-orange); }
-    to { box-shadow: 0 0 15px var(--neon-orange); }
-}
-
-.substrate-glow {
-    border: 1px solid var(--neon-pink);
-    box-shadow: 0 0 8px var(--neon-pink);
-    animation: pulse-pink 1.9s infinite alternate;
-}
-
-@keyframes pulse-pink {
-    from { box-shadow: 0 0 5px var(--neon-pink); }
-    to { box-shadow: 0 0 15px var(--neon-pink); }
-}
-
-.electric-gauge {
-    position: relative;
-    overflow: hidden;
-    display: block;
-}
-
-#substrate-canvas {
-    width: 100%;
-    height: 100%;
-}
-
-.lightyears-glow {
-    border: 1px solid var(--neon-cyan);
-    box-shadow: 0 0 8px var(--neon-cyan);
-    animation: pulse-cyan 2s infinite alternate;
-}
-
-@keyframes pulse-cyan {
-    from { box-shadow: 0 0 5px var(--neon-cyan); }
-    to { box-shadow: 0 0 15px var(--neon-cyan); }
-}
-
-.decay-warning {
-    color: var(--neon-red) !important;
-    animation: blink-red 0.5s step-end infinite alternate;
-}
-
-@keyframes blink-red {
-    from { opacity: 1; }
-    to { opacity: 0.3; }
-}
-
-/* ===========================================
-   ACTIVITY GAUGES
-   =========================================== */
-.activity-gauge {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-end;
-    height: 10px;
-    padding: 1px;
-    background-color: rgba(0, 0, 0, 0.4);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 2px;
-    margin-top: 4px;
-}
-
-.gauge-segment {
-    width: 5%;
-    background-color: var(--neon-green);
-    height: 100%;
-    transition: height 0.08s ease-in-out, opacity 0.1s;
-    transform-origin: bottom;
-}
-
-.gauge-segment.yellow { background-color: var(--neon-yellow); box-shadow: 0 0 3px var(--neon-yellow); }
-.gauge-segment.orange { background-color: var(--neon-orange); box-shadow: 0 0 3px var(--neon-orange); }
-.gauge-segment.cyan { background-color: var(--neon-cyan); box-shadow: 0 0 3px var(--neon-cyan); }
-
-.flame-gauge {
-    position: relative;
-    overflow: hidden;
-    display: block;
-    height: 15px;
-}
-
-.flame-gauge::before,
-.flame-gauge::after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 50%;
-    width: 250px;
-    height: 100px;
-    background: radial-gradient(circle, var(--neon-yellow) 0%, var(--neon-orange) 40%, transparent 70%);
-    border-radius: 50% 50% 0 0 / 100% 100% 0 0;
-    transform-origin: bottom center;
-    animation: flame-flicker 1.5s ease-in-out infinite alternate;
-}
-
-.flame-gauge::after {
-    left: 50%;
-    width: 220px;
-    animation-delay: -0.7s;
-    animation-duration: 1.2s;
-    opacity: 0.6;
-}
-
-@keyframes flame-flicker {
-    0% { transform: translateX(-50%) scaleX(1) rotate(-1deg); opacity: 0.8; }
-    50% { transform: translateX(-52%) scaleX(1.2) rotate(2deg); opacity: 1; }
-    100% { transform: translateX(-50%) scaleX(1.1) rotate(0deg); opacity: 0.7; }
-}
-
-.meteor-gauge {
-    position: relative;
-    overflow: hidden;
-    display: block;
-}
-
-.meteor-gauge::before {
-    content: '';
-    position: absolute;
-    top: 50%;
-    left: 0;
-    width: 5px;
-    height: 5px;
-    background: white;
-    border-radius: 50%;
-    box-shadow: 0 0 10px 3px var(--neon-cyan),
-                0 0 20px 8px white,
-                10px 0 10px -2px var(--neon-cyan),
-                20px 0 10px -4px var(--neon-cyan),
-                30px 0 10px -6px var(--neon-cyan);
-    animation: shoot-meteor 2.5s linear infinite;
-    transform: translateY(-50%);
-}
-
-@keyframes shoot-meteor {
-    from { left: -20px; }
-    to { left: 100%; }
-}
-
-/* ===========================================
-   LOG CONTAINER
-   =========================================== */
-.log-container {
-    height: 150px;
-    overflow-y: scroll;
-    scrollbar-width: thin;
-    background-image: linear-gradient(90deg, rgba(0, 0, 0, 0.3) 1px, transparent 1px);
-    background-size: 15px 100%;
-    animation: log-flow 30s linear infinite;
-}
-
-@keyframes log-flow {
-    from { background-position: 0 0; }
-    to { background-position: 100% 0; }
-}
-
-/* ===========================================
-   SVG ANIMATIONS
-   =========================================== */
-#soundwave-svg {
-    animation: rotate-soundwave 8s linear infinite;
-    transform-origin: center;
-}
-
-@keyframes rotate-soundwave {
-    from { transform: rotateX(0deg) scale(1, 1); }
-    50% { transform: rotateX(180deg) scale(1, 0.1); }
-    to { transform: rotateX(360deg) scale(1, 1); }
-}
-
-#globe-svg {
-    animation: rotate-globe 12s linear infinite;
-    transform-origin: center;
-}
-
-@keyframes rotate-globe {
-    from { transform: rotateY(0deg); }
-    to { transform: rotateY(360deg); }
-}
-
-/* ===========================================
-   SAIL POWER ANIMATION
-   =========================================== */
-.sail-power-active {
-    position: relative;
-    overflow: hidden;
-}
-
-.sail-power-active::before,
-.sail-power-active::after {
-    content: '';
-    position: absolute;
-    left: 0;
-    width: 150%;
-    height: 1px;
-    opacity: 0.6;
-    background: linear-gradient(90deg, transparent, var(--neon-cyan), transparent);
-    animation: wind-flow 4s linear infinite;
-}
-
-.sail-power-active::after {
-    top: 75%;
-    animation-delay: -2s;
-    animation-duration: 3.5s;
-}
-
-.sail-power-active::before {
-    top: 25%;
-}
-
-@keyframes wind-flow {
-    from { transform: translateX(-100%); }
-    to { transform: translateX(100%); }
-}
-
-/* ===========================================
-   LOADING SPINNER
-   =========================================== */
-.spinner {
-    border: 4px solid rgba(255, 255, 255, 0.2);
-    border-left-color: var(--neon-cyan);
-    border-radius: 50%;
-    width: 50px;
-    height: 50px;
-    animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-    to { transform: rotate(360deg); }
-}
-
-/* ===========================================
-   PROGRESS BAR
-   =========================================== */
-.progress-bar-glow {
-    box-shadow: 0 0 5px var(--neon-green);
-    transition: box-shadow 0.5s;
-}
-
-.progress-bar-danger {
-    animation: glow-red 0.5s infinite alternate;
-}
-
-@keyframes glow-red {
-    from { box-shadow: 0 0 5px var(--neon-red); }
-    to { box-shadow: 0 0 10px var(--neon-red); }
-}
-
-.progress-bar {
-    background-color: #273041;
-    height: 16px;
-}
-
-.progress-fill {
-    transition: width 0.5s ease-out;
-    background-color: var(--neon-pink);
-}
-
-/* ===========================================
-   GAME AREA & LAYOUT
-   =========================================== */
-#game-area {
-    position: relative;
-    z-index: 10;
-    width: 100%;
-    max-width: 1200px;
-    padding: 1rem;
-    padding-bottom: 80px;
-    height: 100%;
-}
-
-.stat-grid-item {
-    padding: 0.5rem;
-    border: 1px dashed rgba(0, 255, 65, 0.2);
-}
-
-/* ===========================================
-   FUSE BOX / RADIATION CHAMBER
-   =========================================== */
-.fuse-box-panel {
-    background-color: #1e293b;
-    border: 3px solid #475569;
-    padding: 1rem;
-    position: relative;
-    border-radius: 4px;
-    box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.5);
-    overflow: hidden;
-}
-
-.inventory-slot-item {
-    min-height: 100px;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    position: relative;
-    border: 2px solid #475569;
-    background-color: rgba(30, 41, 59, 0.5);
-}
-
-.inventory-slot-item::before,
-.inventory-slot-item::after {
-    content: '';
-    position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 40%;
-    height: 6px;
-    background-color: #64748b;
-    border: 1px solid #94a3b8;
-    border-radius: 2px;
-}
-
-.inventory-slot-item::before { top: -9px; }
-.inventory-slot-item::after { bottom: -9px; }
-
-.fuse-box-spark {
-    position: absolute;
-    width: 4px;
-    height: 4px;
-    background: white;
-    border-radius: 50%;
-    box-shadow: 0 0 8px 3px var(--neon-yellow), 0 0 15px 7px white;
-    animation: spark-flash 2s infinite ease-out;
-    opacity: 0;
-    pointer-events: none;
-    z-index: 5;
-}
-
-@keyframes spark-flash {
-    0%, 100% { opacity: 0; transform: scale(0.5); }
-    1% { opacity: 1; transform: scale(1); }
-    3% { opacity: 0; transform: scale(0.5); }
-}
-
-.atom-decay {
-    position: absolute;
-    width: 3px;
-    height: 3px;
-    border-radius: 50%;
-    animation: atom-pop 3s infinite ease-out;
-    opacity: 0;
-    pointer-events: none;
-    z-index: 2;
-}
-
-@keyframes atom-pop {
-    0%, 100% { opacity: 0; transform: scale(0.2); }
-    2% { opacity: 1; transform: scale(1.2); }
-    15% { opacity: 0.5; transform: scale(0.5); }
-    20% { opacity: 0; }
-}
-
-.atom-yellow {
-    background-color: var(--neon-yellow);
-    box-shadow: 0 0 6px var(--neon-yellow);
-}
-
-/* ===========================================
-   DATA SCANNER
-   =========================================== */
-.data-scanner {
-    flex-grow: 1;
-    height: 60px;
-    background: #0f172a;
-    border: 1px solid #475569;
-    border-radius: 4px;
-    padding: 4px;
-    font-family: 'Courier New', monospace;
-    font-size: 10px;
-    color: var(--neon-green);
-    overflow: hidden;
-    position: relative;
-}
-
-.data-scanner .scanner-bar {
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 2px;
-    background: var(--neon-green);
-    box-shadow: 0 0 5px var(--neon-green);
-    animation: scan-anim 4s linear infinite;
-}
-
-@keyframes scan-anim {
-    0%, 100% { top: 0; }
-    50% { top: 98%; }
-}
-
-.data-scanner .text-stream {
-    animation: scroll-text 10s linear infinite;
-    white-space: pre;
-}
-
-@keyframes scroll-text {
-    from { transform: translateY(0); }
-    to { transform: translateY(-50%); }
-}
-
-/* ===========================================
-   MAP AUX DASHBOARD
-   =========================================== */
-.map-aux-dashboard {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 0.5rem;
-    margin-top: 0.25rem;
-    padding: 0.5rem;
-    background-color: rgba(0, 0, 0, 0.3);
-    border-top: 1px solid var(--neon-green);
-}
-
-.target-info-panel,
-.system-status-panel {
-    flex: 1;
-    padding: 0.5rem;
-    border: 1px solid rgba(0, 255, 65, 0.2);
-    font-family: 'Courier New', monospace;
-    font-size: 9px;
-}
-
-.target-info-panel h3,
-.system-status-panel h3 {
-    font-weight: bold;
-    color: var(--neon-yellow);
-    text-transform: uppercase;
-    margin-bottom: 4px;
-    font-size: 10px;
-}
-
-.target-info-panel span {
-    animation: text-flicker 0.15s infinite alternate;
-}
-
-@keyframes text-flicker {
-    from { opacity: 0.8; }
-    to { opacity: 1; }
-}
-
-/* ===========================================
-   CLOUD CHAMBER ANIMATION
-   =========================================== */
-.cloud-chamber {
-    position: relative;
-    width: 100%;
-    height: 128px;
-    background: linear-gradient(135deg, #0a0a12 0%, #0f0f1a 50%, #0a0a12 100%);
-    border-radius: 8px;
-    overflow: hidden;
-    margin-bottom: 0.75rem;
-    border: 1px solid rgba(0, 255, 255, 0.3);
-}
-
-.chamber-glow {
-    position: absolute;
-    inset: 0;
-    background: radial-gradient(ellipse at center, rgba(0, 255, 255, 0.08) 0%, transparent 60%);
-    animation: chamber-pulse 4s ease-in-out infinite;
-}
-
-@keyframes chamber-pulse {
-    0%, 100% { opacity: 0.5; }
-    50% { opacity: 1; }
-}
-
-.chamber-grid {
-    position: absolute;
-    inset: 0;
-    background-image: 
-        linear-gradient(rgba(0, 255, 255, 0.03) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(0, 255, 255, 0.03) 1px, transparent 1px);
-    background-size: 20px 20px;
-    pointer-events: none;
-}
-
-/* Particle Tracks - the wispy trails */
-.particle-track {
-    position: absolute;
-    height: 2px;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.6), rgba(0, 255, 255, 0.4), transparent);
-    filter: blur(0.5px);
-    opacity: 0;
-    animation: track-fade 3s ease-out infinite;
-}
-
-.track-1 {
-    top: 30%;
-    left: 10%;
-    width: 120px;
-    transform: rotate(15deg);
-    animation-delay: 0s;
-}
-
-.track-2 {
-    top: 50%;
-    left: 20%;
-    width: 80px;
-    transform: rotate(-20deg);
-    animation-delay: 0.5s;
-}
-
-.track-3 {
-    top: 70%;
-    left: 5%;
-    width: 150px;
-    transform: rotate(5deg);
-    animation-delay: 1s;
-}
-
-.track-4 {
-    top: 25%;
-    left: 50%;
-    width: 100px;
-    transform: rotate(-35deg);
-    animation-delay: 1.5s;
-}
-
-.track-5 {
-    top: 60%;
-    left: 40%;
-    width: 90px;
-    transform: rotate(25deg);
-    animation-delay: 2s;
-}
-
-.track-6 {
-    top: 45%;
-    left: 60%;
-    width: 70px;
-    transform: rotate(-10deg);
-    animation-delay: 2.5s;
-}
-
-@keyframes track-fade {
-    0% { opacity: 0; transform: translateX(-20px); }
-    10% { opacity: 0.8; }
-    50% { opacity: 0.4; }
-    100% { opacity: 0; transform: translateX(30px); }
-}
-
-/* Plasma Globs - unstable blobs of energy */
-.plasma-glob {
-    position: absolute;
-    border-radius: 50%;
-    filter: blur(3px);
-    animation: plasma-float 5s ease-in-out infinite;
-}
-
-.glob-1 {
-    width: 40px;
-    height: 35px;
-    top: 20%;
-    left: 15%;
-    background: radial-gradient(ellipse, rgba(255, 100, 200, 0.7) 0%, rgba(200, 50, 150, 0.4) 40%, transparent 70%);
-    animation-delay: 0s;
-}
-
-.glob-2 {
-    width: 50px;
-    height: 45px;
-    top: 40%;
-    left: 55%;
-    background: radial-gradient(ellipse, rgba(100, 200, 255, 0.7) 0%, rgba(50, 150, 200, 0.4) 40%, transparent 70%);
-    animation-delay: 1.5s;
-}
-
-.glob-3 {
-    width: 35px;
-    height: 30px;
-    top: 65%;
-    left: 30%;
-    background: radial-gradient(ellipse, rgba(150, 255, 150, 0.6) 0%, rgba(100, 200, 100, 0.3) 40%, transparent 70%);
-    animation-delay: 3s;
-}
-
-@keyframes plasma-float {
-    0%, 100% { 
-        transform: translate(0, 0) scale(1);
-        opacity: 0.6;
+    // ===========================================
+    // GAME START & RESET
+    // ===========================================
+
+    async handleMintAndStart() {
+        $('mint-overlay').classList.add('hidden');
+        this.uiRenderer.showLoading();
+        $('game-header').classList.remove('hidden');
+
+        await this.audioManager.initialize();
+
+        // Farcaster user context
+        if (this.sdk) {
+            try {
+                const isMiniApp = await this.sdk.isInMiniApp({ timeoutMs: 200 });
+                if (isMiniApp) {
+                    $('user-id-display').classList.remove('hidden');
+                    const context = await this.sdk.context;
+                    if (context.user) {
+                        $('user-id-display').textContent = `FID: ${context.user.fid}`;
+                    } else {
+                        $('user-id-display').textContent = `Connected, no user`;
+                    }
+                }
+            } catch (err) {
+                console.error("Farcaster SDK Error:", err);
+                $('user-id-display').textContent = `Error fetching Farcaster context`;
+            }
+        }
+
+        setTimeout(() => {
+            this.uiRenderer.hideLoading();
+            this.uiRenderer.showGameContainer();
+
+            this.gameState.reset();
+            initializeActivityGauges();
+            this.uiRenderer.render();
+            this.startGameLoops();
+            this.uiRenderer.setInitialScannerText();
+            initSubstrateGauge();
+
+            this.warpMinigame.init();
+
+            this.showTab('vitals', false);
+            this.setSystemMode(0, false);
+        }, 1500);
     }
-    25% { 
-        transform: translate(10px, -8px) scale(1.1);
-        opacity: 0.9;
+
+    async handleFullReset() {
+        await this.audioManager.initialize();
+        this.audioManager.playClick();
+
+        this.gameState.reset();
+        this.uiState.reset();
+        this.uiState.craftCooldownTimer = 0;
+
+        this.uiRenderer.hideWinScreen();
+        this.uiRenderer.hideGameOver();
+        this.uiRenderer.hideResetModal();
+
+        this.stopGameLoops();
+        this.startGameLoops();
+        this.uiRenderer.render();
     }
-    50% { 
-        transform: translate(-5px, 5px) scale(0.9);
-        opacity: 0.7;
+
+    async promptForReset() {
+        await this.audioManager.initialize();
+        this.audioManager.playClick();
+        this.uiRenderer.showResetModal();
     }
-    75% { 
-        transform: translate(8px, 8px) scale(1.05);
-        opacity: 0.8;
+
+    async cancelReset() {
+        await this.audioManager.initialize();
+        this.audioManager.playClick();
+        this.uiRenderer.hideResetModal();
+    }
+
+    async advanceToNextMap() {
+        await this.audioManager.initialize();
+        this.audioManager.playSuccess();
+
+        this.gameState.advanceToNextMap();
+        this.uiState.clearShipPositions();
+        this.uiState.activeEncounter = null;
+
+        this.uiRenderer.hideWinScreen();
+        this.stopGameLoops();
+        this.startGameLoops();
+        this.uiRenderer.render();
+    }
+
+    // ===========================================
+    // GAME LOOPS
+    // ===========================================
+
+    startGameLoops() {
+        if (this.craftIntervalId) return;
+
+        this.craftIntervalId = setInterval(() => this.handlePhotonsDrip(), GAME_CONFIG.PHOTONS_DRIP_INTERVAL);
+        this.miningIntervalId = setInterval(() => this.handleMiningAndDecay(), GAME_CONFIG.MINING_INTERVAL);
+        this.mapTimerIntervalId = setInterval(() => this.handleMapTimer(), 1000);
+        
+        setInterval(() => this.handleCraftCooldown(), 1000);
+        setInterval(() => this.marketState.updateSunIntensity(), 3000);
+        setInterval(() => this.marketState.updateSubstrateConductivity(), 3000);
+        setInterval(() => updateActivityGauges(), 150);
+
+        this.uiRenderer.addLog("The Outrider is powered up. System check nominal.", 'info');
+    }
+
+    stopGameLoops() {
+        clearInterval(this.craftIntervalId);
+        clearInterval(this.miningIntervalId);
+        clearInterval(this.mapTimerIntervalId);
+        this.craftIntervalId = null;
+        this.miningIntervalId = null;
+        this.mapTimerIntervalId = null;
+    }
+
+    handlePhotonsDrip() {
+        if (!this.gameState) return;
+        const totalPhotonGain = this.gameState.getTotalPhotonRate();
+        if (totalPhotonGain > 0) {
+            this.gameState.addPhotons(totalPhotonGain);
+            this.uiRenderer.render();
+        }
+    }
+
+    handleMiningAndDecay() {
+        if (!this.gameState || this.gameState.hasWon) return;
+
+        const { lyGain } = this.gameState.processMiningCycle((msg, type) => {
+            this.uiRenderer.addLog(msg, type);
+        });
+
+        if (lyGain > 0) {
+            const won = this.gameState.addLightyears(lyGain);
+            if (won && !this.gameState.hasWon) {
+                this.gameState.hasWon = true;
+                this.uiRenderer.showWinScreen();
+                this.stopGameLoops();
+                this.audioManager.playSuccess();
+            }
+        }
+
+        this.uiRenderer.render();
+    }
+
+    handleCraftCooldown() {
+        if (this.uiState.craftCooldownTimer > 0) {
+            this.uiState.craftCooldownTimer--;
+        }
+        this.uiRenderer.render();
+    }
+
+    handleMapTimer() {
+        if (!this.gameState || this.gameState.hasWon) return;
+
+        if (this.gameState.mapTimer > 0) {
+            this.gameState.mapTimer--;
+        }
+
+        this.uiRenderer.render();
+
+        if (this.gameState.mapTimer <= 0) {
+            this.uiRenderer.showGameOver();
+            this.stopGameLoops();
+            this.audioManager.playError();
+        }
+    }
+
+    // ===========================================
+    // CRAFTING
+    // ===========================================
+
+    async craftSolarSail() {
+        await this.audioManager.initialize();
+
+        if (!this.gameState ||
+            this.uiState.craftCooldownTimer > 0 ||
+            !this.gameState.hasEmptySlot() ||
+            this.gameState.photons < GAME_CONFIG.CRAFT_SAIL_COST) {
+            this.audioManager.playError();
+            return;
+        }
+
+        const power = this.marketState.calculateSailPower();
+        const sail = this.gameState.addSail(power);
+        this.gameState.removePhotons(GAME_CONFIG.CRAFT_SAIL_COST);
+        this.uiState.craftCooldownTimer = GAME_CONFIG.CRAFT_COOLDOWN;
+
+        this.audioManager.playCraft();
+        this.uiRenderer.addLog(`Crafted new Solar Sail with ${sail.power} Power.`, 'info');
+
+        this.encounterManager.triggerRandomEncounter();
+        this.uiRenderer.render();
+    }
+
+    async craftBattery() {
+        await this.audioManager.initialize();
+
+        if (!this.gameState ||
+            this.uiState.craftCooldownTimer > 0 ||
+            !this.gameState.hasEmptySlot() ||
+            this.gameState.lightyears < GAME_CONFIG.CRAFT_BATTERY_COST) {
+            this.audioManager.playError();
+            this.uiRenderer.addLog("Cannot craft battery: Requirements not met.", "error");
+            return;
+        }
+
+        const rate = this.marketState.calculateBatteryRate();
+        const battery = this.gameState.addBattery(rate);
+        this.gameState.removeLightyears(GAME_CONFIG.CRAFT_BATTERY_COST);
+        this.uiState.craftCooldownTimer = 5;
+
+        this.audioManager.playCraft();
+        this.uiRenderer.addLog(
+            `Crafted a Photon Battery with a rate of ${battery.rate} p/s, costing ${GAME_CONFIG.CRAFT_BATTERY_COST.toLocaleString()} LY.`,
+            'info'
+        );
+
+        this.encounterManager.triggerRandomEncounter();
+        this.uiRenderer.render();
+    }
+
+    async removeModule(index) {
+        if (!this.gameState || !this.gameState.slots[index]) return;
+        await this.audioManager.initialize();
+        this.audioManager.playClick();
+
+        const removed = this.gameState.removeSlot(index);
+        if (removed) {
+            this.uiRenderer.addLog(`Jettisoned ${removed.type} from inventory slot ${index + 1}.`, 'info');
+        }
+        this.uiRenderer.render();
+    }
+
+    // ===========================================
+    // ENCOUNTERS
+    // ===========================================
+
+    async handleEncounterDecision(riskIt) {
+        await this.audioManager.initialize();
+        this.audioManager.playClick();
+
+        const result = this.encounterManager.handleEncounterDecision(riskIt);
+        this.uiRenderer.render();
+        
+        // Show result popup if the player risked it
+        if (result && !result.avoided && !result.error) {
+            this.uiRenderer.showEncounterResult(result);
+        }
+    }
+
+    async forceTriggerEncounter() {
+        if (!this.gameState) return;
+        await this.audioManager.initialize();
+        this.audioManager.playClick();
+        this.uiRenderer.addLog("TEST: Forcing random encounter.", 'info');
+        this.encounterManager.forceTriggerEncounter();
+    }
+
+    // ===========================================
+    // BLACKHOLE MINIGAME
+    // ===========================================
+
+    attemptEnterBlackhole() {
+        const costLY = 250000;
+        if (this.gameState.lightyears >= costLY) {
+            this.audioManager.playSuccess();
+            this.gameState.removeLightyears(costLY);
+            this.gameState.destroyAllSails();
+            this.uiRenderer.addLog("All sails destroyed! Entering black hole...", 'error');
+            this.uiRenderer.render();
+
+            this.uiRenderer.showMinigame();
+            this.warpMinigame.resizeCanvas();
+            this.warpMinigame.start(
+                (score) => this.handleMinigameSuccess(score),
+                () => this.handleMinigameFailure()
+            );
+        } else {
+            this.audioManager.playError();
+            this.uiRenderer.addLog("Insufficient resources to enter black hole.", 'error');
+        }
+    }
+
+    handleMinigameSuccess(finalScore) {
+        this.uiRenderer.addLog(
+            `Successfully warped out of the black hole! Gained ${finalScore.toLocaleString()} lightyears.`,
+            'success'
+        );
+
+        const won = this.gameState.addLightyears(finalScore);
+        this.uiRenderer.hideMinigame();
+        this.uiRenderer.render();
+
+        if (won && !this.gameState.hasWon) {
+            this.gameState.hasWon = true;
+            this.uiRenderer.showWinScreen();
+            this.stopGameLoops();
+            this.audioManager.playSuccess();
+        }
+    }
+
+    handleMinigameFailure() {
+        this.uiRenderer.addLog("Lost in the black hole! The Outrider is gone...", 'error');
+        this.uiRenderer.hideMinigame();
+        this.uiRenderer.showGameOver();
+        this.stopGameLoops();
+    }
+
+    // ===========================================
+    // UI CONTROLS
+    // ===========================================
+
+    toggleMusicMute() {
+        const isMuted = this.audioManager.toggleMusicMute();
+        this.uiRenderer.updateMuteIcons(isMuted, this.audioManager.isSfxMuted);
+    }
+
+    toggleSfxMute() {
+        const isMuted = this.audioManager.toggleSfxMute();
+        this.uiRenderer.updateMuteIcons(this.audioManager.isMusicMuted, isMuted);
+    }
+
+    cycleSystemMode(playSound = true) {
+        if (playSound) {
+            this.audioManager.playClick();
+        }
+        const trackIndex = this.uiRenderer.cycleSystemMode();
+        this.audioManager.setTrack(trackIndex);
+    }
+
+    setSystemMode(index, playSound = true) {
+        if (playSound) {
+            this.audioManager.playClick();
+        }
+        const trackIndex = this.uiRenderer.setSystemMode(index);
+        this.audioManager.setTrack(trackIndex);
+    }
+
+    toggleScanner() {
+        this.audioManager.playClick();
+        this.uiRenderer.toggleScanner();
+    }
+
+    showTab(tabName, playSound = true) {
+        if (playSound) {
+            this.audioManager.playClick();
+        }
+        this.uiRenderer.showTab(tabName);
+
+        // Lazy-load animations
+        if (tabName === 'map' && !this.uiState.mapTabInitialized) {
+            initTitleStarfield();
+            initMapOverlay();
+            this.uiState.mapTabInitialized = true;
+        }
+        if (tabName === 'engines' && !this.uiState.engineTabInitialized) {
+            initAirstream();
+            initAtomDecayEffect();
+            initPhotonBurstsEffect();
+            this.uiState.engineTabInitialized = true;
+        }
+    }
+
+    // ===========================================
+    // TEST FUNCTIONS
+    // ===========================================
+
+    async mintTestLightyears() {
+        if (!this.gameState) return;
+        await this.audioManager.initialize();
+        this.audioManager.playSuccess();
+
+        const won = this.gameState.addLightyears(250000);
+        this.uiRenderer.addLog("TEST: Minted 250,000 lightyears.", 'info');
+        this.uiRenderer.render();
+
+        if (won && !this.gameState.hasWon) {
+            this.gameState.hasWon = true;
+            this.uiRenderer.showWinScreen();
+            this.stopGameLoops();
+            this.audioManager.playSuccess();
+        }
+    }
+
+    async mintTestPhotons() {
+        if (!this.gameState) return;
+        await this.audioManager.initialize();
+        this.audioManager.playSuccess();
+
+        this.gameState.addPhotons(1000);
+        this.uiRenderer.addLog("TEST: Minted 1,000 photons.", 'info');
+        this.uiRenderer.render();
     }
 }
 
-/* Decay Particles - bright sparks that fly off */
-.decay-particle {
-    position: absolute;
-    width: 4px;
-    height: 4px;
-    background: white;
-    border-radius: 50%;
-    box-shadow: 0 0 6px 2px rgba(255, 255, 255, 0.8), 0 0 12px 4px rgba(0, 255, 255, 0.5);
-    opacity: 0;
-    animation: decay-burst 2.5s ease-out infinite;
-}
+// ===========================================
+// BOOTSTRAP
+// ===========================================
 
-.decay-1 {
-    top: 35%;
-    left: 25%;
-    animation-delay: 0.3s;
-}
-
-.decay-2 {
-    top: 55%;
-    left: 60%;
-    animation-delay: 1s;
-}
-
-.decay-3 {
-    top: 25%;
-    left: 70%;
-    animation-delay: 1.7s;
-}
-
-.decay-4 {
-    top: 70%;
-    left: 45%;
-    animation-delay: 2.2s;
-}
-
-@keyframes decay-burst {
-    0% { 
-        opacity: 0;
-        transform: scale(0) translate(0, 0);
-    }
-    10% { 
-        opacity: 1;
-        transform: scale(1.5) translate(0, 0);
-    }
-    30% {
-        opacity: 0.8;
-        transform: scale(1) translate(20px, -15px);
-    }
-    60% {
-        opacity: 0.4;
-        transform: scale(0.6) translate(40px, -10px);
-    }
-    100% { 
-        opacity: 0;
-        transform: scale(0.2) translate(60px, 5px);
-    }
-}
-
-.radar-container {
-    width: 90px;
-    height: 90px;
-    padding: 4px;
-    border: 1px solid rgba(0, 255, 65, 0.3);
-    background: black;
-    border-radius: 50%;
-    flex-shrink: 0;
-}
-
-.radar {
-    width: 100%;
-    height: 100%;
-    border-radius: 50%;
-    position: relative;
-    overflow: hidden;
-    background: radial-gradient(circle, rgba(0, 255, 65, 0.05) 0%, transparent 70%);
-}
-
-.radar-grid {
-    position: absolute;
-    inset: 0;
-    border-radius: 50%;
-    border: 1px solid rgba(0, 255, 65, 0.3);
-    background: 
-        radial-gradient(circle, transparent 30%, transparent 30.5%, rgba(0, 255, 65, 0.15) 31%, transparent 31.5%),
-        radial-gradient(circle, transparent 60%, transparent 60.5%, rgba(0, 255, 65, 0.15) 61%, transparent 61.5%),
-        linear-gradient(0deg, transparent 49%, rgba(0, 255, 65, 0.2) 49.5%, rgba(0, 255, 65, 0.2) 50.5%, transparent 51%),
-        linear-gradient(90deg, transparent 49%, rgba(0, 255, 65, 0.2) 49.5%, rgba(0, 255, 65, 0.2) 50.5%, transparent 51%);
-}
-
-.radar-sweep {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 50%;
-    height: 2px;
-    transform-origin: left center;
-    background: linear-gradient(90deg, rgba(0, 255, 65, 0.8), transparent);
-    animation: radar-spin 3s linear infinite;
-}
-
-.radar-sweep::before {
-    content: '';
-    position: absolute;
-    top: -20px;
-    left: 0;
-    width: 100%;
-    height: 40px;
-    background: linear-gradient(90deg, rgba(0, 255, 65, 0.3), transparent);
-    transform-origin: left center;
-    clip-path: polygon(0 50%, 100% 0, 100% 100%);
-}
-
-@keyframes radar-spin {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
-}
-
-.radar-blip {
-    position: absolute;
-    width: 4px;
-    height: 4px;
-    background: #00ff41;
-    border-radius: 50%;
-    box-shadow: 0 0 6px #00ff41, 0 0 10px #00ff41;
-    animation: blip-pulse 3s ease-in-out infinite;
-}
-
-.blip-1 {
-    top: 25%;
-    left: 60%;
-    animation-delay: 0.5s;
-}
-
-.blip-2 {
-    top: 65%;
-    left: 30%;
-    animation-delay: 1.8s;
-}
-
-@keyframes blip-pulse {
-    0%, 70%, 100% { opacity: 0; transform: scale(0.5); }
-    75%, 95% { opacity: 1; transform: scale(1); }
-}
-
-.radar-center {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 6px;
-    height: 6px;
-    background: #00ff41;
-    border-radius: 50%;
-    transform: translate(-50%, -50%);
-    box-shadow: 0 0 4px #00ff41;
-}
-
-#targeting-canvas {
-    width: 100%;
-    height: 100%;
-}
-
-/* ===========================================
-   BOTTOM NAVIGATION
-   =========================================== */
-.bottom-nav {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    height: 65px;
-    background-color: rgba(15, 23, 42, 0.9);
-    backdrop-filter: blur(5px);
-    -webkit-backdrop-filter: blur(5px);
-    border-top: 2px solid var(--neon-green);
-    box-shadow: 0 -5px 15px rgba(0, 255, 65, 0.2);
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-    z-index: 1000;
-}
-
-.nav-button {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 4px;
-    flex-grow: 1;
-    height: 100%;
-    border: none;
-    background: none;
-    color: rgba(0, 255, 65, 0.6);
-    font-size: 10px;
-    font-family: 'Inter', sans-serif;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    cursor: pointer;
-    transition: color 0.2s ease-in-out, text-shadow 0.2s ease-in-out;
-}
-
-.nav-button i {
-    font-size: 20px;
-    margin-bottom: 2px;
-}
-
-.nav-button.active,
-.nav-button:hover {
-    color: var(--neon-green);
-    text-shadow: 0 0 8px var(--neon-green);
-}
-
-/* ===========================================
-   TAB CONTENT
-   =========================================== */
-.tab-content {
-    display: none;
-}
-
-.tab-content.active {
-    display: block;
-}
-
-/* ===========================================
-   WARP MINIGAME
-   =========================================== */
-.warp-game-font {
-    font-family: 'VT323', monospace;
-}
-
-#minigame-container {
-    height: 500px;
-}
-
-.warp-game-container {
-    width: 100%;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    border: 4px solid #FF8800;
-    box-shadow: 0 0 20px #FF8800;
-    border-radius: 8px;
-    overflow: hidden;
-    background-color: #111100;
-}
-
-#warp-viewContainer {
-    position: relative;
-    flex-grow: 1;
-}
-
-#warp-gameCanvas {
-    display: block;
-    width: 100%;
-    height: 100%;
-}
-
-.warp-control-button {
-    transition: all 0.1s;
-    text-shadow: 0 0 5px #FF8800;
-    user-select: none;
-}
-
-.warp-control-button:active {
-    box-shadow: 0 0 10px #FF8800, inset 0 0 10px #FF8800;
-    transform: translateY(2px);
-}
-
-.warp-boost-active {
-    animation: warp-pulse-red 0.1s infinite alternate;
-}
-
-@keyframes warp-pulse-red {
-    from { box-shadow: 0 0 10px #CC0033; }
-    to { box-shadow: 0 0 20px #CC0033; }
-}
-
-.warp-slider {
-    -webkit-appearance: none;
-    width: 100%;
-    height: 15px;
-    background: #332A00;
-    outline: none;
-    border: 2px solid #B8FF42;
-    border-radius: 8px;
-    box-shadow: 0 0 5px #B8FF42;
-    transition: all 0.2s ease;
-}
-
-.warp-slider::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    appearance: none;
-    width: 30px;
-    height: 30px;
-    background: #FF8800;
-    border: 2px solid #FFAA44;
-    border-radius: 50%;
-    cursor: pointer;
-    box-shadow: 0 0 10px #FF8800;
-    transition: background 0.2s, box-shadow 0.2s, transform 0.1s;
-}
-
-.warp-slider::-moz-range-thumb {
-    width: 30px;
-    height: 30px;
-    background: #FF8800;
-    border: 2px solid #FFAA44;
-    border-radius: 50%;
-    cursor: pointer;
-    box-shadow: 0 0 10px #FF8800;
-}
-
-.warp-slider::-webkit-slider-thumb:active {
-    background: #FFFF00;
-    box-shadow: 0 0 20px #FFFF00;
-    transform: scale(1.1);
-}
+window.onload = () => {
+    const game = new Game();
+    game.init();
+};
