@@ -858,10 +858,10 @@ body {
 }
 
 @keyframes track-fade {
-    0% { opacity: 0; transform: translateX(-20px) rotate(inherit); }
+    0% { opacity: 0; transform: translateX(-20px); }
     10% { opacity: 0.8; }
     50% { opacity: 0.4; }
-    100% { opacity: 0; transform: translateX(30px) rotate(inherit); }
+    100% { opacity: 0; transform: translateX(30px); }
 }
 
 /* Plasma Globs - unstable blobs of energy */
