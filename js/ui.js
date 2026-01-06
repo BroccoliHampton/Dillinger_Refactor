@@ -41,8 +41,9 @@ export class UIRenderer {
         $('photon-balance-engines').textContent = gs.photons.toLocaleString();
         $('lightyear-balance-engines').textContent = gs.lightyears.toLocaleString();
         $('btc-price-display').textContent = `${ms.sunIntensity.toLocaleString()}`;
-        $('eth-price-display').textContent = `${ms.ethPrice.toLocaleString()}`;
-        $('warrants-display').innerHTML = `<i class="fas fa-skull-crossbones mr-2"></i> ${gs.warrants || 0}`;
+        $('eth-price-display').textContent = `${ms.substrateConductivity.toLocaleString()}`;
+        $('warrants-display').innerHTML = `${gs.mapsCompleted || 0}`;
+        $('total-lightyears-display').textContent = `${(gs.totalLightyears || 0).toLocaleString()}`;
 
         // Progress bar
         $('progress-fill').style.width = `${Math.min(100, gs.getProgressRatio() * 100)}%`;
@@ -133,7 +134,7 @@ export class UIRenderer {
      */
     renderMap() {
         const gs = this.gameState;
-        const currentMapIndex = (gs.warrants || 0) % 6;
+        const currentMapIndex = (gs.mapsCompleted || 0) % 6;
 
         // System name
         $('system-name-display').textContent = SYSTEM_NAMES[currentMapIndex];
