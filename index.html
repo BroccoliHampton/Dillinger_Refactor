@@ -198,10 +198,19 @@
                         </div>
                     </div>
 
-                    <!-- Map Timer -->
-                    <div class="text-center mb-2 p-2 bg-black/30 rounded border border-red-500/50">
-                        <p class="text-xs text-red-400">TIME TO INTERCEPT</p>
-                        <p id="map-timer-display" class="text-2xl font-bold text-red-500 font-title">05:00</p>
+                    <!-- Map Progress Bar -->
+                    <div class="mb-2 p-2 bg-black/30 rounded border border-cyan-500/50">
+                        <div class="flex justify-between text-xs mb-1">
+                            <span class="text-cyan-400">MAP PROGRESS</span>
+                            <span id="map-progress-percent" class="text-cyan-400 font-bold">0%</span>
+                        </div>
+                        <div class="h-4 bg-black/50 rounded-full overflow-hidden border border-cyan-500/30">
+                            <div id="map-progress-fill" class="h-full rounded-full transition-all duration-300" style="width: 0%; background: linear-gradient(90deg, #06b6d4, #22d3ee);"></div>
+                        </div>
+                        <div class="flex justify-between text-xs mt-1 text-gray-500">
+                            <span id="map-ly-current">0 LY</span>
+                            <span>1,000,000 LY</span>
+                        </div>
                     </div>
 
                     <!-- Navigation Map -->
@@ -404,22 +413,6 @@
                                 </button>
                             </div>
                         </div>
-                    </div>
-                </div>
-
-                <!-- Test Buttons (Dev) -->
-                <div class="retro-border secondary-panel-bg rounded-lg p-3 mb-3">
-                    <h2 class="font-title text-xs text-gray-500 mb-2">// DEV TOOLS</h2>
-                    <div class="grid grid-cols-3 gap-2">
-                        <button id="test-photons-button" class="retro-button p-2 rounded text-xs text-yellow-400 border-yellow-500/50">
-                            +1K PHOTONS
-                        </button>
-                        <button id="test-lightyears-button" class="retro-button p-2 rounded text-xs text-cyan-400 border-cyan-500/50">
-                            +250K LY
-                        </button>
-                        <button id="test-encounter-button" class="retro-button p-2 rounded text-xs text-red-400 border-red-500/50">
-                            ENCOUNTER
-                        </button>
                     </div>
                 </div>
 
