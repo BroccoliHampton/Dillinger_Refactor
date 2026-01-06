@@ -195,8 +195,22 @@ export class GameState {
         this.mapsCompleted = (this.mapsCompleted || 0) + 1;
         this.lightyears = 0;
         this.hasWon = false;
-        const nextTimerIndex = Math.min(this.mapsCompleted, MAP_DURATIONS.length - 1);
-        this.mapTimer = MAP_DURATIONS[nextTimerIndex];
+        
+        // Calculate which map in the cycle (0-5) and which cycle we're on
+        const mapInCycle = this.mapsCompleted % 6;
+        const cycleNumber = Math.floor(this.mapsCompleted / 6);
+        
+        // Get base time for this map position, cycle back to start after map 6
+        const baseTime = MAP_DURATIONS[mapInCycle];
+        
+        // Reduce time by 15 seconds per cycle completed (minimum 30 seconds)
+        const timeReduction = cycleNumber * 15;
+        this.mapTimer = Math.max(30, baseTime - timeReduction);
+    }
+    
+    // Get current total including this map's progress
+    getCurrentTotalLightyears() {
+        return (this.totalLightyears || 0) + (this.lightyears || 0);
     }
 
     // ================
