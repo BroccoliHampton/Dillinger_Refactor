@@ -21,6 +21,11 @@ export class EncounterManager {
      * @returns {Object|null} The triggered encounter or null
      */
     triggerRandomEncounter() {
+        // Don't trigger if player doesn't have minimum lightyears to participate
+        if (this.gameState.lightyears < 10000) {
+            return null;
+        }
+
         if (Math.random() > GAME_CONFIG.ENCOUNTER_TRIGGER_CHANCE) {
             return null;
         }
