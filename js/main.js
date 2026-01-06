@@ -188,17 +188,6 @@ class Game {
                 this.attemptEnterBlackhole();
                 break;
 
-            // Test buttons
-            case 'test-lightyears-button':
-                await this.mintTestLightyears();
-                break;
-            case 'test-encounter-button':
-                await this.forceTriggerEncounter();
-                break;
-            case 'test-photons-button':
-                await this.mintTestPhotons();
-                break;
-
             // Dynamic actions
             case 'remove-module':
                 await this.removeModule(parseInt(button.dataset.index, 10));
@@ -460,14 +449,6 @@ class Game {
         }
     }
 
-    async forceTriggerEncounter() {
-        if (!this.gameState) return;
-        await this.audioManager.initialize();
-        this.audioManager.playClick();
-        this.uiRenderer.addLog("TEST: Forcing random encounter.", 'info');
-        this.encounterManager.forceTriggerEncounter();
-    }
-
     // ===========================================
     // BLACKHOLE MINIGAME
     // ===========================================
@@ -571,37 +552,6 @@ class Game {
             initPhotonBurstsEffect();
             this.uiState.engineTabInitialized = true;
         }
-    }
-
-    // ===========================================
-    // TEST FUNCTIONS
-    // ===========================================
-
-    async mintTestLightyears() {
-        if (!this.gameState) return;
-        await this.audioManager.initialize();
-        this.audioManager.playSuccess();
-
-        const won = this.gameState.addLightyears(250000);
-        this.uiRenderer.addLog("TEST: Minted 250,000 lightyears.", 'info');
-        this.uiRenderer.render();
-
-        if (won && !this.gameState.hasWon) {
-            this.gameState.hasWon = true;
-            this.uiRenderer.showWinScreen();
-            this.stopGameLoops();
-            this.audioManager.playSuccess();
-        }
-    }
-
-    async mintTestPhotons() {
-        if (!this.gameState) return;
-        await this.audioManager.initialize();
-        this.audioManager.playSuccess();
-
-        this.gameState.addPhotons(1000);
-        this.uiRenderer.addLog("TEST: Minted 1,000 photons.", 'info');
-        this.uiRenderer.render();
     }
 }
 
