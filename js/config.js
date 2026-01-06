@@ -15,7 +15,7 @@ export const GAME_CONFIG = {
     GAUGE_SEGMENTS: 15,
 };
 
-export const MAP_DURATIONS = [330, 210, 150, 180, 90]; // 5.5, 3.5, 2.5, 3, 1.5 minutes
+export const MAP_DURATIONS = [330, 270, 210, 180, 150, 120]; // 5:30, 4:30, 3:30, 3:00, 2:30, 2:00
 
 export const SYSTEM_NAMES = [
     "Orion's Anvil",
