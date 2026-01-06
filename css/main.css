@@ -619,6 +619,7 @@ body {
     position: relative;
     border: 2px solid #475569;
     background-color: rgba(30, 41, 59, 0.5);
+    overflow: visible;
 }
 
 .inventory-slot-item::before,
@@ -632,10 +633,20 @@ body {
     background-color: #64748b;
     border: 1px solid #94a3b8;
     border-radius: 2px;
+    pointer-events: none;
+    z-index: 1;
 }
 
 .inventory-slot-item::before { top: -9px; }
 .inventory-slot-item::after { bottom: -9px; }
+
+/* Jettison/Remove buttons */
+.inventory-slot-item button {
+    position: relative;
+    z-index: 10;
+    min-height: 28px;
+    cursor: pointer;
+}
 
 .fuse-box-spark {
     position: absolute;
