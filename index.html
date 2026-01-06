@@ -104,6 +104,13 @@
     <!-- ========================================= -->
     <header id="game-header" class="w-full max-w-lg mx-auto p-2 flex justify-between items-center hidden">
         <p id="user-id-display" class="text-xs text-gray-500 hidden">FID: ---</p>
+        
+        <!-- Persistent Timer -->
+        <div id="persistent-timer" class="flex items-center gap-2 px-3 py-1 bg-black/50 rounded border border-red-500/50">
+            <i class="fas fa-clock text-red-400 text-sm"></i>
+            <span id="persistent-timer-display" class="text-lg font-bold text-red-500 font-title">05:00</span>
+        </div>
+        
         <button id="mute-button" class="audio-control-button">
             <i id="mute-icon" class="fas fa-volume-up"></i>
         </button>
