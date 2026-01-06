@@ -51,13 +51,19 @@ export class UIRenderer {
         // Cooldown timer
         $('cooldown-timer').textContent = formatTime(this.uiState.craftCooldownTimer);
 
-        // Map timer
+        // Map timer (both locations)
         const timerDisplay = $('map-timer-display');
-        timerDisplay.textContent = formatMapTime(gs.mapTimer);
+        const persistentTimer = $('persistent-timer-display');
+        const timerText = formatMapTime(gs.mapTimer);
+        timerDisplay.textContent = timerText;
+        if (persistentTimer) persistentTimer.textContent = timerText;
+        
         if (gs.mapTimer <= 60) {
             timerDisplay.classList.add('animate-pulse');
+            if (persistentTimer) persistentTimer.classList.add('animate-pulse');
         } else {
             timerDisplay.classList.remove('animate-pulse');
+            if (persistentTimer) persistentTimer.classList.remove('animate-pulse');
         }
 
         // Craft buttons
@@ -106,7 +112,7 @@ export class UIRenderer {
                             <div class="text-xs opacity-80">
                                 <span>Pwr: ${slot.power}</span> | <span>Dur: 0%</span>
                             </div>
-                            <button data-action="remove-module" data-index="${index}" class="mt-1 w-full text-xs p-1 rounded bg-red-800/50 hover:bg-red-700/50 text-white">JETTISON</button>
+                            <button data-action="remove-module" data-index="${index}" class="mt-2 w-full text-xs py-2 px-1 rounded bg-red-800/70 hover:bg-red-600 active:bg-red-500 text-white font-bold border border-red-500">JETTISON</button>
                         </div>`;
                 }
             } else if (slot && slot.type === 'battery') {
@@ -117,7 +123,7 @@ export class UIRenderer {
                             <span class="font-bold text-xs">PHOTON BATTERY</span>
                             <span class="text-xs opacity-80">${(slot.rate || 0).toFixed(2)} p/s</span>
                         </div>
-                        <button data-action="remove-module" data-index="${index}" class="mt-1 w-full text-xs p-1 rounded bg-yellow-800/50 hover:bg-yellow-700/50 text-white">REMOVE</button>
+                        <button data-action="remove-module" data-index="${index}" class="mt-2 w-full text-xs py-2 px-1 rounded bg-yellow-800/70 hover:bg-yellow-600 active:bg-yellow-500 text-white font-bold border border-yellow-500">REMOVE</button>
                     </div>`;
             } else {
                 inventorySlotsEl.innerHTML += `
