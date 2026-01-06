@@ -634,13 +634,100 @@ body {
     width: 90px;
     height: 90px;
     padding: 4px;
-    border: 1px solid rgba(0, 255, 65, 0.2);
+    border: 1px solid rgba(0, 255, 65, 0.3);
     background: black;
     border-radius: 50%;
     flex-shrink: 0;
 }
 
-#radar-canvas,
+.radar {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    position: relative;
+    overflow: hidden;
+    background: radial-gradient(circle, rgba(0, 255, 65, 0.05) 0%, transparent 70%);
+}
+
+.radar-grid {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    border: 1px solid rgba(0, 255, 65, 0.3);
+    background: 
+        radial-gradient(circle, transparent 30%, transparent 30.5%, rgba(0, 255, 65, 0.15) 31%, transparent 31.5%),
+        radial-gradient(circle, transparent 60%, transparent 60.5%, rgba(0, 255, 65, 0.15) 61%, transparent 61.5%),
+        linear-gradient(0deg, transparent 49%, rgba(0, 255, 65, 0.2) 49.5%, rgba(0, 255, 65, 0.2) 50.5%, transparent 51%),
+        linear-gradient(90deg, transparent 49%, rgba(0, 255, 65, 0.2) 49.5%, rgba(0, 255, 65, 0.2) 50.5%, transparent 51%);
+}
+
+.radar-sweep {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 50%;
+    height: 2px;
+    transform-origin: left center;
+    background: linear-gradient(90deg, rgba(0, 255, 65, 0.8), transparent);
+    animation: radar-spin 3s linear infinite;
+}
+
+.radar-sweep::before {
+    content: '';
+    position: absolute;
+    top: -20px;
+    left: 0;
+    width: 100%;
+    height: 40px;
+    background: linear-gradient(90deg, rgba(0, 255, 65, 0.3), transparent);
+    transform-origin: left center;
+    clip-path: polygon(0 50%, 100% 0, 100% 100%);
+}
+
+@keyframes radar-spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+.radar-blip {
+    position: absolute;
+    width: 4px;
+    height: 4px;
+    background: #00ff41;
+    border-radius: 50%;
+    box-shadow: 0 0 6px #00ff41, 0 0 10px #00ff41;
+    animation: blip-pulse 3s ease-in-out infinite;
+}
+
+.blip-1 {
+    top: 25%;
+    left: 60%;
+    animation-delay: 0.5s;
+}
+
+.blip-2 {
+    top: 65%;
+    left: 30%;
+    animation-delay: 1.8s;
+}
+
+@keyframes blip-pulse {
+    0%, 70%, 100% { opacity: 0; transform: scale(0.5); }
+    75%, 95% { opacity: 1; transform: scale(1); }
+}
+
+.radar-center {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 6px;
+    height: 6px;
+    background: #00ff41;
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    box-shadow: 0 0 4px #00ff41;
+}
+
 #targeting-canvas {
     width: 100%;
     height: 100%;
