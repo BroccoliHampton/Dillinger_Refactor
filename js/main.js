@@ -166,8 +166,8 @@ class Game {
                 break;
 
             // Win/Game Over
-            case 'claim-warrant-button':
-                await this.claimWarrant();
+            case 'next-map-button':
+                await this.advanceToNextMap();
                 break;
             case 'win-reset-button':
             case 'game-over-reset-button':
@@ -283,11 +283,11 @@ class Game {
         this.uiRenderer.hideResetModal();
     }
 
-    async claimWarrant() {
+    async advanceToNextMap() {
         await this.audioManager.initialize();
         this.audioManager.playSuccess();
 
-        this.gameState.claimWarrant();
+        this.gameState.advanceToNextMap();
         this.uiState.clearShipPositions();
         this.uiState.activeEncounter = null;
 
@@ -310,7 +310,7 @@ class Game {
         
         setInterval(() => this.handleCraftCooldown(), 1000);
         setInterval(() => this.marketState.updateSunIntensity(), 3000);
-        setInterval(() => this.marketState.updateEthPrice(), 3000);
+        setInterval(() => this.marketState.updateSubstrateConductivity(), 3000);
         setInterval(() => updateActivityGauges(), 150);
 
         this.uiRenderer.addLog("The Outrider is powered up. System check nominal.", 'info');
