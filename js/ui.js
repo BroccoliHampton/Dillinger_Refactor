@@ -45,25 +45,31 @@ export class UIRenderer {
         $('warrants-display').innerHTML = `${gs.mapsCompleted || 0}`;
         $('total-lightyears-display').textContent = `${gs.getCurrentTotalLightyears().toLocaleString()}`;
 
-        // Progress bar
+        // Progress bar (vitals tab)
         $('progress-fill').style.width = `${Math.min(100, gs.getProgressRatio() * 100)}%`;
+
+        // Map progress bar (map tab)
+        const progressPercent = Math.min(100, gs.getProgressRatio() * 100);
+        const mapProgressFill = $('map-progress-fill');
+        const mapProgressPercent = $('map-progress-percent');
+        const mapLyCurrent = $('map-ly-current');
+        if (mapProgressFill) mapProgressFill.style.width = `${progressPercent}%`;
+        if (mapProgressPercent) mapProgressPercent.textContent = `${Math.floor(progressPercent)}%`;
+        if (mapLyCurrent) mapLyCurrent.textContent = `${gs.lightyears.toLocaleString()} LY`;
 
         // Cooldown timer
         $('cooldown-timer').textContent = formatTime(this.uiState.craftCooldownTimer);
 
-        // Map timer (both locations)
-        const timerDisplay = $('map-timer-display');
+        // Persistent header timer
         const persistentTimer = $('persistent-timer-display');
         const timerText = formatMapTime(gs.mapTimer);
-        timerDisplay.textContent = timerText;
-        if (persistentTimer) persistentTimer.textContent = timerText;
-        
-        if (gs.mapTimer <= 60) {
-            timerDisplay.classList.add('animate-pulse');
-            if (persistentTimer) persistentTimer.classList.add('animate-pulse');
-        } else {
-            timerDisplay.classList.remove('animate-pulse');
-            if (persistentTimer) persistentTimer.classList.remove('animate-pulse');
+        if (persistentTimer) {
+            persistentTimer.textContent = timerText;
+            if (gs.mapTimer <= 60) {
+                persistentTimer.classList.add('animate-pulse');
+            } else {
+                persistentTimer.classList.remove('animate-pulse');
+            }
         }
 
         // Craft buttons
