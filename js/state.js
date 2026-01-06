@@ -16,7 +16,8 @@ export class GameState {
     reset() {
         this.photons = 250;
         this.lightyears = 0;
-        this.warrants = 0;
+        this.totalLightyears = 0;
+        this.mapsCompleted = 0;
         this.hasWon = false;
         this.maxLightyears = GAME_CONFIG.WIN_DISTANCE;
         this.slots = Array(GAME_CONFIG.SAIL_SLOTS).fill(null);
@@ -186,14 +187,15 @@ export class GameState {
     }
 
     // ================
-    // WARRANT METHODS
+    // MAP PROGRESSION
     // ================
 
-    claimWarrant() {
-        this.warrants = (this.warrants || 0) + 1;
+    advanceToNextMap() {
+        this.totalLightyears += this.lightyears;
+        this.mapsCompleted = (this.mapsCompleted || 0) + 1;
         this.lightyears = 0;
         this.hasWon = false;
-        const nextTimerIndex = Math.min(this.warrants, MAP_DURATIONS.length - 1);
+        const nextTimerIndex = Math.min(this.mapsCompleted, MAP_DURATIONS.length - 1);
         this.mapTimer = MAP_DURATIONS[nextTimerIndex];
     }
 
