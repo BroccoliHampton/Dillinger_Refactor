@@ -763,6 +763,220 @@ body {
     to { opacity: 1; }
 }
 
+/* ===========================================
+   CLOUD CHAMBER ANIMATION
+   =========================================== */
+.cloud-chamber {
+    position: relative;
+    width: 100%;
+    height: 128px;
+    background: linear-gradient(135deg, #0a0a12 0%, #0f0f1a 50%, #0a0a12 100%);
+    border-radius: 8px;
+    overflow: hidden;
+    margin-bottom: 0.75rem;
+    border: 1px solid rgba(0, 255, 255, 0.3);
+}
+
+.chamber-glow {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at center, rgba(0, 255, 255, 0.08) 0%, transparent 60%);
+    animation: chamber-pulse 4s ease-in-out infinite;
+}
+
+@keyframes chamber-pulse {
+    0%, 100% { opacity: 0.5; }
+    50% { opacity: 1; }
+}
+
+.chamber-grid {
+    position: absolute;
+    inset: 0;
+    background-image: 
+        linear-gradient(rgba(0, 255, 255, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 255, 255, 0.03) 1px, transparent 1px);
+    background-size: 20px 20px;
+    pointer-events: none;
+}
+
+/* Particle Tracks - the wispy trails */
+.particle-track {
+    position: absolute;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.6), rgba(0, 255, 255, 0.4), transparent);
+    filter: blur(0.5px);
+    opacity: 0;
+    animation: track-fade 3s ease-out infinite;
+}
+
+.track-1 {
+    top: 30%;
+    left: 10%;
+    width: 120px;
+    transform: rotate(15deg);
+    animation-delay: 0s;
+}
+
+.track-2 {
+    top: 50%;
+    left: 20%;
+    width: 80px;
+    transform: rotate(-20deg);
+    animation-delay: 0.5s;
+}
+
+.track-3 {
+    top: 70%;
+    left: 5%;
+    width: 150px;
+    transform: rotate(5deg);
+    animation-delay: 1s;
+}
+
+.track-4 {
+    top: 25%;
+    left: 50%;
+    width: 100px;
+    transform: rotate(-35deg);
+    animation-delay: 1.5s;
+}
+
+.track-5 {
+    top: 60%;
+    left: 40%;
+    width: 90px;
+    transform: rotate(25deg);
+    animation-delay: 2s;
+}
+
+.track-6 {
+    top: 45%;
+    left: 60%;
+    width: 70px;
+    transform: rotate(-10deg);
+    animation-delay: 2.5s;
+}
+
+@keyframes track-fade {
+    0% { opacity: 0; transform: translateX(-20px); }
+    10% { opacity: 0.8; }
+    50% { opacity: 0.4; }
+    100% { opacity: 0; transform: translateX(30px); }
+}
+
+/* Plasma Globs - unstable blobs of energy */
+.plasma-glob {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(3px);
+    animation: plasma-float 5s ease-in-out infinite;
+}
+
+.glob-1 {
+    width: 40px;
+    height: 35px;
+    top: 20%;
+    left: 15%;
+    background: radial-gradient(ellipse, rgba(255, 100, 200, 0.7) 0%, rgba(200, 50, 150, 0.4) 40%, transparent 70%);
+    animation-delay: 0s;
+}
+
+.glob-2 {
+    width: 50px;
+    height: 45px;
+    top: 40%;
+    left: 55%;
+    background: radial-gradient(ellipse, rgba(100, 200, 255, 0.7) 0%, rgba(50, 150, 200, 0.4) 40%, transparent 70%);
+    animation-delay: 1.5s;
+}
+
+.glob-3 {
+    width: 35px;
+    height: 30px;
+    top: 65%;
+    left: 30%;
+    background: radial-gradient(ellipse, rgba(150, 255, 150, 0.6) 0%, rgba(100, 200, 100, 0.3) 40%, transparent 70%);
+    animation-delay: 3s;
+}
+
+@keyframes plasma-float {
+    0%, 100% { 
+        transform: translate(0, 0) scale(1);
+        opacity: 0.6;
+    }
+    25% { 
+        transform: translate(10px, -8px) scale(1.1);
+        opacity: 0.9;
+    }
+    50% { 
+        transform: translate(-5px, 5px) scale(0.9);
+        opacity: 0.7;
+    }
+    75% { 
+        transform: translate(8px, 8px) scale(1.05);
+        opacity: 0.8;
+    }
+}
+
+/* Decay Particles - bright sparks that fly off */
+.decay-particle {
+    position: absolute;
+    width: 4px;
+    height: 4px;
+    background: white;
+    border-radius: 50%;
+    box-shadow: 0 0 6px 2px rgba(255, 255, 255, 0.8), 0 0 12px 4px rgba(0, 255, 255, 0.5);
+    opacity: 0;
+    animation: decay-burst 2.5s ease-out infinite;
+}
+
+.decay-1 {
+    top: 35%;
+    left: 25%;
+    animation-delay: 0.3s;
+}
+
+.decay-2 {
+    top: 55%;
+    left: 60%;
+    animation-delay: 1s;
+}
+
+.decay-3 {
+    top: 25%;
+    left: 70%;
+    animation-delay: 1.7s;
+}
+
+.decay-4 {
+    top: 70%;
+    left: 45%;
+    animation-delay: 2.2s;
+}
+
+@keyframes decay-burst {
+    0% { 
+        opacity: 0;
+        transform: scale(0) translate(0, 0);
+    }
+    10% { 
+        opacity: 1;
+        transform: scale(1.5) translate(0, 0);
+    }
+    30% {
+        opacity: 0.8;
+        transform: scale(1) translate(20px, -15px);
+    }
+    60% {
+        opacity: 0.4;
+        transform: scale(0.6) translate(40px, -10px);
+    }
+    100% { 
+        opacity: 0;
+        transform: scale(0.2) translate(60px, 5px);
+    }
+}
+
 .radar-container {
     width: 90px;
     height: 90px;
