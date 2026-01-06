@@ -275,15 +275,25 @@
                 <div class="retro-border secondary-panel-bg rounded-lg p-3 mb-3">
                     <h2 class="font-title text-xs text-green-400 mb-2">// PROPULSION BAY</h2>
 
-                    <!-- Ship Visualization -->
-                    <div class="relative w-full h-32 bg-black/50 rounded overflow-hidden mb-3 border border-cyan-500/30">
-                        <canvas id="airstream-canvas" class="absolute top-0 left-0 w-full h-full"></canvas>
-                        <div class="absolute inset-0 flex items-center justify-center">
-                            <svg viewBox="0 0 100 60" class="w-24 h-16 sail-power-active">
-                                <polygon points="50,5 10,55 50,45 90,55" fill="none" stroke="#00ffff" stroke-width="2"/>
-                                <line x1="50" y1="5" x2="50" y2="45" stroke="#00ffff" stroke-width="1"/>
-                            </svg>
+                    <!-- Cloud Chamber Visualization -->
+                    <div class="cloud-chamber">
+                        <div class="chamber-glow"></div>
+                        <div class="particle-tracks">
+                            <div class="particle-track track-1"></div>
+                            <div class="particle-track track-2"></div>
+                            <div class="particle-track track-3"></div>
+                            <div class="particle-track track-4"></div>
+                            <div class="particle-track track-5"></div>
+                            <div class="particle-track track-6"></div>
                         </div>
+                        <div class="plasma-glob glob-1"></div>
+                        <div class="plasma-glob glob-2"></div>
+                        <div class="plasma-glob glob-3"></div>
+                        <div class="decay-particle decay-1"></div>
+                        <div class="decay-particle decay-2"></div>
+                        <div class="decay-particle decay-3"></div>
+                        <div class="decay-particle decay-4"></div>
+                        <div class="chamber-grid"></div>
                     </div>
 
                     <!-- Power Stats -->
