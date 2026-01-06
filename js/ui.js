@@ -43,7 +43,7 @@ export class UIRenderer {
         $('btc-price-display').textContent = `${ms.sunIntensity.toLocaleString()}`;
         $('eth-price-display').textContent = `${ms.substrateConductivity.toLocaleString()}`;
         $('warrants-display').innerHTML = `${gs.mapsCompleted || 0}`;
-        $('total-lightyears-display').textContent = `${(gs.totalLightyears || 0).toLocaleString()}`;
+        $('total-lightyears-display').textContent = `${gs.getCurrentTotalLightyears().toLocaleString()}`;
 
         // Progress bar
         $('progress-fill').style.width = `${Math.min(100, gs.getProgressRatio() * 100)}%`;
@@ -369,9 +369,14 @@ export class UIRenderer {
     }
 
     /**
-     * Show game over screen
+     * Show game over screen with final score
      */
     showGameOver() {
+        const totalScore = this.gameState.getCurrentTotalLightyears();
+        const mapsCompleted = this.gameState.mapsCompleted || 0;
+        
+        $('final-score-display').textContent = totalScore.toLocaleString();
+        $('final-maps-display').textContent = mapsCompleted;
         $('game-over-message').classList.remove('hidden');
     }
 
